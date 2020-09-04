@@ -14,9 +14,9 @@ setup(
     description="Realnet command line interface",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/virtual-space/realnet-cli",
+    url="https://github.com/virtual-space/realnet",
     author="Marko Laban",
-    author_email="makro.laban@l33tsystems.com",
+    author_email="marko.laban@l33tsystems.com",
     license="BSD",
     classifiers=[
         "License :: OSI Approved :: BSD License",

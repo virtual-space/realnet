@@ -1,6 +1,6 @@
 from pynecone import Subshell
-from login import Login
-from logout import Logout
+from .login import Login
+from .logout import Logout
 
 class Auth(Subshell):
 
