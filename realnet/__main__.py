@@ -1,7 +1,7 @@
-from .command import Realnet
+from . import command
 
 def main():
-    Realnet().run()
+    command.Realnet().run()
 
 if __name__ == "__main__":
     main()
