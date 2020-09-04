@@ -1,6 +1,6 @@
 from pynecone import Shell
-from realnet.command.auth.auth import Auth
-from realnet.command.item.item import Item
+from .auth import Auth
+from .item import Item
 
 
 class Realnet(Shell):
