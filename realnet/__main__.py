@@ -1,4 +1,4 @@
-from realnet import Realnet
+from .command.realnet import Realnet
 
 def main():
     Realnet().run()
