@@ -1,4 +1,7 @@
 from pynecone import Shell
+from auth import Auth
 
 class Realnet(Shell):
-    pass
+
+    def get_commands(self):
+        return [Auth()]
