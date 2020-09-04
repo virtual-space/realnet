@@ -12,6 +12,5 @@ RUN . venv/bin/activate
 RUN ./venv/bin/pip install wheel
 RUN ./venv/bin/python setup.py sdist bdist_wheel
 RUN ./venv/bin/pip install dist/*
-RUN ./venv/bin/deactivate
 
 CMD [ "./runner" ]
