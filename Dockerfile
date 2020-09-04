@@ -2,7 +2,7 @@ FROM python:3.7-slim
 
 WORKDIR /app
 
-ADD realnet ./
+ADD realnet ./realnet
 COPY setup.py ./
 COPY LICENSE ./
 COPY README.md ./
