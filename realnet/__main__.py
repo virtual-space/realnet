@@ -1,7 +1,7 @@
 from . import command
 
 def main():
-    command.Realnet().run()
+    command.realnet.Realnet().run()
 
 if __name__ == "__main__":
     main()
