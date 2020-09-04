@@ -23,7 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
     ],
-    packages=find_packages(exclude=("tests",)),
+    packages=["realnet"],
     include_package_data=True,
     install_requires=["pynecone", "requests_toolbelt", "keyring", "python-dotenv", "requests"],
     entry_points={
