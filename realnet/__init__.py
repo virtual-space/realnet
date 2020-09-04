@@ -1,4 +1,4 @@
-from .command.realnet import Realnet
+from .command import Realnet
 
 
 __version__ = "0.0.2"
