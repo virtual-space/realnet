@@ -1,3 +1,2 @@
 #!/bin/bash
-. venv/bin/activate
 realnet auth logout
