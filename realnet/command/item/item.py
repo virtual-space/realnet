@@ -1,11 +1,11 @@
 from pynecone import Subshell
-from .find import Find
+from realnet.command.item.find import Find
 
 
-class Items(Subshell):
+class Item(Subshell):
 
     def __init__(self):
-        super().__init__("items")
+        super().__init__("item")
 
     def get_commands(self):
         return [Find()]

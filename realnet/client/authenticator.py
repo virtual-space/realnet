@@ -1,7 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
 from webbrowser import open_new
-import keyring
 
 
 class HTTPServerHandler(BaseHTTPRequestHandler):
@@ -27,14 +26,14 @@ class HTTPServerHandler(BaseHTTPRequestHandler):
         return
 
 
-class Token:
+class Authenticator:
 
     def __init__(self, a_id, a_uri, a_base):
         self._id = a_id
         self._uri = a_uri
         self._base = a_base
 
-    def open_browser(self):
+    def login(self):
         httpServer = HTTPServer(('localhost', 8080),
                                 lambda req, address, server: HTTPServerHandler(req, address, server))
 
@@ -45,20 +44,3 @@ class Token:
 
         return httpServer.access_token
 
-    def chunks(self, s, n):
-        for index, start in enumerate(range(0, len(s), n)):
-            yield (index, s[start:start + n])
-
-    def store_token(self, token):
-        last_index = 0
-        for chunk in self.chunks(token, 256):
-            keyring.set_password("realnet", "access_token_{0}".format(chunk[0]), chunk[1])
-            last_index = chunk[0]
-        keyring.set_password("realnet", "access_token_count", last_index)
-
-    def retrieve_token(self):
-        count = keyring.get_password("realnet", "access_token_count")
-        access_token = ''
-        for index in range(0, int(count) + 1):
-            access_token += keyring.get_password("realnet", "access_token_{0}".format(index))
-        return access_token
