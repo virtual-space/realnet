@@ -9,8 +9,8 @@ from urllib.parse import urljoin
 import dotenv
 found_dotenv = dotenv.find_dotenv(usecwd=True)
 print("using .env: ", found_dotenv)
-
-dotenv.load_dotenv(found_dotenv)
+if found_dotenv:
+    dotenv.load_dotenv(found_dotenv)
 
 
 class Client:
