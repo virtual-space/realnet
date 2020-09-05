@@ -1,8 +1,9 @@
 from pynecone import Shell
 from .auth import Auth
-from .item import Item
+from .find import Find
+from .status import Status
 
 class Realnet(Shell):
 
     def get_commands(self):
-        return [Auth(), Item()]
+        return [Auth(), Find(), Status()]

@@ -47,7 +47,7 @@ class Client:
     def get_endpoint_url(self, path):
         return urljoin(self.api_base_url, path)
 
-    def get(self, path, params):
+    def get(self, path, params=None):
         token = self.retrieve_token()
         headers = {}
         if token:
