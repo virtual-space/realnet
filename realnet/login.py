@@ -1,5 +1,5 @@
 from pynecone import Command
-from realnet.client import Client
+from .client import Client
 
 class Login(Command):
 

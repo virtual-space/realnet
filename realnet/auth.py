@@ -1,6 +1,6 @@
 from pynecone import Subshell
-from realnet.command.auth.login import Login
-from realnet.command.auth.logout import Logout
+from .login import Login
+from .logout import Logout
 
 class Auth(Subshell):
 

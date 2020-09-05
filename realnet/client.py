@@ -1,4 +1,4 @@
-from . import Authenticator
+from .authenticator import Authenticator
 import os
 import keyring
 import requests

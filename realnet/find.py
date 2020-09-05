@@ -1,7 +1,6 @@
 from pynecone import Command
-from realnet.client import Client
+from .client import Client
 
-import requests
 
 class Find(Command):
 
