@@ -9,3 +9,9 @@ class List(Command):
 
     def run(self, args):
         print(Output.format(Client.create().get('items', {'my_items': True})))
+
+    def add_arguments(self, parser):
+        pass
+
+    def get_help(self):
+        return 'list help'

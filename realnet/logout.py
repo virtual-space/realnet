@@ -8,3 +8,9 @@ class Logout(Command):
 
     def run(self, args):
         print("logging out")
+
+    def add_arguments(self, parser):
+        pass
+
+    def get_help(self):
+        return 'logout help'

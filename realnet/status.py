@@ -9,3 +9,9 @@ class Status(Command):
 
     def run(self, args):
         print("You are logged in as: {0}".format(Client.create().get("user")['name']))
+
+    def add_arguments(self, parser):
+        pass
+
+    def get_help(self):
+        return 'status help'
