@@ -2,10 +2,10 @@ from pynecone import Command
 from .client import Client
 from .output import Output
 
-class Find(Command):
+class List(Command):
 
     def __init__(self):
-        super().__init__("find")
+        super().__init__("list")
 
     def run(self, args):
-        print(Output.format(Client.create().get("items", {'public': 'true'})))
+        print(Output.format(Client.create().get('items', {'my_items': True})))

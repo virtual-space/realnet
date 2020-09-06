@@ -25,7 +25,12 @@ setup(
     ],
     packages=["realnet"],
     include_package_data=True,
-    install_requires=["pynecone", "requests_toolbelt", "keyring", "python-dotenv", "requests"],
+    install_requires=["pynecone",
+                      "requests_toolbelt",
+                      "keyring",
+                      "python-dotenv",
+                      "requests",
+                      "tabulate"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",
