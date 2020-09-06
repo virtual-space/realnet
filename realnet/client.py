@@ -27,7 +27,7 @@ class Client:
         for chunk in self.chunks(token, 256):
             keyring.set_password("realnet", "access_token_{0}".format(chunk[0]), chunk[1])
             last_index = chunk[0]
-        keyring.set_password("realnet", "access_token_count", last_index)
+        keyring.set_password("realnet", "access_token_count", str(last_index))
 
     def retrieve_token(self):
         count = keyring.get_password("realnet", "access_token_count")
