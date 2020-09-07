@@ -107,12 +107,13 @@ class Client:
             return None
 
     def delete(self, path, id):
+        target = urljoin(path, id)
         token = self.retrieve_token()
         headers = {}
         if token:
             headers = {"Authorization": "Bearer " + token}
 
-        resp = requests.delete(self.get_endpoint_url(path), headers=headers)
+        resp = requests.delete(self.get_endpoint_url(target), headers=headers)
 
         if resp.status_code == requests.codes.ok:
             return resp.json()

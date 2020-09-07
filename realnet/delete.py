@@ -9,7 +9,7 @@ class Delete(Command):
         super().__init__("delete")
 
     def run(self, args):
-        print(Client.create().delete("items/{0}".format(args.id)))
+        print(Client.create().delete("items/", args.id))
 
     def add_arguments(self, parser):
         parser.add_argument('id', help='id of the item to be deleted')
