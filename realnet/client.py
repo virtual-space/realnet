@@ -66,6 +66,44 @@ class Client:
             print(data.decode('utf-8'))
             return None
 
+    def post(self, path, params):
+        token = self.retrieve_token()
+        headers = {}
+        if token:
+            headers = {"Authorization": "Bearer " + token}
+
+        resp = requests.post(self.get_endpoint_url(path), headers=headers, data=params)
+
+        if resp.status_code == requests.codes.ok:
+            return resp.json()
+        elif resp.status_code == 401:
+            access_token = self.authenticator.login()
+            self.store_token(access_token)
+            return self.post(path, params)
+        else:
+            data = dump.dump_all(resp)
+            print(data.decode('utf-8'))
+            return None
+
+    def delete(self, path):
+        token = self.retrieve_token()
+        headers = {}
+        if token:
+            headers = {"Authorization": "Bearer " + token}
+
+        resp = requests.delete(self.get_endpoint_url(path), headers=headers)
+
+        if resp.status_code == requests.codes.ok:
+            return resp.json()
+        elif resp.status_code == 401:
+            access_token = self.authenticator.login()
+            self.store_token(access_token)
+            return self.delete(path)
+        else:
+            data = dump.dump_all(resp)
+            print(data.decode('utf-8'))
+            return None
+
     @classmethod
     def create(cls):
         return Client(os.getenv('AUTH_URL'), os.getenv('API_URL'))
