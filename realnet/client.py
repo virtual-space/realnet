@@ -56,7 +56,10 @@ class Client:
         resp = requests.get(self.get_endpoint_url(path), headers=headers, params=params)
 
         if resp.status_code == requests.codes.ok:
-            return resp.json()
+            if resp.headers.get('content-type').startswith('application/json'):
+                return resp.json()
+            else:
+                return resp.content
         elif resp.status_code == 401:
             access_token = self.authenticator.login()
             self.store_token(access_token)
