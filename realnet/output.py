@@ -1,10 +1,14 @@
 from tabulate import tabulate
+import json
 
 class Output:
 
     @classmethod
-    def format(cls, items):
-        return tabulate(cls.extract_rows(items), cls.get_header())
+    def format(cls, output, format_type='json'):
+        if type(output) is list:
+            return cls.format_items(output, format_type)
+        else:
+            return cls.format_item(output, format_type)
 
     @classmethod
     def extract_rows(cls, items):
@@ -15,8 +19,18 @@ class Output:
         return ['name', 'type']
 
     @classmethod
-    def format_item(cls, item):
-        return tabulate(cls.extract_item_rows(item), cls.get_item_header())
+    def format_items(cls, items, format_type='json'):
+        if format_type == 'json':
+            return json.dumps(items)
+        else:
+            return tabulate(cls.extract_rows(items), cls.get_header())
+
+    @classmethod
+    def format_item(cls, item, format_type='json'):
+        if format_type == 'json':
+            return json.dumps(item)
+        else:
+            return tabulate(cls.extract_item_rows(item), cls.get_item_header())
 
     @classmethod
     def extract_item_rows(cls, item):

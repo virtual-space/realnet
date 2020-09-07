@@ -85,7 +85,28 @@ class Client:
             print(data.decode('utf-8'))
             return None
 
-    def delete(self, path):
+    def put(self, path, id, params):
+        target = urljoin(path, id)
+
+        token = self.retrieve_token()
+        headers = {}
+        if token:
+            headers = {"Authorization": "Bearer " + token}
+
+        resp = requests.put(self.get_endpoint_url(target), headers=headers, data=params)
+
+        if resp.status_code == requests.codes.ok:
+            return resp.json()
+        elif resp.status_code == 401:
+            access_token = self.authenticator.login()
+            self.store_token(access_token)
+            return self.put(path, id, params)
+        else:
+            data = dump.dump_all(resp)
+            print(data.decode('utf-8'))
+            return None
+
+    def delete(self, path, id):
         token = self.retrieve_token()
         headers = {}
         if token:
@@ -98,7 +119,7 @@ class Client:
         elif resp.status_code == 401:
             access_token = self.authenticator.login()
             self.store_token(access_token)
-            return self.delete(path)
+            return self.delete(path, id)
         else:
             data = dump.dump_all(resp)
             print(data.decode('utf-8'))
