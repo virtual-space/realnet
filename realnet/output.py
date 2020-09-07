@@ -43,3 +43,15 @@ class Output:
     @classmethod
     def get_item_header(cls):
         return ['key', 'value']
+
+    @classmethod
+    def output(cls, data, path=None):
+        if path:
+            if isinstance(data, str):
+                with open(path, 'w') as f:
+                    print(data, file=f)
+            else:
+                with open(path, 'wb') as f:
+                    f.write(data)
+        else:
+            print(data)
