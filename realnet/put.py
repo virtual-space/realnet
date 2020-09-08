@@ -37,10 +37,10 @@ class Put(Command):
                 params['name'] = args.name
             Output.output(Client.create().put('items/' + target_id, params))
         else:
-            print('TODO:')
+            Output.output(Client.create().put_file('items/' + target_id + '/data', content))
 
     def add_arguments(self, parser):
-        parser.add_argument('--id', help='id of the item defaults to be updated')
+        parser.add_argument('--id', help='id of the item to be updated')
         parser.add_argument('--context', choices=['item', 'data'], default='item', const='item', nargs='?',
                             help='specify whether to update the item itself or item data')
         parser.add_argument('--path', help="use the a file at the specified path as source")

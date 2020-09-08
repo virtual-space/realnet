@@ -104,8 +104,30 @@ class Client:
             self.store_token(access_token)
             return self.put(path, params)
         else:
-            data = dump.dump_all(resp)
-            print(data.decode('utf-8'))
+            print(resp.status_code, resp.text)
+            # data = dump.dump_all(resp)
+            # print(data.decode('utf-8'))
+            return None
+
+    def put_file(self, path, file):
+
+        token = self.retrieve_token()
+        headers = {}
+        if token:
+            headers = {"Authorization": "Bearer " + token}
+
+        resp = requests.put(self.get_endpoint_url(path), headers=headers, files=dict(file=file))
+
+        if resp.status_code == requests.codes.ok:
+            return resp.status_code
+        elif resp.status_code == 401:
+            access_token = self.authenticator.login()
+            self.store_token(access_token)
+            return self.put_file(path, file)
+        else:
+            print(resp.status_code, resp.text)
+            # data = dump.dump_all(resp)
+            # print(data.decode('utf-8'))
             return None
 
     def delete(self, path, id):
