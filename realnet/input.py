@@ -10,6 +10,7 @@ class Input:
             with open(path) as json_file:
                 return json.load(json_file)
         else:
+            # print(sys.stdin.read())
             return json.load(sys.stdin)
 
     @classmethod
