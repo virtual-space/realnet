@@ -9,7 +9,6 @@ class Export(Command):
         super().__init__("export")
 
     def run(self, args):
-        # print(Output.format_item(Client.create().post("items", {'type': args.type, 'name': args.name})))
         print(args)
 
 
