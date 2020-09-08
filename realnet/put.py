@@ -44,7 +44,7 @@ class Put(Command):
         parser.add_argument('--context', choices=['item', 'data'], default='item', const='item', nargs='?',
                             help='specify whether to update the item itself or item data')
         parser.add_argument('--path', help="use the a file at the specified path as source")
-        parser.add_argument('--std', help="use the standard input as source")
+        parser.add_argument('--std', nargs='?', const=True, default=False, help="use the standard input as source")
         parser.add_argument('--name', help="specifies the item name")
 
     def get_help(self):
