@@ -6,8 +6,11 @@ from .create import Create
 from .delete import Delete
 from .put import Put
 from .import_cmd import Import
+from .item import ItemCmd
 from .export import Export
+from .test import Test
 from .runner import Runner
+
 
 class Realnet(Shell):
 
@@ -15,7 +18,7 @@ class Realnet(Shell):
         super().__init__('realnet')
 
     def get_commands(self):
-        return [Auth(), Status(), Create(), Get(), Put(), Delete(), Import(), Export(), Runner()]
+        return [Auth(), Status(), Create(), Get(), Put(), Delete(), Import(), Export()]
 
     def add_arguments(self, parser):
         pass
