@@ -8,7 +8,6 @@ class Get(RealnetCommand):
         super().__init__("get")
 
     def execute(self, args, client):
-
         format_type = 'json'
         if args.print:
             format_type = 'table'

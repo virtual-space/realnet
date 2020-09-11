@@ -13,7 +13,7 @@ class Create(RealnetCommand):
         if args.id:
             params['parent_id'] = args.id
 
-        Output.output(client.create().post("items", params))
+        Output.output(client.post("items", params))
 
     def add_arguments(self, parser):
         parser.add_argument('type', help='type of the item to be created')

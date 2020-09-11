@@ -16,5 +16,5 @@ class RealnetCommand(RESTCommand):
                       os.getenv('REALNET_CLIENT_ID', 'realnet'),
                       os.getenv('REALNET_CLIENT_KEY'),
                       os.getenv('REALNET_CLIENT_SECRET'),
-                      os.getenv('REALNET_TOKEN_URL', 'https://auth.realnet.io/auth/realms/client/protocol/openid-connect/token'),
-                      os.getenv('REALNET_DEBUG', False))
+                      os.getenv('REALNET_TOKEN_URL', 'https://auth.realnet.io/auth/realms/realnet/protocol/openid-connect/token'),
+                      bool(os.getenv('REALNET_DEBUG', False)))
