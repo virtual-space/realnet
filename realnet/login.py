@@ -1,5 +1,4 @@
 from pynecone import Command
-from .client import Client
 
 
 class Login(Command):
@@ -9,7 +8,6 @@ class Login(Command):
 
     def run(self, args):
         print("logging in")
-        print(Client.create())
 
     def add_arguments(self, parser):
         pass

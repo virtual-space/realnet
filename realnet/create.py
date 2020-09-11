@@ -1,20 +1,19 @@
-from pynecone import Command
-from .client import Client
+from .realnet_command import RealnetCommand
 from .output import Output
 
 
-class Create(Command):
+class Create(RealnetCommand):
 
     def __init__(self):
         super().__init__("create")
 
-    def run(self, args):
+    def execute(self, args, client):
         params = {'type': args.type, 'name': args.name}
 
         if args.id:
             params['parent_id'] = args.id
 
-        Output.output(Client.create().post("items", params))
+        Output.output(client.create().post("items", params))
 
     def add_arguments(self, parser):
         parser.add_argument('type', help='type of the item to be created')

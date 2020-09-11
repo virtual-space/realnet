@@ -1,14 +1,13 @@
-from pynecone import Command
-from .client import Client
+from .realnet_command import RealnetCommand
 
 
-class Status(Command):
+class Status(RealnetCommand):
 
     def __init__(self):
         super().__init__("status")
 
-    def run(self, args):
-        print("You are logged in as: {0}".format(Client.create().get("user")['name']))
+    def execute(self, args, client):
+        print("You are logged in as: {0}".format(client.get("user")['name']))
 
     def add_arguments(self, parser):
         pass

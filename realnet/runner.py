@@ -1,5 +1,4 @@
 from pynecone import Command
-from .client import Client
 from .output import Output
 
 

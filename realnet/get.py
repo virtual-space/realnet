@@ -1,29 +1,28 @@
-from pynecone import Command
-from .client import Client
+from .realnet_command import RealnetCommand
 from .output import Output
 from urllib.parse import urljoin
 
-class Get(Command):
+class Get(RealnetCommand):
 
     def __init__(self):
         super().__init__("get")
 
-    def run(self, args):
+    def execute(self, args, client):
 
         format_type = 'json'
         if args.print:
             format_type = 'table'
 
         if args.context == 'item' and args.id is not None:
-            Output.output(Output.format(Client.create().get(urljoin('items/', args.id), None), format_type), args.output_path)
+            Output.output(Output.format(client.get(urljoin('items/', args.id), None), format_type), args.output_path)
         elif args.context == 'data' and args.id is not None:
-            Output.output(Client.create().get('items/' + args.id + '/data', None), args.output_path)
+            Output.output(client.get('items/' + args.id + '/data', None), args.output_path)
         else:
             params = {'my_items': True}
             if args.id:
                 params['parent_id'] = args.id
 
-            Output.output(Output.format(Client.create().get('items', params), format_type), args.output_path)
+            Output.output(Output.format(client.get('items', params), format_type), args.output_path)
 
     def add_arguments(self, parser):
         parser.add_argument('--context', choices=['items', 'item', 'data'], default='items', const='items', nargs='?',

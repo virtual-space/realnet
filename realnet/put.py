@@ -1,16 +1,15 @@
-from pynecone import Command
-from .client import Client
+from .realnet_command import RealnetCommand
 from .output import Output
 from .input import Input
 
 import sys
 
-class Put(Command):
+class Put(RealnetCommand):
 
     def __init__(self):
         super().__init__("put")
 
-    def run(self, args):
+    def execute(self, args, client):
         content = None
         target_id = None
 
@@ -35,9 +34,9 @@ class Put(Command):
                 params = content
             if args.name:
                 params['name'] = args.name
-            Output.output(Client.create().put('items/' + target_id, params))
+            Output.output(client.put('items/' + target_id, params))
         else:
-            Output.output(Client.create().put_file('items/' + target_id + '/data', content))
+            Output.output(client.put_file('items/' + target_id + '/data', content))
 
     def add_arguments(self, parser):
         parser.add_argument('--id', help='id of the item to be updated')

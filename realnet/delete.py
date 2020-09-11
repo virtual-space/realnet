@@ -1,15 +1,14 @@
-from pynecone import Command
-from .client import Client
+from .realnet_command import RealnetCommand
 from .output import Output
 
 
-class Delete(Command):
+class Delete(RealnetCommand):
 
     def __init__(self):
         super().__init__("delete")
 
-    def run(self, args):
-        print(Client.create().delete("items/", args.id))
+    def execute(self, args, client):
+        print(client.create().delete("items/", args.id))
 
     def add_arguments(self, parser):
         parser.add_argument('id', help='id of the item to be deleted')

@@ -1,5 +1,4 @@
 from pynecone import Command
-from .client import Client
 from .item import Item
 
 class Test(Command):
