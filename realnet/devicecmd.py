@@ -51,10 +51,43 @@ class DeviceCmd(ProtoShell):
             loop.run_until_complete(self.run_explore(address))
 
         async def run_explore(self, address):
+            log = logging.getLogger(__name__)
             async with BleakClient(address) as client:
+
+                import sys
+
+                # loop.set_debug(True)
+                log.setLevel(logging.DEBUG)
+                h = logging.StreamHandler(sys.stdout)
+                h.setLevel(logging.DEBUG)
+                log.addHandler(h)
                 svcs = await client.get_services()
-                for svc in svcs:
-                    print("Service:", svc)
+                for service in svcs:
+                    log.info("[Service] {0}: {1}".format(service.uuid, service.description))
+                    for char in service.characteristics:
+                        if "read" in char.properties:
+                            try:
+                                value = bytes(await client.read_gatt_char(char.uuid))
+                            except Exception as e:
+                                value = str(e).encode()
+                        else:
+                            value = None
+                        log.info(
+                            "\t[Characteristic] {0}: (Handle: {1}) ({2}) | Name: {3}, Value: {4} ".format(
+                                char.uuid,
+                                char.handle,
+                                ",".join(char.properties),
+                                char.description,
+                                value,
+                            )
+                        )
+                        for descriptor in char.descriptors:
+                            value = await client.read_gatt_descriptor(descriptor.handle)
+                            log.info(
+                                "\t\t[Descriptor] {0}: (Handle: {1}) | Value: {2} ".format(
+                                    descriptor.uuid, descriptor.handle, bytes(value)
+                                )
+                            )
 
         async def run_explore_old(self, address, loop, debug=False):
             log = logging.getLogger(__name__)
