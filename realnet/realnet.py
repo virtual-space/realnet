@@ -1,15 +1,8 @@
 from pynecone import Shell
-from .auth import Auth
-from .status import Status
-from .get import Get
-from .create import Create
-from .delete import Delete
-from .put import Put
-from .import_cmd import Import
-from .item import ItemCmd
-from .export import Export
-from .test import Test
-from .runner import Runner
+
+from .itemcmd import ItemCmd
+from .typecmd import TypeCmd
+from .devicecmd import DeviceCmd
 
 
 class Realnet(Shell):
@@ -18,7 +11,7 @@ class Realnet(Shell):
         super().__init__('realnet')
 
     def get_commands(self):
-        return [Auth(), Status(), Create(), Get(), Put(), Delete(), Import(), Export()]
+        return [ItemCmd(), TypeCmd(), DeviceCmd()]
 
     def add_arguments(self, parser):
         pass

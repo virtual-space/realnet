@@ -1,20 +1,11 @@
-from pynecone import Command
-from .item import Item
+from pynecone import ProtoCmd
+from realnet_core import Item
 
-class Test(Command):
+class Test(ProtoCmd):
 
     def __init__(self):
-        super().__init__("test")
+        super().__init__("test","test")
 
     def run(self, args):
-        # print("You are logged in as: {0}".format(Client.create().get("user")['name']))
-        # from .core import Item
-        item = Item()
-        item.test()
-        #print('testing to see if it....works!')
-
-    def add_arguments(self, parser):
         pass
 
-    def get_help(self):
-        return 'test help'

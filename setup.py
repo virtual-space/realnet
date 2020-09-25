@@ -25,11 +25,9 @@ setup(
     ],
     packages=["realnet"],
     include_package_data=True,
-    install_requires=["pynecone==0.0.18",
-                      "requests_toolbelt",
-                      "keyring",
-                      "python-dotenv",
-                      "requests",
+    install_requires=["pynecone==0.0.42",
+                      "realnet-core",
+                      "bleak",
                       "tabulate"],
     entry_points={
         "console_scripts": [
