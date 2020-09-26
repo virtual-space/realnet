@@ -1,5 +1,6 @@
 from pynecone import Shell
 
+from .env import EnvCmd
 from .itemcmd import ItemCmd
 from .typecmd import TypeCmd
 from .devicecmd import DeviceCmd
@@ -11,7 +12,7 @@ class Realnet(Shell):
         super().__init__('realnet')
 
     def get_commands(self):
-        return [ItemCmd(), TypeCmd(), DeviceCmd()]
+        return [EnvCmd(), ItemCmd(), TypeCmd(), DeviceCmd()]
 
     def add_arguments(self, parser):
         pass

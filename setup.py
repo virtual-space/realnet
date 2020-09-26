@@ -27,6 +27,7 @@ setup(
     include_package_data=True,
     install_requires=["pynecone==0.0.42",
                       "realnet-core",
+                      "python-jsonstore==1.2.0",
                       "bleak",
                       "tabulate"],
     entry_points={
