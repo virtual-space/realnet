@@ -1,5 +1,8 @@
 from pynecone import ProtoShell, ProtoCmd
 import logging
+import sys
+
+import bluetooth
 
 import asyncio
 from bleak import BleakScanner, BleakClient, BleakError
@@ -37,7 +40,7 @@ class DeviceCmd(ProtoShell):
         def __init__(self):
             super().__init__('get', 'get a device')
 
-    class Explore(ProtoCmd):
+    class Explore(bluetooth.DeviceDiscoverer, ProtoCmd):
 
         def __init__(self):
             super().__init__('explore', 'explore a device')
@@ -51,10 +54,12 @@ class DeviceCmd(ProtoShell):
             loop.run_until_complete(self.run_explore(address))
 
         async def run_explore(self, address):
+
+            pass
+
+        async def run_explore_old_1(self, address):
             log = logging.getLogger(__name__)
             async with BleakClient(address) as client:
-
-                import sys
 
                 # loop.set_debug(True)
                 log.setLevel(logging.DEBUG)
