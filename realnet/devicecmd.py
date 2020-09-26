@@ -40,7 +40,18 @@ class DeviceCmd(ProtoShell):
         def __init__(self):
             super().__init__('get', 'get a device')
 
-    class Explore(bluetooth.DeviceDiscoverer, ProtoCmd):
+    class Explore(ProtoCmd):
+
+        class Discoverer(bluetooth.DeviceDiscoverer):
+            def pre_inquiry(self):
+                self.done = False
+
+            def device_discovered(self, address, device_class, name):
+                print("%s - %s - %s" % (address, name, device_class))
+
+            def inquiry_complete(self):
+                self.done = True
+
 
         def __init__(self):
             super().__init__('explore', 'explore a device')
@@ -55,7 +66,11 @@ class DeviceCmd(ProtoShell):
 
         async def run_explore(self, address):
 
-            pass
+            services = bluetooth.find_service(address)
+
+            for service in services:
+                print(service)
+
 
         async def run_explore_old_1(self, address):
             log = logging.getLogger(__name__)
@@ -167,7 +182,13 @@ class DeviceCmd(ProtoShell):
             loop = asyncio.get_event_loop()
             loop.run_until_complete(self.run_discover())
 
-        async def run_discover(self):
+        def run_discover(self):
+            nearby_devices = bluetooth.discover_devices()
+
+            for bdaddr in nearby_devices:
+                print(bdaddr)
+
+        async def run_discover_old(self):
             # devices = await discover()
             devices = await BleakScanner.discover()
             for d in devices:
