@@ -72,15 +72,16 @@ class DeviceCmd(ProtoShell):
                                 value = str(e).encode()
                         else:
                             value = None
-                        log.info(
-                            "\t[Characteristic] {0}: (Handle: {1}) ({2}) | Name: {3}, Value: {4} ".format(
-                                char.uuid,
-                                char.handle,
-                                ",".join(char.properties),
-                                char.description,
-                                value,
-                            )
-                        )
+                        log.info(char)
+                        # log.info(
+                        #    "\t[Characteristic] {0}: (Handle: {1}) ({2}) | Name: {3}, Value: {4} ".format(
+                        #        char.uuid,
+                        #        char.handle,
+                        #        ",".join(char.properties),
+                        #        char.description,
+                        #        value,
+                        #    )
+                        # )
                         for descriptor in char.descriptors:
                             value = await client.read_gatt_descriptor(descriptor.handle)
                             log.info(
