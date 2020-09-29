@@ -1,8 +1,15 @@
 from pynecone import Shell, Config
 
-from .itemcmd import ItemCmd
 from .typecmd import TypeCmd
 from .device import Device
+from .place import Place
+from .thing import Thing
+from .event import Event
+from .order import Order
+from .person import Person
+from .product import Product
+from .task import Task
+
 
 import importlib
 import pkgutil
@@ -33,7 +40,7 @@ class Realnet(Shell):
 
     def get_commands(self):
 
-        return [ItemCmd(), TypeCmd(), Device()] + Config.init().list_commands()
+        return [TypeCmd(), Device(), Place(), Thing(), Task(), Event(), Product(), Order(), Person()] + Config.init().list_commands()
 
     def add_arguments(self, parser):
         pass

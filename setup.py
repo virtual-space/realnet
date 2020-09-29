@@ -29,7 +29,7 @@ setup(
                       "realnet-core",
                       "python-jsonstore==1.2.0",
                       "bleak",
-                      "pybluez",
+                      "pybluez-win10",
                       "tabulate"],
     entry_points={
         "console_scripts": [

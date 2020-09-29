@@ -1,26 +1,7 @@
 from pynecone import ProtoShell, ProtoCmd
-import logging
-import sys
 
 import bluetooth
-
 import asyncio
-from bleak import BleakScanner, BleakClient, BleakError
-from bleak.uuids import uuidstr_to_str
-
-GattCharacteristicsPropertiesEnum = {
-    None: ("None", "The characteristic doesn’t have any properties that apply"),
-    1: ("Broadcast", "The characteristic supports broadcasting"),
-    2: ("Read", "The characteristic is readable"),
-    4: ("WriteWithoutResponse", "The characteristic supports Write Without Response"),
-    8: ("Write", "The characteristic is writable"),
-    16: ("Notify", "The characteristic is notifiable"),
-    32: ("Indicate", "The characteristic is indicatable"),
-    64: ("AuthenticatedSignedWrites", "The characteristic supports signed writes"),
-    128: ("ExtendedProperties", "The ExtendedProperties Descriptor is present"),
-    256: ("ReliableWrites", "The characteristic supports reliable writes"),
-    512: ("WritableAuxiliaries", "The characteristic has writable auxiliaries"),
-}
 
 
 class Device(ProtoShell):
