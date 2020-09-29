@@ -61,7 +61,7 @@ class Device(ProtoShell):
             loop = asyncio.get_event_loop()
             loop.run_until_complete(self.run_discover())
 
-        def run_discover(self):
+        async def run_discover(self):
             nearby_devices = bluetooth.discover_devices(lookup_class=True,lookup_names=True)
 
             for bdaddr in nearby_devices:
