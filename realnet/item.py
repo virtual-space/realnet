@@ -3,6 +3,7 @@ import os
 from pynecone import ProtoShell, ProtoCmd, Config
 from realnet_core import ItemMemStore
 
+
 class Item(ProtoShell):
 
     class Create(ProtoCmd):
@@ -11,19 +12,32 @@ class Item(ProtoShell):
             super().__init__('create', 'create an item')
 
         def add_arguments(self, parser):
-            pass
+            parser.add_argument('type', help="specifies the name of the type of the item to be created")
+            parser.add_argument('name', help="specifies the name of the item to be created")
+            parser.add_argument('--path', help="specifies the path to the items file", default='items.json')
 
         def run(self, args):
-            items = ItemMemStore.load('items.json') if os.path.exists('items.json') else ItemMemStore()
-            type = items.create_type('TYPE1')
-            item = items.create_item(type)
-            print(item)
-            items.save('items.json')
+            items = ItemMemStore.load(args.path) if os.path.exists(args.path) else ItemMemStore()
+            types = [type for type in items.types.values() if type.name == args.type]
+            if types:
+                item = items.create_item(types[0], args.name)
+                print(item)
+                items.save(args.path)
+            else:
+                print('type {0} does not exist '.format(args.type))
 
     class List(ProtoCmd):
 
         def __init__(self):
             super().__init__('list', 'list items')
+
+        def add_arguments(self, parser):
+            parser.add_argument('--path', help="specifies the path to the items file", default='items.json')
+
+        def run(self, args):
+            items = ItemMemStore.load(args.path) if os.path.exists(args.path) else ItemMemStore()
+            for item in items.items.values():
+                print(item)
 
     class Delete(ProtoCmd):
 

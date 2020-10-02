@@ -1,5 +1,7 @@
+import os
+
 from pynecone import ProtoShell, ProtoCmd, Config
-from realnet_core import Type
+from realnet_core import Type, ItemMemStore
 
 
 class Type(ProtoShell):
@@ -10,21 +12,27 @@ class Type(ProtoShell):
             super().__init__('create', 'create a type')
 
         def add_arguments(self, parser):
-            parser.add_argument('name', help="specifies the type name")
-            parser.add_argument('--attribute', help="add an attribute in name:value format", nargs='+')
+            parser.add_argument('name', help="specifies the name of the type to be created")
+            parser.add_argument('--path', help="specifies the path to the items file", default='items.json')
 
         def run(self, args):
-            attributes = {}
-            for attribute in args.attribute:
-                attr = attribute.split(':')
-                attributes[attr[0]] = attr[1]
-
-            print(Type(args.name, args.name, [], attributes))
+            items = ItemMemStore.load(args.path) if os.path.exists(args.path) else ItemMemStore()
+            type = items.create_type(args.name)
+            print(type)
+            items.save(args.path)
 
     class List(ProtoCmd):
 
         def __init__(self):
             super().__init__('list', 'list types')
+
+        def add_arguments(self, parser):
+            parser.add_argument('--path', help="specifies the path to the items file", default='items.json')
+
+        def run(self, args):
+            items = ItemMemStore.load(args.path) if os.path.exists(args.path) else ItemMemStore()
+            for type in items.types.values():
+                print(type)
 
     class Delete(ProtoCmd):
 

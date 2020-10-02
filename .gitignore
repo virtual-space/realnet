@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 
 config.yml
+items.json
