@@ -1,23 +1,30 @@
+from pynecone import Shell
 
-from pynecone import Shell, Config
-
-from .type import Type
-from .item import Item
-from .device import Device
-
+from .create import Create
+from .update import Update
+from .get import Get
+from .delete import Delete
+from .list import List
+from .find import Find
 
 
 class Realnet(Shell):
 
-    def __init__(self):
-        super().__init__('realnet')
+        def __init__(self):
+            super().__init__('realnet')
 
-    def get_commands(self):
+        def get_commands(self):
+            return [
+                    Create(),
+                    Update(),
+                    Get(),
+                    Delete(),
+                    List(),
+                    Find()
+            ]
 
-        return [Type(), Item(), Device()] + Config.init().list_commands()
+        def add_arguments(self, parser):
+            pass
 
-    def add_arguments(self, parser):
-        pass
-
-    def get_help(self):
-        return 'realnet client'
+        def get_help(self):
+            return 'Realnet shell'

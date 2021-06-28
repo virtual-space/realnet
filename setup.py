@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="realnet",
-    version="0.0.11",
+    version="0.0.12",
     description="Realnet command line interface",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -26,10 +26,8 @@ setup(
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
     install_requires=["pynecone==0.0.61",
-                      "realnet-core==0.0.13",
-                      "python-jsonstore==1.2.0",
-                      "bleak",
-                      "pybluez",
+                      "requests",
+                      "python-dotenv",
                       "tabulate"],
     entry_points={
         "console_scripts": [
