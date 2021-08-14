@@ -1,12 +1,8 @@
 from pynecone import Shell
 
-from .create import Create
-from .update import Update
-from .get import Get
-from .delete import Delete
-from .list import List
-from .find import Find
-
+from .item import Item
+from .type import Type
+from .worker import Worker
 
 class Realnet(Shell):
 
@@ -15,12 +11,9 @@ class Realnet(Shell):
 
         def get_commands(self):
             return [
-                    Create(),
-                    Update(),
-                    Get(),
-                    Delete(),
-                    List(),
-                    Find()
+                    Item(),
+                    Type(),
+                    Worker()
             ]
 
         def add_arguments(self, parser):
