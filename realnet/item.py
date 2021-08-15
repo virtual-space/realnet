@@ -77,12 +77,19 @@ class Get(ProtoCmd, Client):
 
     def add_arguments(self, parser):
         parser.add_argument('id', help="specifies the id of the item to be retrieved")
+        parser.add_argument('--json', help="specifies the output format to be json", action="store_true")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         response = requests.get(self.get_url() + '/items/{}'.format(args.id), headers=headers)
-        print(response.json())
+
+        if args.json:
+            print(response.json())
+        else:
+            of = OutputFormat()
+            of.header = ['Property', 'Value']
+            print(Out.format(response.json(), of))
 
 class List(ProtoCmd, Client):
 
@@ -101,7 +108,6 @@ class List(ProtoCmd, Client):
         else:
             response =  requests.get(self.get_url() + '/items', headers=headers)
 
-        print(response)
         if args.json:
             print(response.json())
         else:
