@@ -1,6 +1,6 @@
 import requests
 
-from pynecone import Shell, ProtoCmd
+from pynecone import Shell, ProtoCmd, Out, OutputFormat, Extractor
 
 from .client import Client
 
@@ -12,13 +12,20 @@ class List(ProtoCmd, Client):
                          'list available realnet types')
 
     def add_arguments(self, parser):
-        pass
+        parser.add_argument('--json', help="specifies the output format to be json", action="store_true")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         response = requests.get(self.get_url() + '/types', headers=headers)
-        print(response.json())
+
+        if args.json:
+            print(response.json())
+        else:
+            of = OutputFormat()
+            of.header = ['Name', 'Id']
+            of.rows = [Extractor('name'), Extractor('id')]
+            print(Out.format(response.json(), of))
 
 class Type(Shell):
 
