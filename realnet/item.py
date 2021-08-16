@@ -1,5 +1,6 @@
 import requests
-
+import re
+import os
 from pynecone import Shell, ProtoCmd, Out, OutputFormat, Extractor
 
 
@@ -174,14 +175,21 @@ class Download(ProtoCmd, Client):
 
     def add_arguments(self, parser):
         parser.add_argument('id', help="specifies the id of the item")
-        parser.add_argument('path', help="specifies the target path of the file to be downloaded")
+        parser.add_argument('--path', help="specifies the target path for the file to be downloaded")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         response = requests.get(self.get_url() + '/items/{}/data'.format(args.id), headers=headers)
-        print(response)
-        with open('facebook.ico', 'wb') as f:
+        d = response.headers['content-disposition']
+        filename = re.findall("filename=(.+)", d)[0]
+
+        path = filename
+        if args.path:
+            path = os.path.join(args.path, filename)
+
+        # print([i for i in response.__dict__.items() if i[0] != '_content'])
+        with open(path, 'wb') as f:
             f.write(response.content)
 
 
