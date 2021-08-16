@@ -149,6 +149,43 @@ class Update(ProtoCmd, Client):
         response = requests.put(self.get_url() + '/items/{}'.format(args.id), headers=headers, json=call_args)
         print(response.json())
 
+class Upload(ProtoCmd, Client):
+
+    def __init__(self):
+        super().__init__('upload',
+                         'upload item data')
+
+    def add_arguments(self, parser):
+        parser.add_argument('id', help="specifies the id of the item")
+        parser.add_argument('path', help="specifies the path of the file to be uploaded")
+
+    def run(self, args):
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
+
+        response = requests.post(self.get_url() + '/items/{}/data'.format(args.id), headers=headers, files={'file': open(args.path, 'rb')})
+        print(response.json())
+
+
+class Download(ProtoCmd, Client):
+
+    def __init__(self):
+        super().__init__('download',
+                         'download item data')
+
+    def add_arguments(self, parser):
+        parser.add_argument('id', help="specifies the id of the item")
+        parser.add_argument('path', help="specifies the target path of the file to be downloaded")
+
+    def run(self, args):
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
+
+        response = requests.get(self.get_url() + '/items/{}/data'.format(args.id), headers=headers)
+        print(response)
+        with open('facebook.ico', 'wb') as f:
+            f.write(response.content)
+
+
+
 class Item(Shell):
 
         def __init__(self):
@@ -161,7 +198,9 @@ class Item(Shell):
                 Get(),
                 List(),
                 Find(),
-                Update()
+                Update(),
+                Upload(),
+                Download()
             ]
 
         def add_arguments(self, parser):
