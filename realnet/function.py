@@ -93,7 +93,7 @@ class Update(ProtoCmd, Client):
         with open(args.path, 'r') as f:
             call_args['code'] = f.read()
 
-        response = requests.post(self.get_url() + '/items/{}/functions/{}'.format(args.id, args.name),
+        response = requests.put(self.get_url() + '/items/{}/functions/{}'.format(args.id, args.name),
                                  headers=headers,
                                  json=call_args)
         print(response.json())

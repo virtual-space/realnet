@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 from pynecone import Shell, ProtoCmd, Out, OutputFormat, Extractor
@@ -13,7 +15,6 @@ class Create(ProtoCmd, Client):
     def add_arguments(self, parser):
         parser.add_argument('id', help="specifies the id of the item under which the topic is to be created")
         parser.add_argument('name', help="specifies the name of the topic to be created")
-        parser.add_argument('path', help="specifies the path of the file that contains the function code")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
@@ -31,7 +32,7 @@ class List(ProtoCmd, Client):
 
     def __init__(self):
         super().__init__('list',
-                         'list available item functions')
+                         'list available item topics')
 
     def add_arguments(self, parser):
         parser.add_argument('id',
@@ -81,17 +82,15 @@ class Update(ProtoCmd, Client):
                             help="specifies the id of the item")
         parser.add_argument('name', help="specifies the name of the topic to be updated")
 
-        parser.add_argument('path', help="specifies the path of the file that contains the function code")
+        parser.add_argument('data', help="specifies the topic data")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         call_args = dict()
+        call_args['data'] = args.data
 
-        with open(args.path, 'r') as f:
-            call_args['code'] = f.read()
-
-        response = requests.post(self.get_url() + '/items/{}/functions/{}'.format(args.id, args.name),
+        response = requests.put(self.get_url() + '/items/{}/topics/{}'.format(args.id, args.name),
                                  headers=headers,
                                  json=call_args)
         print(response.json())
@@ -100,49 +99,60 @@ class Get(ProtoCmd, Client):
 
     def __init__(self):
         super().__init__('get',
-                         'get a function')
+                         'get a topic')
 
     def add_arguments(self, parser):
         parser.add_argument('id', help="specifies the id of the item")
-        parser.add_argument('name', help="specifies the name of the function to be retrieved")
+        parser.add_argument('name', help="specifies the name of the topic to be retrieved")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        response = requests.get(self.get_url() + '/items/{}/functions/{}'.format(args.id, args.name), headers=headers)
+        response = requests.get(self.get_url() + '/items/{}/topics/{}'.format(args.id, args.name), headers=headers)
         print(response.json())
 
-class Invoke(ProtoCmd, Client):
+class Send(ProtoCmd, Client):
 
     def __init__(self):
-        super().__init__('invoke',
-                         'invoke a function')
+        super().__init__('send',
+                         'send message to topic')
 
     def add_arguments(self, parser):
         parser.add_argument('id', help="specifies the id of the item")
-        parser.add_argument('name', help="specifies the name of the function to be invoked")
-        parser.add_argument('--argument', action='append', help="specifies the argument name:value")
+        parser.add_argument('name', help="specifies the name of the topic")
+        parser.add_argument('data', help="specifies the message json data")
 
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        call_args = dict()
-
-        if args.argument:
-            for att in args.argument:
-                kv = att.split(':')
-                call_args[kv[0]] = kv[1]
-
-        response = requests.post(self.get_url() + '/items/{}/functions/{}'.format(args.id, args.name),
+        response = requests.post(self.get_url() + '/items/{}/topics/{}'.format(args.id, args.name),
                                  headers=headers,
-                                 json=call_args)
+                                 json=json.loads(args.data))
         print(response.json())
 
 
-class Function(Shell):
+class Messages(ProtoCmd, Client):
+
+    def __init__(self):
+        super().__init__('messages',
+                         'receive topic messages')
+
+    def add_arguments(self, parser):
+        parser.add_argument('id', help="specifies the id of the item")
+        parser.add_argument('name', help="specifies the name of the topic")
+
+    def run(self, args):
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
+
+        response = requests.get(self.get_url() + '/items/{}/topics/{}'.format(args.id, args.name),
+                                 headers=headers)
+        print(response.json())
+
+
+class Topic(Shell):
 
         def __init__(self):
-            super().__init__('function')
+            super().__init__('topic')
 
         def get_commands(self):
             return [
@@ -151,11 +161,12 @@ class Function(Shell):
                 Delete(),
                 Update(),
                 Get(),
-                Invoke()
+                Send(),
+                Messages()
             ]
 
         def add_arguments(self, parser):
             pass
 
         def get_help(self):
-            return 'Function shell'
+            return 'Topic shell'

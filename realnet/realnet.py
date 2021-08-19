@@ -3,6 +3,7 @@ from pynecone import Shell
 from .item import Item
 from .type import Type
 from .function import Function
+from .topic import Topic
 from .worker import Worker
 
 class Realnet(Shell):
@@ -15,7 +16,8 @@ class Realnet(Shell):
                     Item(),
                     Type(),
                     Worker(),
-                    Function()
+                    Function(),
+                    Topic()
             ]
 
         def add_arguments(self, parser):
