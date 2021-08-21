@@ -5,6 +5,8 @@ from .type import Type
 from .function import Function
 from .topic import Topic
 from .acl import Acl
+from .token import Token
+from .group import Group
 from .worker import Worker
 
 class Realnet(Shell):
@@ -19,7 +21,9 @@ class Realnet(Shell):
                     Worker(),
                     Function(),
                     Topic(),
-                    Acl()
+                    Acl(),
+                    Token(),
+                    Group()
             ]
 
         def add_arguments(self, parser):

@@ -14,10 +14,28 @@ class Client:
     def get_url(self):
         return os.getenv('REALNET_URL')
 
-    def get_token(self):
+    def generate_token(self,
+                       client_key=os.getenv('REALNET_CLIENT_KEY'),
+                       client_secret=os.getenv('REALNET_CLIENT_SECRET'),
+                       username=os.getenv('REALNET_USERNAME'),
+                       password=os.getenv('REALNET_PASSWORD')):
+        print('generating new token')
         response = requests.post(self.get_url() + '/oauth/token',
-                                 auth=requests.auth.HTTPBasicAuth(os.getenv('REALNET_CLIENT_KEY'), os.getenv('REALNET_CLIENT_SECRET')),
+                                 auth=requests.auth.HTTPBasicAuth(client_key,
+                                                                  client_secret),
                                  data={'grant_type': 'password',
-                                         'username': os.getenv('REALNET_USERNAME'),
-                                         'password': os.getenv('REALNET_PASSWORD')})
-        return response.json()['access_token']
+                                         'username': username,
+                                         'password': password})
+        resp = response.json()
+        if 'access_token' in resp:
+            return response.json()['access_token']
+        else:
+            print(resp)
+            return resp
+
+    def get_token(self):
+        token = os.getenv('REALNET_TOKEN')
+        if token:
+            return token
+        else:
+            return self.generate_token()
