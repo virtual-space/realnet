@@ -1,5 +1,7 @@
 from pynecone import Shell
 
+from .account import Account
+from .app import App
 from .item import Item
 from .type import Type
 from .function import Function
@@ -23,7 +25,9 @@ class Realnet(Shell):
                     Topic(),
                     Acl(),
                     Token(),
-                    Group()
+                    Group(),
+                    Account(),
+                    App()
             ]
 
         def add_arguments(self, parser):

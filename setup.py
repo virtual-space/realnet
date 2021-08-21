@@ -25,7 +25,7 @@ setup(
     ],
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
-    install_requires=["pynecone==0.0.69",
+    install_requires=["pynecone==0.0.70",
                       "requests==2.23.0",
                       "paho-mqtt",
                       "python-dotenv",
