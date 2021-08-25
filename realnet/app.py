@@ -14,10 +14,10 @@ class Create(ProtoCmd, Client):
         parser.add_argument('name', help="specifies the name of the app")
         parser.add_argument('group', help="specifies the group for the app")
         parser.add_argument('uri', help="specifies the uri for the app")
-        parser.add_argument('auth_method', help="specifies the token endpoint authentication method for the app")
-        parser.add_argument('--grant_type',  action='append', help="specifies the grant type for the app")
+        parser.add_argument('--auth_method', help="specifies the token endpoint authentication method for the app (none, client_secret_basic, client_secret_post)", default="none")
+        parser.add_argument('--grant_type',  action='append', help="specifies the grant type for the app (authorization_code, password, implicit, client_credentials)")
         parser.add_argument('--redirect_uri', action='append', help="specifies the redirect uri for the app")
-        parser.add_argument('--response_type', action='append', help="specifies the response type for the app")
+        parser.add_argument('--response_type', action='append', help="specifies the response type for the app (code, token)")
         parser.add_argument('--scope', action='append', help="specifies the scope for the app")
 
     def run(self, args):
@@ -31,16 +31,24 @@ class Create(ProtoCmd, Client):
         call_args['auth_method'] = args.auth_method
 
         if args.grant_type:
-            call_args['grant_type'] = args.grant_type
+            call_args['grant_types'] = args.grant_type
+        else:
+            call_args['grant_types'] = []
 
         if args.redirect_uri:
-            call_args['redirect_uri'] = args.redirect_uri
+            call_args['redirect_uris'] = args.redirect_uri
+        else:
+            call_args['redirect_uris'] = []
 
         if args.response_type:
-            call_args['response_type'] = args.response_type
+            call_args['response_types'] = args.response_type
+        else:
+            call_args['response_types'] = []
 
         if args.scope:
             call_args['scope'] = args.scope
+        else:
+            call_args['scope'] = ''
 
         response = requests.post(self.get_url() + '/apps', headers=headers, json=call_args)
         print(response.json())

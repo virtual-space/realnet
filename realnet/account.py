@@ -110,7 +110,7 @@ class Update(ProtoCmd, Client):
         if 'password' in args:
             call_args['password'] = args.password
 
-        response = requests.put(self.get_url() + '/accounts/{}'.format(args.id), headers=headers, json=call_args)
+        response = requests.put(self.get_url() + '/accounts/{}'.format(args.username), headers=headers, json=call_args)
         print(response.json())
 
 
