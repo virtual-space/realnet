@@ -12,7 +12,6 @@ class Create(ProtoCmd, Client):
 
     def add_arguments(self, parser):
         parser.add_argument('type', help="specifies the type for the account (person or thing)")
-        parser.add_argument('group', help="specifies the group for the account")
         parser.add_argument('role', help="specifies the role for the account (root, admin, contributor, member or guest)")
         parser.add_argument('username', help="specifies the username of the account")
         parser.add_argument('password', help="specifies the password for the account")
@@ -25,7 +24,6 @@ class Create(ProtoCmd, Client):
 
         call_args['username'] = args.username
         call_args['password'] = args.password
-        call_args['group'] = args.group
         call_args['role'] = args.role
         call_args['type'] = args.type
         call_args['email'] = args.email

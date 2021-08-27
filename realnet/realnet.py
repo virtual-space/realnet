@@ -7,7 +7,8 @@ from .type import Type
 from .function import Function
 from .topic import Topic
 from .acl import Acl
-from .token import Token
+from .tenant import Tenant
+from .auth import Auth
 from .group import Group
 from .worker import Worker
 
@@ -24,7 +25,8 @@ class Realnet(Shell):
                     Function(),
                     Topic(),
                     Acl(),
-                    Token(),
+                    Tenant(),
+                    Auth(),
                     Group(),
                     Account(),
                     App()
