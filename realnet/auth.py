@@ -18,7 +18,8 @@ class Create(ProtoCmd, Client):
         parser.add_argument('--authorize_url', help="specifies the authorize url")
         parser.add_argument('--client_kwarg', action='append', help="specifies the client kwarg name:value")
         parser.add_argument('--userinfo_endpoint', help="specifies the userinfo endpoint")
-        parser.add_argument('--userinfo_compliance_fix', help="specifies the userinfo compliance fix")
+        parser.add_argument('--client_id', help="specifies the client_id")
+        parser.add_argument('--client_secret', help="specifies the client_id")
         parser.add_argument('--server_metadata_url', help="specifies the server metadata url")
 
     def run(self, args):
@@ -42,13 +43,20 @@ class Create(ProtoCmd, Client):
             call_args['authorize_url'] = args.authorize_url
 
         if args.client_kwarg:
-            call_args['client_kwargs'] = args.client_kwarg
+            data = dict()
+            for att in args.client_kwarg:
+                kv = att.split(':')
+                data[kv[0]] = kv[1]
+            call_args['client_kwargs'] = data
 
         if args.userinfo_endpoint:
             call_args['userinfo_endpoint'] = args.userinfo_endpoint
 
-        if args.userinfo_compliance_fix:
-            call_args['userinfo_compliance_fix'] = args.userinfo_compliance_fix
+        if args.client_id:
+            call_args['client_id'] = args.client_id
+
+        if args.client_secret:
+            call_args['client_secret'] = args.client_secret
 
         if args.server_metadata_url:
             call_args['server_metadata_url'] = args.server_metadata_url
@@ -90,7 +98,7 @@ class Delete(ProtoCmd, Client):
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        response = requests.delete(self.get_url() + '/authenticators/{}'.format(args.id), headers=headers)
+        response = requests.delete(self.get_url() + '/authenticators/{}'.format(args.name), headers=headers)
         print(response.json())
 
 class Get(ProtoCmd, Client):
@@ -129,7 +137,8 @@ class Update(ProtoCmd, Client):
         parser.add_argument('--authorize_url', help="specifies the authorize url")
         parser.add_argument('--client_kwarg', action='append', help="specifies the client kwarg name:value")
         parser.add_argument('--userinfo_endpoint', help="specifies the userinfo endpoint")
-        parser.add_argument('--userinfo_compliance_fix', help="specifies the userinfo compliance fix")
+        parser.add_argument('--client_id', help="specifies the client_id")
+        parser.add_argument('--client_secret', help="specifies the client_secret")
         parser.add_argument('--server_metadata_url', help="specifies the server metadata url")
 
     def run(self, args):
@@ -153,13 +162,20 @@ class Update(ProtoCmd, Client):
             call_args['authorize_url'] = args.authorize_url
 
         if args.client_kwarg:
-            call_args['client_kwargs'] = args.client_kwarg
+            data = dict()
+            for att in args.client_kwarg:
+                kv = att.split(':')
+                data[kv[0]] = kv[1]
+            call_args['client_kwargs'] = data
 
         if args.userinfo_endpoint:
             call_args['userinfo_endpoint'] = args.userinfo_endpoint
 
-        if args.userinfo_compliance_fix:
-            call_args['userinfo_compliance_fix'] = args.userinfo_compliance_fix
+        if args.client_id:
+            call_args['client_id'] = args.client_id
+
+        if args.client_secret:
+            call_args['client_secret'] = args.client_secret
 
         if args.server_metadata_url:
             call_args['server_metadata_url'] = args.server_metadata_url
