@@ -12,7 +12,6 @@ class Create(ProtoCmd, Client):
 
     def add_arguments(self, parser):
         parser.add_argument('name', help="specifies the name of the app")
-        parser.add_argument('group', help="specifies the group for the app")
         parser.add_argument('uri', help="specifies the uri for the app")
         parser.add_argument('--auth_method', help="specifies the token endpoint authentication method for the app (none, client_secret_basic, client_secret_post)", default="none")
         parser.add_argument('--grant_type',  action='append', help="specifies the grant type for the app (authorization_code, password, implicit, client_credentials)")
@@ -26,7 +25,6 @@ class Create(ProtoCmd, Client):
         call_args = dict()
 
         call_args['name'] = args.name
-        call_args['group'] = args.group
         call_args['uri'] = args.uri
         call_args['auth_method'] = args.auth_method
 
@@ -71,8 +69,8 @@ class List(ProtoCmd, Client):
             print(response.json())
         else:
             of = OutputFormat()
-            of.header = ['Name', 'Id']
-            of.rows = [Extractor('name'), Extractor('id')]
+            of.header = ['client_id', 'id']
+            of.rows = [Extractor('client_id'), Extractor('id')]
             print(Out.format(response.json(), of))
 
 class Delete(ProtoCmd, Client):
