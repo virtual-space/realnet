@@ -69,8 +69,8 @@ class List(ProtoCmd, Client):
             print(response.json())
         else:
             of = OutputFormat()
-            of.header = ['client_id', 'id']
-            of.rows = [Extractor('client_id'), Extractor('id')]
+            of.header = ['name', 'client_id', 'id']
+            of.rows = [Extractor('name'), Extractor('client_id'), Extractor('id')]
             print(Out.format(response.json(), of))
 
 class Delete(ProtoCmd, Client):
@@ -117,7 +117,7 @@ class Update(ProtoCmd, Client):
                          'update a realnet app')
 
     def add_arguments(self, parser):
-        parser.add_argument('--name', help="specifies the name of the app")
+        parser.add_argument('name', help="specifies the name of the app")
         parser.add_argument('--uri', help="specifies the uri for the app")
         parser.add_argument('--auth_method', help="specifies the token endpoint authentication method for the app")
         parser.add_argument('--grant_type', action='append', help="specifies the grant type for the app")
@@ -129,9 +129,6 @@ class Update(ProtoCmd, Client):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         call_args = dict()
-
-        if args.name:
-            call_args['name'] = args.name
 
         if args.grant_type:
             call_args['group'] = args.group
@@ -154,7 +151,7 @@ class Update(ProtoCmd, Client):
         if args.scope:
             call_args['scope'] = args.scope
 
-        response = requests.put(self.get_url() + '/accounts/{}'.format(args.id), headers=headers, json=call_args)
+        response = requests.put(self.get_url() + '/apps/{}'.format(args.name), headers=headers, json=call_args)
         print(response.json())
 
 
