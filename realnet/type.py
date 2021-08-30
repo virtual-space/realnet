@@ -13,6 +13,7 @@ class Create(ProtoCmd, Client):
     def add_arguments(self, parser):
         parser.add_argument('name', help="specifies the name of the type")
         # parser.add_argument('--parent', help="specifies the id of the parent item")
+        parser.add_argument('--icon', help="specifies the type icon name")
         parser.add_argument('--attribute', action='append', help="specifies the attribute name:value")
 
     def run(self, args):
@@ -22,6 +23,9 @@ class Create(ProtoCmd, Client):
 
         if args.name:
             call_args['name'] = args.name
+
+        if args.icon:
+            call_args['icon'] = args.icon
 
         if args.attribute:
             data = dict()
@@ -99,8 +103,9 @@ class Update(ProtoCmd, Client):
                          'update a realnet type')
 
     def add_arguments(self, parser):
-        parser.add_argument('id', help="specifies the id of the type")
-        parser.add_argument('--name', help="specifies the name of the type")
+        parser.add_argument('name', help="specifies the name of the type")
+        parser.add_argument('--rename', help="specifies the new name of the type")
+        parser.add_argument('--icon', help="specifies the icon of the type")
         parser.add_argument('--attribute', action='append', help="specifies the attribute name:value")
 
     def run(self, args):
@@ -108,9 +113,20 @@ class Update(ProtoCmd, Client):
 
         call_args = dict()
 
-        call_args['name'] = args.name
+        if args.rename:
+            call_args['name'] = args.rename
 
-        response = requests.put(self.get_url() + '/types/{}'.format(args.id), headers=headers, json=call_args)
+        if args.icon:
+            call_args['icon'] = args.icon
+
+        if args.attribute:
+            data = dict()
+            for att in args.attribute:
+                kv = att.split(':')
+                data[kv[0]] = kv[1]
+            call_args['attributes'] = data
+
+        response = requests.put(self.get_url() + '/types/{}'.format(args.name), headers=headers, json=call_args)
         print(response.json())
 
 class Type(Shell):
