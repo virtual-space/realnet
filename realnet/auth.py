@@ -114,7 +114,7 @@ class Get(ProtoCmd, Client):
     def run(self, args):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
-        response = requests.get(self.get_url() + '/authenticators/{}'.format(args.id), headers=headers)
+        response = requests.get(self.get_url() + '/authenticators/{}'.format(args.name), headers=headers)
 
         if args.json:
             print(response.json())
@@ -145,9 +145,6 @@ class Update(ProtoCmd, Client):
         headers = {'Authorization': 'Bearer ' + self.get_token()}
 
         call_args = dict()
-
-        if args.name:
-            call_args['name'] = args.name
 
         if args.api_base_url:
             call_args['api_base_url'] = args.api_base_url
@@ -180,7 +177,7 @@ class Update(ProtoCmd, Client):
         if args.server_metadata_url:
             call_args['server_metadata_url'] = args.server_metadata_url
 
-        response = requests.put(self.get_url() + '/authenticators/{}'.format(args.id), headers=headers, json=call_args)
+        response = requests.put(self.get_url() + '/authenticators/{}'.format(args.name), headers=headers, json=call_args)
         print(response.json())
 
 class Token(ProtoCmd, Client):

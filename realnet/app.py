@@ -130,9 +130,6 @@ class Update(ProtoCmd, Client):
 
         call_args = dict()
 
-        if args.grant_type:
-            call_args['group'] = args.group
-
         if args.uri:
             call_args['uri'] = args.uri
 
@@ -140,13 +137,13 @@ class Update(ProtoCmd, Client):
             call_args['auth_method'] = args.auth_method
 
         if args.grant_type:
-            call_args['grant_type'] = args.grant_type
+            call_args['grant_types'] = args.grant_type
 
         if args.redirect_uri:
-            call_args['redirect_uri'] = args.redirect_uri
+            call_args['redirect_uris'] = args.redirect_uri
 
         if args.response_type:
-            call_args['response_type'] = args.response_type
+            call_args['response_types'] = args.response_type
 
         if args.scope:
             call_args['scope'] = args.scope
