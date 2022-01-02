@@ -45,7 +45,7 @@ realnet type
 ```
 Choose from 'type', 'item', 'device'.
 
-- python setup.py install notes
+# python setup.py install notes
 
 You may need to manually install some dependencies. `python setup.py install` should tell you what is missing.
 
