@@ -30,9 +30,9 @@ python3 -m venv venv
 pip install realnet
 ```
 
-The realnet CLI needs a valid, unexpired token to interface with realnet-server. Run the following and paste the output token into the realnet .env. Use the username and password you defined in the realnet-server .env.
+The realnet CLI needs a valid, unexpired token to interface with realnet-server. Run the following and paste the output token into the realnet .env. Use the username and password you defined in the realnet-server .env. Make sure to use "" around variables on Windows.
 ```
-realnet auth token --username='[]' --password='[]'
+realnet auth token --username="[]" --password="[]"
 ```
 
 - finally to start realnet and see available commands, run the following command:
