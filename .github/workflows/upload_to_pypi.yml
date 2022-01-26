@@ -30,10 +30,10 @@ jobs:
       # bump version
       - name: "bump version -patch"
         run: |
-        # install bump
-        python3 -m pip install bump
-        # bump version 
-        bump
+          # install bump
+          python3 -m pip install bump
+          # bump version 
+          bump
         # commit the change
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
