@@ -19,14 +19,14 @@ REALNET_URL='[get from realnet-server serve or use 'https://api.realnet.io' for 
 
 - run the following commands
 ```
-(linux)
-python3 -m venv venv
+(linux or Powershell)
+python -m venv venv
 . ./venv/bin/activate
 pip install realnet
 
-(windows)
-python3 -m venv venv
-. ./venv/Scripts/activate
+(Windows)
+python -m venv venv
+venv\Scripts\activate
 pip install realnet
 ```
 
@@ -69,7 +69,7 @@ chmod 700 .env
 
 - run the following commands:
 ```
-python3 -m venv venv
+python -m venv venv
 . ./venv/bin/activate
 python setup.py install
 ```
