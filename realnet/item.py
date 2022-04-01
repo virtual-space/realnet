@@ -3,6 +3,8 @@ import re
 import os
 from pynecone import Shell, ProtoCmd, Out, OutputFormat, Extractor
 
+import pathlib
+import json
 
 from .client import Client
 
@@ -166,6 +168,32 @@ class Upload(ProtoCmd, Client):
         response = requests.post(self.get_url() + '/items/{}/data'.format(args.id), headers=headers, files={'file': open(args.path, 'rb')})
         print(response.json())
 
+class Import(ProtoCmd, Client):
+    def __init__(self):
+        super().__init__('import',
+                         'import realnet items')
+
+    def add_arguments(self, parser):
+        parser.add_argument('path', help="specifies the path of the file to be imported")
+        parser.add_argument('--parent_id', help="optional parent item id under which the content is to be imported and incorporated")
+
+    def run(self, args):
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
+
+        if pathlib.Path(args.path).suffix == '.json':
+            with open(args.path) as json_file:
+                data = json.load(json_file)
+            data = {"data": data}
+            response = requests.post(self.get_url() + '/types', headers=headers, json=data)
+            print(response.json())
+        else:
+            with open(args.path, 'rb') as f:
+                files = {'import': f}
+                response = requests.post(self.get_url() + '/import', headers=headers, files=files)
+                print(response.json())
+
+        
+
 
 class Download(ProtoCmd, Client):
 
@@ -208,7 +236,8 @@ class Item(Shell):
                 Find(),
                 Update(),
                 Upload(),
-                Download()
+                Download(),
+                Import()
             ]
 
         def add_arguments(self, parser):

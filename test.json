@@ -1,0 +1,11 @@
+{
+    "types": [
+        {
+            "name": "Quest1",
+            "attributes": {
+                "icon": "quest"
+            }
+        }
+       
+    ]
+}
