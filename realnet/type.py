@@ -1,4 +1,5 @@
 import requests
+import json
 
 from pynecone import Shell, ProtoCmd, Out, OutputFormat, Extractor
 
@@ -129,6 +130,27 @@ class Update(ProtoCmd, Client):
         response = requests.put(self.get_url() + '/types/{}'.format(args.name), headers=headers, json=call_args)
         print(response.json())
 
+class Import(ProtoCmd, Client):
+    def __init__(self):
+        super().__init__('import',
+                         'import a realnet type')
+
+    def add_arguments(self, parser):
+        parser.add_argument('path', help="specifies the path for")
+
+    def run(self, args):
+        headers = {'Authorization': 'Bearer ' + self.get_token()}
+
+        data = dict()
+
+        with open('test.json') as json_file:
+            data = json.load(json_file)
+
+        data = {"data": data}
+
+        response = requests.post(self.get_url() + '/types', headers=headers, json=data)
+        print(response)
+
 class Type(Shell):
 
         def __init__(self):
@@ -140,7 +162,8 @@ class Type(Shell):
                 Create(),
                 Update(),
                 Get(),
-                Delete()
+                Delete(),
+                Import()
             ]
 
         def add_arguments(self, parser):
