@@ -9,9 +9,8 @@ from sqlalchemy.dialects.postgresql import ARRAY
 
 from realnet.core.provider import ItemProvider
 from realnet.core.acl import Acl, AclType
-from ..models import create_item, db
-from ..utility import get_types_by_name, item_model_to_item
-from ..models import Item as ItemModel, Type as TypeModel, VisibilityType
+from ..utility import get_types_by_name, item_model_to_item, create_item_model
+from ..models import db, Item as ItemModel, Type as TypeModel, VisibilityType
 
 
 class PostgresItemProvider(ItemProvider):
@@ -91,7 +90,7 @@ class PostgresItemProvider(ItemProvider):
             elif key == 'parent_id':
                 item_parent_id = value
 
-        item = create_item(
+        item = create_item_model(
             db=db,
             item_id=item_id,
             item_type_name=item_type_name,

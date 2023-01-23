@@ -1,3 +1,5 @@
+import uuid
+
 from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceModel, Item as ItemModel
 from realnet.core.type import Type, Instance, Item, Acl
 
@@ -68,3 +70,157 @@ def item_model_to_item(org_id, item_model, types_by_name):
                 item_model.attributes, 
                 [item_model_to_item(org_id, ci, types_by_name) for ci in child_items], 
                 [acl_model_to_acl(acl) for acl in item_model.acls])
+
+def get_type_attributes(item_type):
+    attributes = item_type.attributes
+    if item_type.base_id:
+        base_attributes = get_type_attributes(item_type.base)
+        if base_attributes and attributes:
+            attributes = base_attributes | attributes
+        elif base_attributes:
+            attributes = base_attributes
+    return attributes
+
+def get_type_instances(type):
+    instances = []
+    if type.instances:
+        instances.extend(type.instances)
+    if type.base:
+        instances.extend(get_type_instances(type.base))
+    return instances
+
+def build_item( item_id,
+                instance,
+                attributes,
+                item_data,
+                owner_id,
+                org_id,
+                parent_item_id=None):
+
+    location = item_data.get('item_location')
+    valid_from = item_data.get('item_valid_from')
+    valid_to = item_data.get('item_valid_to')
+    status = item_data.get('item_status')
+    tags = item_data.get('item_tags')
+    linked_item_id = item_data.get('item_linked_item_id')
+
+    if not location:
+        item = Item( id=item_id,
+                    name=instance.name,
+                    attributes=attributes,
+                    valid_from=valid_from,
+                    valid_to=valid_to,
+                    status=status,
+                    tags=tags,
+                    owner_id=owner_id,
+                    org_id=org_id,
+                    type_id=instance.type.id,
+                    parent_id=parent_item_id,
+                    linked_item_id=linked_item_id)
+    else:
+        item = Item( id=item_id,
+                    name=instance.name,
+                    attributes=attributes,
+                    valid_from=valid_from,
+                    valid_to=valid_to,
+                    status=status,
+                    tags=tags,
+                    owner_id=owner_id,
+                    org_id=org_id,
+                    location=location,
+                    type_id=instance.type.id,
+                    parent_id=parent_item_id,
+                    linked_item_id=linked_item_id)
+    
+    db.session.add(item)
+    db.session.commit()
+
+    create_public_acl = instance.public
+
+    if item_data and 'item_is_public' in item_data:
+        if str(item_data['item_is_public']).lower() == 'true':
+            create_public_acl = True
+
+    if create_public_acl:
+        acl = Acl(id=str(uuid.uuid4()),type=AclType.public, org_id=org_id, item_id=item_id)
+        db.session.add(acl)
+        db.session.commit()
+    
+    instances = get_type_instances(instance.type)
+    for child_instance in instances:
+        attributes = get_type_attributes(child_instance.type)
+        if attributes:
+            if child_instance.attributes:
+                attributes =  attributes | child_instance.attributes
+        elif child_instance.attributes:
+            attributes = child_instance.attributes
+        
+        child_item = build_item(  str(uuid.uuid4()),
+                                  child_instance,
+                                  attributes,
+                                  {},
+                                  owner_id,
+                                  org_id,
+                                  item.id)
+
+    return item
+
+def create_item_model(  db,
+                        item_id,
+                        item_type_name, 
+                        item_name,
+                        item_attributes,
+                        item_location,
+                        item_visibility,
+                        item_tags,
+                        item_is_public,
+                        owner_id,
+                        org_id,
+                        parent_item_id=None,
+                        item_valid_from=None,
+                        item_valid_to=None,
+                        item_status=None,
+                        item_linked_item_id=None):
+
+    item = None
+    item_type = Type.query.filter(Type.name == item_type_name, Type.org_id == org_id).first()
+    if not item_type:
+        item_type = Type(id=str(uuid.uuid4()),
+                         name=item_type_name,
+                         owner_id=owner_id,
+                         org_id=org_id)
+        db.session.add(item_type)
+        db.session.commit()
+
+    if item_type:
+        # attributes = item_attributes | item_type.attributes
+        attributes = get_type_attributes(item_type)
+        if attributes:
+            if item_attributes:
+                attributes =  attributes | item_attributes
+        elif item_attributes:
+            attributes = item_attributes 
+
+        instance = Instance(id=item_id,
+                            name=item_name,
+                            public=item_is_public.lower() == 'true' if isinstance(item_is_public, str) else item_is_public,
+                            owner_id=owner_id,
+                            org_id=org_id,
+                            type_id=item_type.id)
+
+        db.session.add(instance)
+        db.session.commit()
+
+        item_data = {"item_location": item_location, 
+                     "item_visibility": item_visibility,
+                     "item_tags": item_tags,
+                     "item_is_public": item_is_public,
+                     "item_valid_from": item_valid_from,
+                     "item_valid_to": item_valid_to,
+                     "item_status": item_status,
+                     "item_linked_item_id": item_linked_item_id}
+        
+        item = build_item(item_id, instance, attributes, item_data, owner_id, org_id, parent_item_id)
+    
+    return item
+

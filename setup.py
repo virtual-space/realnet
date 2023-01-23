@@ -33,7 +33,10 @@ setup(
                       "shapely==1.8.5",
                       "GeoAlchemy2",
                       "Werkzeug",
-                      "authlib"],
+                      "authlib",
+                      "Flask",
+                      "flask-cors",
+                      "flask-bootstrap"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",

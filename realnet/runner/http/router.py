@@ -1,25 +1,19 @@
-from flask import Response, redirect, render_template, render_template_string, request, jsonify, Blueprint, send_file, session
+from flask import Response, redirect, render_template, render_template_string, request, jsonify, Blueprint, send_file, session, current_app
 from authlib.integrations.flask_oauth2 import current_token
 from .auth import require_oauth
-from realnet_server.core.config import Config
+from realnet.core.config import Config
 
-from .core.models import Account #, Authenticator, Org, db, Item, Role, Type, Acl, AclType, get_module, get_module_by_id, retrieve_item_tree
+from realnet.provider.sql.models import Account as AccountModel, session as db #, Authenticator, Org, db, Item, Role, Type, Acl, AclType, get_module, get_module_by_id, retrieve_item_tree
 import io
-from .core.util import cleanup_item
 
 
-
-# from .core.context import Context
-from .provider.context import SqlContextProvider
-
-contextProvider = SqlContextProvider()
 
 router_bp = Blueprint('router_bp',__name__)
 
 def current_user():
     if 'id' in session:
         uid = session['id']
-        return Account.query.get(uid)
+        return db.query(AccountModel).get(uid)
     return None
 
 @router_bp.route('/logout', methods=['POST'])
@@ -31,7 +25,9 @@ def logout():
 @router_bp.route('/<endpoint_name>', defaults={'path': None}, methods=['GET', 'POST'])
 @router_bp.route('/<endpoint_name>/<path:path>', methods=['GET', 'POST'])
 @require_oauth(optional=True)
-def modules(endpoint_name, path):
+def router(endpoint_name, path):
+    contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
+
     account = None
     
     if not current_token:

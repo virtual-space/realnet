@@ -14,9 +14,7 @@ from authlib.oidc.core import UserInfo
 import authlib.oidc.core.grants as oidc_grants
 from werkzeug.security import gen_salt
 
-
-from .core.models import db, Account
-from .core.models import Client, AuthorizationCode, Token
+from realnet.provider.sql.models import db, Account, Client, AuthorizationCode, Token, session 
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
@@ -94,7 +92,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
         db.session.add(credential)
         db.session.commit()
 
-from .core.config import Config
+from realnet.core.config import Config
 
 config = Config()
 
@@ -190,8 +188,8 @@ class HybridGrant(oidc_grants.OpenIDHybridGrant):
         return user_info
 
 
-query_client = create_query_client_func(db.session, Client)
-save_token = create_save_token_func(db.session, Token)
+query_client = create_query_client_func(session, Client)
+save_token = create_save_token_func(session, Token)
 authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token,
@@ -200,6 +198,7 @@ require_oauth = ResourceProtector()
 
 
 def config_oauth(app):
+
     authorization.init_app(app)
 
     # support all grants
@@ -213,9 +212,9 @@ def config_oauth(app):
     authorization.register_grant(RefreshTokenGrant)
 
     # support revocation
-    revocation_cls = create_revocation_endpoint(db.session, Token)
+    revocation_cls = create_revocation_endpoint(session, Token)
     authorization.register_endpoint(revocation_cls)
 
     # protect resource
-    bearer_cls = create_bearer_token_validator(db.session, Token)
+    bearer_cls = create_bearer_token_validator(session, Token)
     require_oauth.register_token_validator(bearer_cls())

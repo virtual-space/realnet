@@ -5,7 +5,7 @@ from sqlalchemy import CheckConstraint, create_engine
 import sqlalchemy as db
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, Session
 
 from sqlalchemy_serializer import SerializerMixin
 
@@ -29,6 +29,7 @@ cfg = Config()
 
 engine = create_engine(cfg.get_database_url(), echo=True)
 Model = declarative_base()
+session = Session(engine)
 
 class Authenticator(Model, SerializerMixin):
     __tablename__ = "authenticator"
@@ -283,7 +284,6 @@ class Acl(Model, SerializerMixin):
     @hybrid_property
     def thing_id(self):
         return self.item_id or self.type_id or self.instance_id
-
 
 def initialize():
     Model.metadata.create_all(engine)
