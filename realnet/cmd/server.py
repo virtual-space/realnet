@@ -1,6 +1,7 @@
 import os
 from realnet.shell import ProtoShell, ProtoCmd
 from realnet.core.provider import ContextProvider, Context
+from realnet.core.hierarchy import import_structure_from_resource
 
 from realnet.provider.generic.endpoint import GenericEndpointProvider
 from realnet.provider.generic.resource import GenericResourceProvider
@@ -95,7 +96,7 @@ class Initialize(ProtoCmd):
         if account:
             context = context_provider.context(account.id, account.org.id)
             if context:
-                context.import_structure(context, 'static/initialization/core.json')
+                import_structure_from_resource(context, 'static/initialization/core.json')
         
 
         # with app.app_context():

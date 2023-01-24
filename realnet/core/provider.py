@@ -7,7 +7,11 @@ class TypeProvider(ABC):
         pass
 
     @abstractmethod
-    def get_type(self, id):
+    def get_type_by_id(self, id):
+        pass
+
+    @abstractmethod
+    def get_type_by_name(self, name):
         pass
 
     @abstractmethod
@@ -24,6 +28,10 @@ class TypeProvider(ABC):
 
     @abstractmethod
     def create_type(self, **kwargs):
+        pass
+
+    @abstractmethod
+    def create_instance(self, **kwargs):
         pass
 
 class ItemProvider(ABC):
@@ -379,8 +387,11 @@ class Context(Module):
     def get_types(self):
         return self.types.get_types()
 
-    def get_type(self, id):
-        return self.types.get_type(id)
+    def get_type_by_id(self, id):
+        return self.types.get_type_by_id(id)
+
+    def get_type_by_name(self, name):
+        return self.types.get_type_by_name(name)
 
     def get_type_instances(self, id):
         return self.types.get_type_instances(id)
@@ -393,6 +404,9 @@ class Context(Module):
 
     def create_type(self, **kwargs):
         return self.types.create_type(**kwargs)
+
+    def create_instance(self, **kwargs):
+        return self.types.create_instance(**kwargs)
 
     def get_items(self):
         return self.items.get_items()

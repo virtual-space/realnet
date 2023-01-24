@@ -34,7 +34,6 @@ class PostgresItemProvider(ItemProvider):
     def create_item(self, **kwargs):
         item_id=str(uuid.uuid4())
         item_name = None
-        item_type_id = None
         item_type_name = None
         item_attributes = None
         item_parent_id = None
@@ -58,7 +57,6 @@ class PostgresItemProvider(ItemProvider):
             elif key == 'type':
                 type = TypeModel.query.filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
                 if type:
-                    item_type_id = type.id
                     item_type_name = type.name
             elif key == 'attributes':
                 item_attributes = value

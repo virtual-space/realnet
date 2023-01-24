@@ -1,7 +1,8 @@
 import uuid
 
 from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceModel, Item as ItemModel, session as db
-from realnet.core.type import Type, Instance, Item, Acl
+from realnet.core.type import Type, Instance, Item
+from realnet.core.acl import AclType, Acl
 
 
 def get_types_by_name(org_id):
@@ -183,9 +184,9 @@ def create_item_model(  db,
                         item_linked_item_id=None):
 
     item = None
-    item_type = db.query(Type).filter(Type.name == item_type_name, Type.org_id == org_id).first()
+    item_type = db.query(TypeModel).filter(TypeModel.name == item_type_name, TypeModel.org_id == org_id).first()
     if not item_type:
-        item_type = Type(id=str(uuid.uuid4()),
+        item_type = TypeModel(id=str(uuid.uuid4()),
                          name=item_type_name,
                          owner_id=owner_id,
                          org_id=org_id)
@@ -224,3 +225,39 @@ def create_item_model(  db,
     
     return item
 
+def create_type_model(  db,
+                        type_id,
+                        type_name, 
+                        type_icon,
+                        type_attributes,
+                        owner_id,
+                        org_id,
+                        type_model=None,
+                        type_base_id=None):
+
+    if type_base_id:
+        type_base = db.query(TypeModel).filter(TypeModel.id == type_base_id, Type.org_id == org_id).first()
+        if not type_base:
+            return None
+
+    return TypeModel(id=type_id, name=type_name, icon=type_icon, attributes=type_attributes, model=type_model, owner_id=owner_id, org_id=org_id)
+
+
+def create_instance_model(  instance_id,
+                            instance_name,
+                            instance_icon,
+                            instance_attributes,
+                            instance_public,
+                            owner_id,
+                            org_id,
+                            instance_type_id,
+                            instance_parent_type_id=None):
+    return InstanceModel(id=instance_id,
+                        name=instance_name,
+                        icon=instance_icon,
+                        attributes=instance_attributes,
+                        public=instance_public,
+                        owner_id=owner_id,
+                        org_id=org_id,
+                        type_id= instance_type_id,
+                        parent_type_id=instance_parent_type_id)
