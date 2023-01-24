@@ -117,12 +117,6 @@ class Data:
         self.length = length
         self.bytes = bytes
 
-class Account:
-
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
 class Authenticator:
     
     def __init__(self, name, url):
@@ -202,6 +196,13 @@ class Org:
     def __init__(self, id, name):
         self.id = id
         self.name = name
+
+class Account:
+    
+    def __init__(self, id, name, org):
+        self.id = id
+        self.name = name
+        self.org = org
 
 
 

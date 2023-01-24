@@ -1,5 +1,7 @@
 import enum
 import json
+import uuid
+import time
 
 from sqlalchemy import CheckConstraint, create_engine
 import sqlalchemy as db
@@ -285,5 +287,97 @@ class Acl(Model, SerializerMixin):
     def thing_id(self):
         return self.item_id or self.type_id or self.instance_id
 
-def initialize():
+def create_client(name,
+               uri,
+               grant_types,
+               redirect_uris,
+               response_types,
+               scope,
+               auth_method,
+               org_id,
+               client_id=gen_salt(24),
+               client_secret=gen_salt(48)):
+    client_id_issued_at = int(time.time())
+    app_id = str(uuid.uuid4())
+    client = Client(
+        id=app_id,
+        name=name,
+        client_id=client_id,
+        client_id_issued_at=client_id_issued_at,
+        org_id=org_id
+    )
+
+    client_metadata = {
+        'client_name': name,
+        'client_uri': uri,
+        'grant_types': grant_types,
+        'redirect_uris': redirect_uris,
+        'response_types': response_types,
+        'scope': scope,
+        'token_endpoint_auth_method': auth_method
+    }
+    client.set_client_metadata(client_metadata)
+
+    if client_metadata['token_endpoint_auth_method'] == 'none':
+        client.client_secret = ''
+    else:
+        client.client_secret = client_secret
+
+    session.add(client)
+    session.commit()
+
+    return client
+
+def initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
     Model.metadata.create_all(engine)
+
+    org = Org(id=str(uuid.uuid4()), name=org_name, public=True)
+    session.add(org)
+    session.commit()
+
+    root_account_id = str(uuid.uuid4())
+    root_account = Account( id=root_account_id, 
+                            type=AccountType.person,
+                            username=admin_username, 
+                            email=admin_email, 
+                            org_id=org.id,
+                            org_role_type=OrgRoleType.superuser)
+
+    root_account.set_password(admin_password)
+
+    session.add(root_account)
+
+    cli_client_id = gen_salt(24)
+    cli_client = create_client(name=org_name + '_cli',
+                        client_id=cli_client_id,
+                        uri=uri,
+                        grant_types=['password'],
+                        redirect_uris=[],
+                        response_types=['token'],
+                        scope='',
+                        auth_method='client_secret_basic',
+                        org_id=org.id)
+
+    web_client_id = 'IEmf5XYQJXIHvWcQtZ5FXbLM' #gen_salt(24)
+    web_client = create_client(name=org_name + '_realscape_web',
+                        client_id=web_client_id,
+                        uri=uri,
+                        grant_types=['password'],
+                        redirect_uris=[redirect_uri],
+                        response_types=['token'],
+                        scope='',
+                        auth_method='none',
+                        org_id=org.id)
+
+    mobile_client_id = gen_salt(24)
+    mobile_client_secret = gen_salt(48)
+    mobile_client = create_client(name=org_name + '_realscape_mob',
+                            client_id=mobile_client_id,
+                            client_secret=mobile_client_secret,
+                            uri=uri,
+                            grant_types=['authorization_code','password'],
+                            redirect_uris=[mobile_redirect_uri],
+                            response_types=['code'],
+                            scope='',
+                            auth_method='client_secret_basic',
+                            org_id=org.id)

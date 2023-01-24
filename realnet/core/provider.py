@@ -101,22 +101,6 @@ class AppProvider(ABC):
 class OrgProvider(ABC):
     
     @abstractmethod
-    def check_password(self, org_id, account_id, password):
-        pass
-
-    @abstractmethod
-    def get_orgs(self):
-        pass
-
-    @abstractmethod
-    def get_org(self,id):
-        pass
-
-    @abstractmethod
-    def get_org_authenticators(self, org_id):
-        pass
-
-    @abstractmethod
     def get_account_groups(self, account_id):
         pass
 
@@ -303,11 +287,44 @@ class GroupAclProvider(AclProvider):
     def can_account_delete_item(self, account, item):
         return item.owner_id == account.id and account.org_id == item.org_id
 
-class ContextProvider:
+class OrgsProvider:    
+
+    @abstractmethod
+    def get_orgs(self):
+        pass
+
+    @abstractmethod
+    def get_org_by_id(self,id):
+        pass
+
+    @abstractmethod
+    def get_org_by_name(self,name):
+        pass
+
+    @abstractmethod
+    def get_account_by_id(self,id):
+        pass
+
+    @abstractmethod
+    def check_password(self, org_id, account_id, password):
+        pass
+
+    @abstractmethod
+    def get_org_authenticators(self, org_id):
+        pass
+
+class InitializationProvider:    
+
+    @abstractmethod
+    def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
+        pass
+
+class ContextProvider(OrgsProvider, InitializationProvider):
     
     @abstractmethod
     def context(self, org_id, account_id):
         pass
+    
 
 class Module( TypeProvider, 
               ItemProvider, 
@@ -419,23 +436,11 @@ class Context(Module):
     def get_apps(self, module):
         return self.apps.get_apps(module)
 
-    def check_password(self, org_id, account_id, password):
-        return self.orgs.check_password(org_id, account_id, password)
-
-    def get_orgs(self):
-        return self.orgs.get_orgs()
-
-    def get_org(self,id):
-        return self.orgs.get_org(id)
-
     def get_account_groups(self, account_id):
         return self.orgs.get_account_groups(self, account_id)
 
     def get_org_groups(self, org_id):
         return self.orgs.get_org_groups(org_id)
-    
-    def get_org_authenticators(self, org_id):
-        return self.orgs.get_org_authenticators(org_id)
 
     def get_groups(self):
         return self.groups.get_groups()

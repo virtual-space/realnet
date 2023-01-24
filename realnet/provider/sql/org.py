@@ -1,40 +1,14 @@
 from realnet.core.provider import OrgProvider, GroupProvider, AclProvider,AccountProvider, AppProvider
-from realnet.core.type import Account, Authenticator, Org, Group
+from realnet.core.type import Account, Authenticator, Org
 from realnet.core.acl import AclType
-from ..utility import get_types_by_name, item_model_to_item
-from ..models import Account as AccountModel, Authenticator as AuthenticatorModel, Org as OrgModel, Item as ItemModel, AccountGroup as AccountGroupModel
+from .utility import get_types_by_name, item_model_to_item
+from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, AccountGroup as AccountGroupModel, session as db
 
-class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, AppProvider):
+class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, AppProvider):
     
     def __init__(self, org_id, account_id):
         self.org_id = org_id
         self.account_id = account_id
-
-    # org provider
-    def check_password(self, org_id, account_id, password):
-        account = AccountModel.query.filter(AccountModel.org_id == org_id, AccountModel.username == account_id).first()
-        if account:
-            if password and account.check_password(password):
-                return True
-        return False
-
-    def get_orgs(self):
-        return [Org(org.id, org.name) for org in OrgModel.query.all()]
-
-    def get_org(self,id):
-        org = OrgModel.query.filter(OrgModel.id == id).first()
-        if org:
-            return Org(org.id, org.name)
-        return None
-
-    def get_org_authenticators(self, org_id):
-        org = OrgModel.query.filter(OrgModel.name == org_id).first()
-        if not org:
-            # is there a public org?
-            org = OrgModel.query.filter(OrgModel.public == True).first()
-        if org:
-            return [Authenticator(a.name,a.get_url()) for a in AuthenticatorModel.query.filter(AuthenticatorModel.org_id == org.id).all()]
-        return []
 
     def get_account_groups(self, account_id):
         return []
@@ -59,7 +33,7 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
         if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and acl.permission and  'e' in acl.permission]:
             return True
 
-        account_groups = AccountGroupModel.query.filter(AccountGroupModel.account_id == account.id).all()
+        account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
         group_ids = []
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
@@ -82,7 +56,7 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
         if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and  acl.permission and 'm' in acl.permission]:
             return True
 
-        account_groups = AccountGroupModel.query.filter(AccountGroupModel.account_id == account.id).all()
+        account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
         group_ids = []
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
@@ -105,7 +79,7 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
         if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
             return True
 
-        account_groups = AccountGroupModel.query.filter(AccountGroupModel.account_id == account.id).all()
+        account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
         group_ids = []
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
@@ -126,7 +100,7 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
             acl.type == AclType.user and acl.target_id == account.id and acl.permission and 'w' in acl.permission]:
             return True
 
-        account_groups = AccountGroupModel.query.filter(AccountGroupModel.account_id == account.id).all()
+        account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
         group_ids = []
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
@@ -152,13 +126,13 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
     # account provider
 
     def get_account(self):
-        account = AccountModel.query.filter(AccountModel.id == self.account_id).first()
+        account = db.query(AccountModel).filter(AccountModel.id == self.account_id).first()
         if account:
-            return Account(account.id, account.username)
+            return Account(account.id, account.username, Org(account.org.id, account.org.name))
         return None
 
     def get_org(self):
-        org = OrgModel.query.filter(OrgModel.id == self.org_id).first()
+        org = db.query(OrgModel).filter(OrgModel.id == self.org_id).first()
         if org:
             return Org(org.id, org.name)
         return None
@@ -166,13 +140,13 @@ class PostgresOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvid
     # app provider
 
     def get_apps(self):
-        account = AccountModel.query.filter(AccountModel.id == self.account_id).first()
+        account = db.query(AccountModel).filter(AccountModel.id == self.account_id).first()
         if account:
             tbn = get_types_by_name(self.org_id)
             application_type = tbn.get('Application')
             application_type_ids = set(self.get_derived_types([application_type.id]) + [application_type.id])
             role_apps = [app.app for ar in account.roles for app in ar.role.apps ]
-            owned_apps = ItemModel.query.filter(ItemModel.owner_id == self.account_id, ItemModel.type_id.in_(application_type_ids) ).all()
+            owned_apps = db.query(ItemModel).filter(ItemModel.owner_id == self.account_id, ItemModel.type_id.in_(application_type_ids) ).all()
             app_ids = {app.id:app for app in role_apps}
             for owned_app in owned_apps:
                 if not owned_app.id in app_ids:

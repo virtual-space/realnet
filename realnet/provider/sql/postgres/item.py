@@ -9,8 +9,8 @@ from sqlalchemy.dialects.postgresql import ARRAY
 
 from realnet.core.provider import ItemProvider
 from realnet.core.acl import Acl, AclType
-from ..utility import get_types_by_name, item_model_to_item, create_item_model
-from ..models import db, Item as ItemModel, Type as TypeModel, VisibilityType
+from ..utility import get_types_by_name, item_model_to_item, create_item_model, get_derived_types
+from ..models import session as db, Item as ItemModel, Type as TypeModel, VisibilityType
 
 
 class PostgresItemProvider(ItemProvider):
@@ -108,8 +108,8 @@ class PostgresItemProvider(ItemProvider):
             item_status=item_status,
             item_linked_item_id=item_linked_item_id)
 
-        db.session.add(item)
-        db.session.commit()
+        db.add(item)
+        db.commit()
 
         tbn = get_types_by_name(self.org_id)
 
@@ -185,8 +185,8 @@ class PostgresItemProvider(ItemProvider):
         conditions = []
 
         if type_names:
-            type_ids = [ti.id for ti in TypeModel.query.filter(TypeModel.name.in_(type_names), TypeModel.org_id == self.org_id).all()]
-            derived_type_ids = self.get_derived_types(type_ids)
+            type_ids = [ti.id for ti in db.query(TypeModel).filter(TypeModel.name.in_(type_names), TypeModel.org_id == self.org_id).all()]
+            derived_type_ids = get_derived_types(self.org_id, type_ids)
             conditions.append(ItemModel.type_id.in_(list(set(type_ids + derived_type_ids))))
 
         if tags:
@@ -248,7 +248,7 @@ class PostgresItemProvider(ItemProvider):
             if not conditions:
                 return []
             else:
-                result_item_models = ItemModel.query.filter(*conditions).all()
+                result_item_models = db.query(ItemModel).filter(*conditions).all()
 
         tbn = get_types_by_name(self.org_id)
 

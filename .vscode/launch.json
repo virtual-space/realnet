@@ -1,0 +1,93 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Serve",
+            "type": "python",
+            "request": "launch",
+            "module": "realnet",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+            },
+            "args": [
+                "server",
+                "start"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "Python: Scanner",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+            },
+            "args": [
+                "tests/test_scanner.py"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "Python: Initialize",
+            "type": "python",
+            "request": "launch",
+            "module": "realnet_server",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+            },
+            "args": [
+                "initialize"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "Python: Run",
+            "type": "python",
+            "request": "launch",
+            "module": "realnet_server",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+            },
+            "args": [
+                "run"
+            ],
+            "jinja": true
+        },
+        {
+            "name": "Python: Export",
+            "type": "python",
+            "request": "launch",
+            "module": "realnet_server",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+            },
+            "args": [
+                "export",
+                "Bill"
+            ],
+            "jinja": true
+        }
+    ]
+}

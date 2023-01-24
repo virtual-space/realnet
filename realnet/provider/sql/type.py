@@ -1,7 +1,7 @@
 from realnet.core.provider import TypeProvider
-from ..utility import get_types_by_name
+from .utility import get_types_by_name
 
-class PostgresTypeProvider(TypeProvider):
+class SqlTypeProvider(TypeProvider):
 
     def __init__(self, org_id, account_id):
         self.org_id = org_id

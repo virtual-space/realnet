@@ -8,7 +8,7 @@ class Realnet(Shell):
         super().__init__('realnet')
 
     def get_commands(self):
-        return [Info(), Get(), Create(), Runner(), Server()] # [Serve(), Upgrade(), Initialize(), Migrate(), Runner(), Exporter()]
+        return [Info(), Get(), Create(), Runner(), Server()]
 
     def add_arguments(self, parser):
         pass
