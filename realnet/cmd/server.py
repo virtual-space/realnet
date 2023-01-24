@@ -1,15 +1,16 @@
 import os
 from realnet.shell import ProtoShell, ProtoCmd
-from realnet.provider.sql.models import initialize
 from realnet.core.provider import ContextProvider, Context
 
 from realnet.provider.generic.endpoint import GenericEndpointProvider
 from realnet.provider.generic.resource import GenericResourceProvider
+from realnet.provider.generic.importer import GenericImportProvider
 from realnet.provider.sql.type import SqlTypeProvider
 from realnet.provider.sql.postgres.item import PostgresItemProvider
 from realnet.provider.aws.data import S3DataProvider
 from realnet.provider.sql.org import SqlOrgProvider
 from realnet.provider.sql.orgs import SqlOrgsProvider
+from realnet.provider.sql.init import SqlInitProvider
 
 from realnet.runner.http.runner import HttpRunner
 
@@ -28,9 +29,13 @@ class StandardContextProvider(ContextProvider):
                         None,
                         org_provider,
                         org_provider,
-                        GenericResourceProvider())
+                        GenericResourceProvider(),
+                        GenericImportProvider())
 
         
+    def get_orgs(self):
+        return SqlOrgsProvider().get_orgs()
+
     def get_org_by_id(self,id):
         return SqlOrgsProvider().get_org_by_id(id)
 
@@ -47,7 +52,7 @@ class StandardContextProvider(ContextProvider):
         return SqlOrgsProvider().check_password(org_id, account_id, password)
 
     def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
-        return initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)
+        return SqlInitProvider().initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)
 
 class Start(ProtoCmd):
     
@@ -68,6 +73,7 @@ class Start(ProtoCmd):
         #     app.config['ROOT_ITEM'] = args.item
         # app.run(cfg.get_server_host(), cfg.get_server_port())
 
+
 class Initialize(ProtoCmd):
     
     def __init__(self):
@@ -84,7 +90,14 @@ class Initialize(ProtoCmd):
         parser.add_argument('--mobile_redirect_uri', help='specify the tenant mobile redirect uri', default=os.getenv('REALNET_MOBILE_REDIRECT_URI'))
 
     def run(self, args):
-        StandardContextProvider().initialize(args.name, args.username, args.email, args.password, args.uri, args.redirect_uri, args.mobile_redirect_uri)
+        context_provider = StandardContextProvider()
+        account = context_provider.initialize(args.name, args.username, args.email, args.password, args.uri, args.redirect_uri, args.mobile_redirect_uri)
+        if account:
+            context = context_provider.context(account.id, account.org.id)
+            if context:
+                context.import_structure(context, 'static/initialization/core.json')
+        
+
         # with app.app_context():
         #    db.create_all()
         #    response = initialize_server(args.name, args.type, args.username, args.email, args.password, args.uri, args.redirect_uri, args.mobile_redirect_uri)

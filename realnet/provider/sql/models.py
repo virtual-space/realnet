@@ -381,3 +381,4 @@ def initialize(org_name, admin_username, admin_email, admin_password, uri, redir
                             scope='',
                             auth_method='client_secret_basic',
                             org_id=org.id)
+    return root_account

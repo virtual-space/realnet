@@ -47,13 +47,14 @@
             "name": "Python: Initialize",
             "type": "python",
             "request": "launch",
-            "module": "realnet_server",
+            "module": "realnet",
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
                 "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
             },
             "args": [
+                "server",
                 "initialize"
             ],
             "jinja": true

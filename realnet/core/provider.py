@@ -287,7 +287,7 @@ class GroupAclProvider(AclProvider):
     def can_account_delete_item(self, account, item):
         return item.owner_id == account.id and account.org_id == item.org_id
 
-class OrgsProvider:    
+class OrgsProvider(ABC):    
 
     @abstractmethod
     def get_orgs(self):
@@ -313,10 +313,16 @@ class OrgsProvider:
     def get_org_authenticators(self, org_id):
         pass
 
-class InitializationProvider:    
+class InitializationProvider(ABC):    
 
     @abstractmethod
     def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
+        pass
+
+class ImportProvider(ABC):
+
+    @abstractmethod
+    def import_structure(self, module, path):
         pass
 
 class ContextProvider(OrgsProvider, InitializationProvider):
@@ -337,7 +343,8 @@ class Module( TypeProvider,
               EndpointProvider,
               ModuleProvider,
               AccountProvider,
-              ResourceProvider):
+              ResourceProvider,
+              ImportProvider):
     pass
 
 class Context(Module):
@@ -353,7 +360,8 @@ class Context(Module):
                     modules, 
                     accounts, 
                     acls,
-                    resources):
+                    resources,
+                    importer):
         self.types = types
         self.items = items
         self.data = data
@@ -366,6 +374,7 @@ class Context(Module):
         self.accounts = accounts
         self.acls = acls
         self.resources = resources
+        self.importer = importer
 
     def get_types(self):
         return self.types.get_types()
@@ -474,6 +483,9 @@ class Context(Module):
 
     def get_resource(self, module, resource_name):
         return self.resources.get_resource(module, resource_name)
+
+    def import_structure(self, module, path):
+        return self.importer.import_structure(module, path)
         
 
 

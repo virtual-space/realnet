@@ -1,0 +1,34 @@
+{
+    "types": [
+        {
+            "name": "Resource"
+        },
+        {
+            "name": "Endpoint"
+        },
+        {
+            "name": "Main",
+            "base": "Endpoint",
+            "attributes": {
+                "path": "",
+                "resource": "main"
+            },
+            "instances": [
+                {
+                    "name": "main",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.main",
+                        "module_class": "Main"
+                    }
+                }
+            ]
+        }
+    ],
+    "items": [
+        {
+            "name": "Main",
+            "type": "Main"
+        }
+    ]
+}
