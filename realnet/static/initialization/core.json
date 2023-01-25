@@ -1,34 +1,281 @@
 {
     "types": [
         {
-            "name": "Resource"
+            "name": "Resource",
+            "module": "Resource"
         },
         {
-            "name": "Endpoint"
+            "name": "App",
+            "base": "Type",
+            "types": [
+                {
+                    "name": "Type",
+                    "base": "Resource"
+                },
+                {
+                    "name": "Exp",
+                    "base": "Type"
+                },
+                {
+                    "name": "Op",
+                    "base": "Type"
+                },
+                {
+                    "name": "Instance",
+                    "base": "Type"
+                },
+                {
+                    "name": "Item",
+                    "base": "Instance"
+                },
+                {
+                    "name": "Endpoint",
+                    "base": "Type"
+                },
+                {
+                    "name": "Task",
+                    "base": "Type"
+                },
+                {
+                    "name": "Exec",
+                    "base": "Type"
+                },
+                {
+                    "name": "View",
+                    "base": "Type"
+                },
+                {
+                    "name": "Form",
+                    "base": "Type"
+                },
+                {
+                    "name": "Ctrl",
+                    "base": "Type"
+                },
+                {
+                    "name": "Query",
+                    "base": "Type"
+                },
+                {
+                    "name": "Menu",
+                    "base": "Type"
+                },
+                {
+                    "name": "File",
+                    "base": "Type"
+                },
+                {
+                    "name": "Page",
+                    "base": "Type"
+                }
+            ]
         },
         {
-            "name": "Main",
-            "base": "Endpoint",
+            "name": "Apps",
+            "base": "App",
             "attributes": {
-                "path": "",
-                "resource": "main"
+                "types": ["App"]
             },
+            "types": [
+                {
+                    "name": "AppsMenu",
+                    "type": "Menu"
+                },
+                {
+                    "name": "AppsForm",
+                    "type": "Form"
+                },
+                {
+                    "name": "AppsMenu",
+                    "type": "Menu"
+                },
+                {
+                    "name": "AppsView",
+                    "type": "View"
+                },
+                {
+                    "name": "AppsQuery",
+                    "type": "Query"
+                }
+            ],
             "instances": [
                 {
-                    "name": "main",
+                    "name": "All",
+                    "type": "AppsView"
+                },
+                {
+                    "name": "Query",
+                    "type": "AppsQuery"
+                },
+                {
+                    "name": "Form",
+                    "type": "AppsForm"
+                },
+                {
+                    "name": "Menu",
+                    "type": "AppsMenu"
+                },
+                {
+                    "name": "apps",
                     "type": "Resource",
                     "attributes": {
-                        "module_path": "realnet.resource.main",
-                        "module_class": "Main"
+                        "module_path": "realnet.resource.apps",
+                        "module_class": "Apps"
+                    }
+                },
+                {
+                    "name": "apps",
+                    "base": "Endpoint",
+                    "attributes": {
+                        "path": "apps",
+                        "resource": "apps"
                     }
                 }
             ]
+        },
+        {
+            "name": "Types",
+            "base": "App",
+            "attributes": {
+                "types": ["Type"]
+            },
+            "types": [
+                {
+                    "name": "TypesMenu",
+                    "type": "Menu"
+                },
+                {
+                    "name": "TypesForm",
+                    "type": "Form"
+                },
+                {
+                    "name": "TypesMenu",
+                    "type": "Menu"
+                },
+                {
+                    "name": "TypesView",
+                    "type": "View"
+                },
+                {
+                    "name": "TypesQuery",
+                    "type": "Query"
+                }
+            ],
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "TypesView"
+                },
+                {
+                    "name": "Query",
+                    "type": "TypesQuery"
+                },
+                {
+                    "name": "Form",
+                    "type": "TypesForm"
+                },
+                {
+                    "name": "Menu",
+                    "type": "TypesMenu"
+                },
+                {
+                    "name": "types",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.types",
+                        "module_class": "Types"
+                    }
+                },
+                {
+                    "name": "types",
+                    "base": "Endpoint",
+                    "attributes": {
+                        "path": "types",
+                        "resource": "types"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Endpoints",
+            "base": "App",
+            "attributes": {
+                "types": ["Endpoint"]
+            }
+        },
+        {
+            "name": "Forms",
+            "base": "App",
+            "attributes": {
+                "types": ["Form"]
+            }
+        },
+        {
+            "name": "Tasks",
+            "base": "App",
+            "attributes": {
+                "types": ["Task"]
+            }
+        },
+        {
+            "name": "Resources",
+            "base": "App",
+            "attributes": {
+                "types": ["Resource"]
+            }
+        },
+        {
+            "name": "Login",
+            "base": "App"
+        },
+        {
+            "name": "Queries",
+            "base": "App",
+            "attributes": {
+                "types": ["Query"]
+            }
+        },
+        {
+            "name": "Files",
+            "base": "App",
+            "attributes": {
+                "types": ["File"]
+            }
         }
+
     ],
     "items": [
         {
-            "name": "Main",
-            "type": "Main"
+            "name": "Apps",
+            "type": "Apps"
+        },
+        {
+            "name": "Types",
+            "type": "Types"
+        },
+        {
+            "name": "Endpoints",
+            "type": "Endpoints"
+        },
+        {
+            "name": "Forms",
+            "type": "Forms"
+        },
+        {
+            "name": "Tasks",
+            "type": "Tasks"
+        },
+        {
+            "name": "Resources",
+            "type": "Resources"
+        },
+        {
+            "name": "Login",
+            "type": "Login"
+        },
+        {
+            "name": "Queries",
+            "type": "Queries"
         }
     ]
 }
