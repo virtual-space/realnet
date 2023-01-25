@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realnet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: realnet
+  template:
+    metadata:
+      labels:
+        app: realnet
+    spec:
+      containers:
+        - name: realnet
+          image: 'l33t/realnet'
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: configmap
