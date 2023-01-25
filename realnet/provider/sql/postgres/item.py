@@ -55,7 +55,7 @@ class PostgresItemProvider(ItemProvider):
             elif key == 'type_id':
                 item_type_id = value
             elif key == 'type':
-                type = TypeModel.query.filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
+                type = db.query(TypeModel).filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
                 if type:
                     item_type_name = type.name
             elif key == 'attributes':
@@ -76,7 +76,7 @@ class PostgresItemProvider(ItemProvider):
             elif key == 'visibility':
                 item_visibility = value
             elif key == 'public':
-                item_is_public = (value.lower() == "true")
+                item_is_public = value == True
             elif key == 'valid_from':
                 item_valid_from = value
             elif key == 'valid_to':

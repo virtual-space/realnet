@@ -1,6 +1,6 @@
 import uuid
 
-from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceModel, Item as ItemModel, session as db
+from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceModel, Item as ItemModel, Acl as AclModel, session as db
 from realnet.core.type import Type, Instance, Item
 from realnet.core.acl import AclType, Acl
 
@@ -55,7 +55,7 @@ def type_model_to_type(org_id, type_model, type_models_by_name, types_by_name):
     return result_type
 
 def instance_model_to_instance(instance_model, types_by_name):
-    return Instance(types_by_name.get(instance_model.type.name), instance_model.name, instance_model.attributes)
+    return Instance(instance_model.id, types_by_name.get(instance_model.type.name), instance_model.name, instance_model.attributes)
 
 def acl_model_to_acl(acl_model):
     return Acl(acl_model.type, acl_model.permission, acl_model.target_id, acl_model.org_id, acl_model.owner_id)
@@ -65,7 +65,7 @@ def item_model_to_item(org_id, item_model, types_by_name):
     child_items = db.query(ItemModel).filter(ItemModel.parent_id == item_model.id, InstanceModel.org_id == org_id).all()
     return Item(item_model.owner_id,
                 item_model.org_id,
-                Instance(type, item_model.name),
+                Instance(item_model.id, type, item_model.name),
                 item_model.id, 
                 item_model.name, 
                 item_model.attributes, 
@@ -106,7 +106,7 @@ def build_item( item_id,
     linked_item_id = item_data.get('item_linked_item_id')
 
     if not location:
-        item = Item( id=item_id,
+        item = ItemModel( id=item_id,
                     name=instance.name,
                     attributes=attributes,
                     valid_from=valid_from,
@@ -119,7 +119,7 @@ def build_item( item_id,
                     parent_id=parent_item_id,
                     linked_item_id=linked_item_id)
     else:
-        item = Item( id=item_id,
+        item = ItemModel( id=item_id,
                     name=instance.name,
                     attributes=attributes,
                     valid_from=valid_from,
@@ -133,8 +133,8 @@ def build_item( item_id,
                     parent_id=parent_item_id,
                     linked_item_id=linked_item_id)
     
-    db.session.add(item)
-    db.session.commit()
+    db.add(item)
+    db.commit()
 
     create_public_acl = instance.public
 
@@ -143,9 +143,9 @@ def build_item( item_id,
             create_public_acl = True
 
     if create_public_acl:
-        acl = Acl(id=str(uuid.uuid4()),type=AclType.public, org_id=org_id, item_id=item_id)
-        db.session.add(acl)
-        db.session.commit()
+        acl = AclModel(id=str(uuid.uuid4()),type=AclType.public, org_id=org_id, item_id=item_id)
+        db.add(acl)
+        db.commit()
     
     instances = get_type_instances(instance.type)
     for child_instance in instances:
@@ -202,15 +202,17 @@ def create_item_model(  db,
         elif item_attributes:
             attributes = item_attributes 
 
-        instance = Instance(id=item_id,
-                            name=item_name,
-                            public=item_is_public.lower() == 'true' if isinstance(item_is_public, str) else item_is_public,
+        instance = create_instance_model(instance_id=item_id,
+                            instance_name=item_name,
+                            instance_icon=None,
+                            instance_attributes=None,
+                            instance_public=None,
                             owner_id=owner_id,
                             org_id=org_id,
-                            type_id=item_type.id)
+                            instance_type_id=item_type.id)
 
-        db.session.add(instance)
-        db.session.commit()
+        db.add(instance)
+        db.commit()
 
         item_data = {"item_location": item_location, 
                      "item_visibility": item_visibility,
@@ -232,7 +234,7 @@ def create_type_model(  db,
                         type_attributes,
                         owner_id,
                         org_id,
-                        type_model=None,
+                        type_module=None,
                         type_base_id=None):
 
     if type_base_id:
@@ -240,7 +242,7 @@ def create_type_model(  db,
         if not type_base:
             return None
 
-    return TypeModel(id=type_id, name=type_name, icon=type_icon, attributes=type_attributes, model=type_model, owner_id=owner_id, org_id=org_id)
+    return TypeModel(id=type_id, name=type_name, icon=type_icon, attributes=type_attributes, module=type_module, owner_id=owner_id, org_id=org_id)
 
 
 def create_instance_model(  instance_id,

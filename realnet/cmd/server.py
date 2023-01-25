@@ -94,7 +94,7 @@ class Initialize(ProtoCmd):
         context_provider = StandardContextProvider()
         account = context_provider.initialize(args.name, args.username, args.email, args.password, args.uri, args.redirect_uri, args.mobile_redirect_uri)
         if account:
-            context = context_provider.context(account.id, account.org.id)
+            context = context_provider.context(account.org.id, account.id)
             if context:
                 import_structure_from_resource(context, 'static/initialization/core.json')
         

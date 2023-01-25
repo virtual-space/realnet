@@ -59,7 +59,8 @@ class Type:
 
 class Instance(Type):
     
-    def __init__(self, type, name, attributes=dict()):
+    def __init__(self, id, type, name, attributes=dict()):
+        self.id = id
         self.type = type
         self.name = name
         self._attributes = attributes

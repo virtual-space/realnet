@@ -125,7 +125,7 @@
                 },
                 {
                     "name": "apps",
-                    "base": "Endpoint",
+                    "type": "Endpoint",
                     "attributes": {
                         "path": "apps",
                         "resource": "apps"
@@ -188,7 +188,7 @@
                 },
                 {
                     "name": "types",
-                    "base": "Endpoint",
+                    "type": "Endpoint",
                     "attributes": {
                         "path": "types",
                         "resource": "types"

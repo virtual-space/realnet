@@ -45,7 +45,7 @@ class SqlTypeProvider(TypeProvider):
             elif key == 'base_id':
                 type_base_id = value
             elif key == 'base':
-                type = TypeModel.query.filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
+                type = db.query(TypeModel).filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
                 if type:
                     type_base_id = type.id
             elif key == 'attributes':
@@ -80,7 +80,7 @@ class SqlTypeProvider(TypeProvider):
         instance_type_id = None
         instance_parent_type_id = None
 
-        types_by_name = self.get_types_by_name()
+        types_by_name = get_types_by_name(self.org_id)
         types_by_id = {t.id:t for t in types_by_name.values()}
 
         for key, value in kwargs.items():
@@ -94,8 +94,8 @@ class SqlTypeProvider(TypeProvider):
                 if type:
                     instance_type_id = type.id
             elif key == 'type':
-                    type = types_by_name.get(value)
-            if type:
+                type = types_by_name.get(value)
+                if type:
                     instance_type_id = type.id
             elif key == 'parent_type_id':
                 type = types_by_id.get(value)
@@ -115,7 +115,6 @@ class SqlTypeProvider(TypeProvider):
                 instance_public = str(value).lower() == 'true'
 
         instance = create_instance_model(
-            db=db,
             instance_id=instance_id,
             instance_name=instance_name,
             instance_icon=instance_icon,

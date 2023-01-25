@@ -56,7 +56,8 @@ def import_types(module, type_data):
                     if base_type:
                         base_id = base_type.id
 
-                existing_type = module.create_type(td | {'base_id': base_id})
+                params = td | {'base_id': base_id}
+                existing_type = module.create_type(**params)
                 
                 for instance in td.get('instances', []):
                     instances.append({ "instance": instance, "parent_type_name": existing_type.name})
@@ -70,7 +71,8 @@ def import_types(module, type_data):
             existing_type = existing_types_by_name.get(td['name'])
             base = td.get('base')
             if not existing_type and base:
-                existing_type = module.create_type(td | {'base_id': types[base]['type']['id']})
+                params = td | {'base_id': types[base]['type']['id']}
+                existing_type = module.create_type(**params)
                 for instance in td.get('instances', []):
                     instances.append({ "instance": instance, "parent_type_name": existing_type.name})                     
             
@@ -102,14 +104,14 @@ def import_types(module, type_data):
                 
                 type_id = target.id if isinstance(target, Type) else target['type'].id 
                 parent_type_id = parent.id if isinstance(parent, Type) else parent['type'].id  
-                module.create_instance({'id': str(uuid.uuid4()),
+                module.create_instance(**{'id': str(uuid.uuid4()),
                                         'name': instance['name'],
                                         'attributes': instance.get('attributes'),
                                         'public': is_public,
                                         'type_id': type_id,
                                         'parent_type_id': parent_type_id})
         
-        return [dv['type'].to_dict() for dv in types.values()]
+        return [dv['type'] for dv in types.values()]
 
 def traverse_item(module, item_ids, items_by_id, children_by_id, item):
     parent_id = item.get('parent_id')
@@ -121,27 +123,20 @@ def traverse_item(module, item_ids, items_by_id, children_by_id, item):
         traverse_item(module, item_ids, items_by_id, children_by_id, items_by_id.get(child))
 
 def import_items(module, items):
-    items_by_id = dict()
-    root_items = []
-    children_by_id = dict()
-    item_ids = dict()
-    all_items = []
 
     for item in items:
-        item_attributes = dict()
-        item_parent_id = item[0]
-        item_id = item[1]
-        item_type = item[2]
-        item_name = item[3]
-        item_is_public = item[4]
-        item_visibility = item[5]
-        item_location = item[6]
-        item_tags = item[7]
+        item_attributes = item.get('attributes', dict())
+        item_parent_id = item.get('parent_id')
+        item_id = item.get('id', str(uuid.uuid4()))
+        item_location = item.get('location')
+        if item_location and not isinstance(item_location,str):
+            item_location = json.dumps(item_location)
+        item_type = item.get('type')
+        item_name = item.get('name')
+        item_is_public = str(item.get('public')).lower() == 'true'
+        # item_visibility = VisibilityType.visible
+        item_tags = item.get('tags')
         
-        for av in item[8:]:
-            kv = av.split(':')
-            if kv and len(kv) > 1:
-                item_attributes[kv[0]] = kv[1]
         item_data = dict()
 
         if item_parent_id == item_id:
@@ -150,7 +145,7 @@ def import_items(module, items):
                         "attributes": item_attributes,
                         "name": item_name,
                         "location": item_location,
-                        "visibility": item_visibility,
+                        #"visibility": item_visibility,
                         "tags": item_tags,
                         "public": item_is_public}
         else:
@@ -159,27 +154,11 @@ def import_items(module, items):
                         "attributes": item_attributes,
                         "name": item_name,
                         "location": item_location,
-                        "visibility": item_visibility,
+                        # "visibility": item_visibility,
                         "tags": item_tags,
                         "parent_id": item_parent_id,
                         "public": item_is_public}
-        item_ids[item_id] = str(uuid.uuid4())
-
-        if item_parent_id:
-            if item_parent_id == item_id:
-                root_items.append(item_data)
-            else:
-                existingChildren = children_by_id.get(item_parent_id)
-                if not existingChildren:
-                    existingChildren = [item_id]
-                    children_by_id[item_parent_id] = existingChildren
-                else:
-                    existingChildren.append(item_id)
-        items_by_id[item_id] = item_data
-        all_items.append(item_data)
-
-    for item in root_items:
-        traverse_item(module, item_ids, items_by_id, children_by_id, item)
+        module.create_item(**item_data)
 
 def import_structure_from_resource(context, path):
     with open(os.path.join(os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir)),
