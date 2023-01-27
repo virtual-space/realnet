@@ -190,8 +190,8 @@ def create_item_model(  db,
                          name=item_type_name,
                          owner_id=owner_id,
                          org_id=org_id)
-        db.session.add(item_type)
-        db.session.commit()
+        db.add(item_type)
+        db.commit()
 
     if item_type:
         # attributes = item_attributes | item_type.attributes
@@ -238,11 +238,11 @@ def create_type_model(  db,
                         type_base_id=None):
 
     if type_base_id:
-        type_base = db.query(TypeModel).filter(TypeModel.id == type_base_id, Type.org_id == org_id).first()
+        type_base = db.query(TypeModel).filter(TypeModel.id == type_base_id, TypeModel.org_id == org_id).first()
         if not type_base:
             return None
 
-    return TypeModel(id=type_id, name=type_name, icon=type_icon, attributes=type_attributes, module=type_module, owner_id=owner_id, org_id=org_id)
+    return TypeModel(id=type_id, name=type_name, icon=type_icon, attributes=type_attributes, module=type_module, base_id=type_base_id, owner_id=owner_id, org_id=org_id)
 
 
 def create_instance_model(  instance_id,

@@ -1,7 +1,7 @@
 from realnet.core.provider import OrgProvider, GroupProvider, AclProvider,AccountProvider, AppProvider
 from realnet.core.type import Account, Authenticator, Org
 from realnet.core.acl import AclType
-from .utility import get_types_by_name, item_model_to_item
+from .utility import get_types_by_name, item_model_to_item, get_derived_types
 from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, AccountGroup as AccountGroupModel, session as db
 
 class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, AppProvider):
@@ -139,12 +139,12 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
 
     # app provider
 
-    def get_apps(self):
+    def get_apps(self, module):
         account = db.query(AccountModel).filter(AccountModel.id == self.account_id).first()
         if account:
             tbn = get_types_by_name(self.org_id)
-            application_type = tbn.get('Application')
-            application_type_ids = set(self.get_derived_types([application_type.id]) + [application_type.id])
+            application_type = tbn.get('App')
+            application_type_ids = set(get_derived_types(self.org_id, [application_type.id]) + [application_type.id])
             role_apps = [app.app for ar in account.roles for app in ar.role.apps ]
             owned_apps = db.query(ItemModel).filter(ItemModel.owner_id == self.account_id, ItemModel.type_id.in_(application_type_ids) ).all()
             app_ids = {app.id:app for app in role_apps}

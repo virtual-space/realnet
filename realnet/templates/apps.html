@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ app.name }}</title>
+    <title>{{ item.name }}</title>
     {{ bootstrap.load_css() }}
     <style>
       .material-symbols-outlined {
@@ -40,7 +40,7 @@
 <div class="container-fluid p-0">
   <header class="masthead mb-auto">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="/">{{app.name}}</a>
+      <a class="navbar-brand" href="/">{{item.name}}</a>
       <button class="navbar-toggler" 
               type="button" 
               data-toggle="collapse" 
@@ -49,14 +49,14 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          {% for app in apps %}
-            {% if active_app_name == app.name | lower %}
+          {% for view in views %}
+            {% if active_view_name == view.name | lower %}
             <li class="nav-item active">
-              <a class="nav-link" href="?app={{app.name | lower}}">{{app.name}}</a>
+              <a class="nav-link" href="?view={{view.name | lower}}">{{view.name}}</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="?app={{app.name | lower}}">{{app.name}}</a>
+              <a class="nav-link" href="?view={{view.name | lower}}">{{view.name}}</a>
             </li>
             {% endif %}
           {% endfor %}

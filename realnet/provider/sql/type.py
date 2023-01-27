@@ -107,7 +107,7 @@ class SqlTypeProvider(TypeProvider):
                     instance_parent_type_id = type.id
             elif key == 'attributes':
                 instance_attributes = value
-                if 'icon' in value:
+                if value and 'icon' in value:
                     instance_icon = value['icon']
             elif key == 'icon':
                 instance_icon = value

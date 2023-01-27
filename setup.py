@@ -25,6 +25,7 @@ setup(
     ],
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
+    package_data={'realnet.static.initialization': ['*']},
     install_requires=["python-dotenv",
                       "boto3",
                       "SQLAlchemy==1.4.23",

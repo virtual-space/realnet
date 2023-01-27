@@ -83,6 +83,8 @@ def router(endpoint_name, path):
 
     if endpoint_name == 'login':
         return render_template('login.html')
+    elif not endpoint_name:
+        endpoint_name = 'main'
     
     context = contextProvider.context(account.org.id, account.id)
 

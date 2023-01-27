@@ -1,72 +1,106 @@
 {
     "types": [
         {
-            "name": "Resource",
-            "module": "Resource"
+            "name": "Resource"
+        },
+        {
+            "name": "Type",
+            "base": "Resource"
+        },
+        {
+            "name": "Exp",
+            "base": "Type"
+        },
+        {
+            "name": "Op",
+            "base": "Type"
+        },
+        {
+            "name": "Instance",
+            "base": "Type"
+        },
+        {
+            "name": "Item",
+            "base": "Instance"
+        },
+        {
+            "name": "Endpoint",
+            "base": "Type"
+        },
+        {
+            "name": "Task",
+            "base": "Type"
+        },
+        {
+            "name": "Exec",
+            "base": "Type"
+        },
+        {
+            "name": "View",
+            "base": "Type"
+        },
+        {
+            "name": "ListView",
+            "base": "View"
+        },
+        {
+            "name": "QueryView",
+            "base": "View"
+        },
+        {
+            "name": "Form",
+            "base": "Type",
+            "attributes": {
+                "form": "true"
+            }
+        },
+        {
+            "name": "Ctrl",
+            "base": "Type"
+        },
+        {
+            "name": "Query",
+            "base": "Type"
+        },
+        {
+            "name": "Menu",
+            "base": "Type"
+        },
+        {
+            "name": "File",
+            "base": "Type"
+        },
+        {
+            "name": "Page",
+            "base": "Type"
         },
         {
             "name": "App",
             "base": "Type",
-            "types": [
+            "attributes": {
+                "app": "true"
+            }
+        },
+        {
+            "name": "Main",
+            "base": "App",
+            "instances": [
                 {
-                    "name": "Type",
-                    "base": "Resource"
+                    "name": "main",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.main.main",
+                        "module_class": "Main",
+                        "module": "true"
+                    }
                 },
                 {
-                    "name": "Exp",
-                    "base": "Type"
-                },
-                {
-                    "name": "Op",
-                    "base": "Type"
-                },
-                {
-                    "name": "Instance",
-                    "base": "Type"
-                },
-                {
-                    "name": "Item",
-                    "base": "Instance"
-                },
-                {
-                    "name": "Endpoint",
-                    "base": "Type"
-                },
-                {
-                    "name": "Task",
-                    "base": "Type"
-                },
-                {
-                    "name": "Exec",
-                    "base": "Type"
-                },
-                {
-                    "name": "View",
-                    "base": "Type"
-                },
-                {
-                    "name": "Form",
-                    "base": "Type"
-                },
-                {
-                    "name": "Ctrl",
-                    "base": "Type"
-                },
-                {
-                    "name": "Query",
-                    "base": "Type"
-                },
-                {
-                    "name": "Menu",
-                    "base": "Type"
-                },
-                {
-                    "name": "File",
-                    "base": "Type"
-                },
-                {
-                    "name": "Page",
-                    "base": "Type"
+                    "name": "main",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "main",
+                        "resource": "main"
+                    }
                 }
             ]
         },
@@ -74,42 +108,30 @@
             "name": "Apps",
             "base": "App",
             "attributes": {
-                "types": ["App"]
+                "types": ["App"],
+                "query": {"types": ["App"], "my_items": "true"}
             },
             "types": [
                 {
+                    "name": "AppForm",
+                    "type": "Form",
+                    "attributes": {
+                        "type": "App"
+                    }
+                },
+                {
                     "name": "AppsMenu",
                     "type": "Menu"
-                },
-                {
-                    "name": "AppsForm",
-                    "type": "Form"
-                },
-                {
-                    "name": "AppsMenu",
-                    "type": "Menu"
-                },
-                {
-                    "name": "AppsView",
-                    "type": "View"
-                },
-                {
-                    "name": "AppsQuery",
-                    "type": "Query"
                 }
             ],
             "instances": [
                 {
                     "name": "All",
-                    "type": "AppsView"
+                    "type": "ListView"
                 },
                 {
-                    "name": "Query",
-                    "type": "AppsQuery"
-                },
-                {
-                    "name": "Form",
-                    "type": "AppsForm"
+                    "name": "AppForm",
+                    "type": "AppForm"
                 },
                 {
                     "name": "Menu",
@@ -119,8 +141,9 @@
                     "name": "apps",
                     "type": "Resource",
                     "attributes": {
-                        "module_path": "realnet.resource.apps",
-                        "module_class": "Apps"
+                        "module_path": "realnet.resource.apps.apps",
+                        "module_class": "Apps",
+                        "module": "true"
                     }
                 },
                 {
@@ -134,10 +157,63 @@
             ]
         },
         {
+            "name": "Forms",
+            "base": "App",
+            "attributes": {
+                "types": ["Form"],
+                "query": {"types": ["Form"], "my_items": "true"}
+            },
+            "types": [
+                {
+                    "name": "FormForm",
+                    "type": "Form",
+                    "attributes": {
+                        "type": "Form"
+                    }
+                },
+                {
+                    "name": "FormsMenu",
+                    "type": "Menu"
+                }
+            ],
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "FormForm",
+                    "type": "FormForm"
+                },
+                {
+                    "name": "Menu",
+                    "type": "FormsMenu"
+                },
+                {
+                    "name": "forms",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.forms.forms",
+                        "module_class": "Forms",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "forms",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "forms",
+                        "resource": "forms"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Types",
             "base": "App",
             "attributes": {
-                "types": ["Type"]
+                "types": ["Type"],
+                "query": {"types": ["Type"], "my_items": "true"}
             },
             "types": [
                 {
@@ -183,7 +259,8 @@
                     "type": "Resource",
                     "attributes": {
                         "module_path": "realnet.resource.types",
-                        "module_class": "Types"
+                        "module_class": "Types",
+                        "module": "true"
                     }
                 },
                 {
@@ -225,10 +302,6 @@
             }
         },
         {
-            "name": "Login",
-            "base": "App"
-        },
-        {
             "name": "Queries",
             "base": "App",
             "attributes": {
@@ -245,6 +318,10 @@
 
     ],
     "items": [
+        {
+            "name": "Main",
+            "type": "Main"
+        },
         {
             "name": "Apps",
             "type": "Apps"
@@ -268,10 +345,6 @@
         {
             "name": "Resources",
             "type": "Resources"
-        },
-        {
-            "name": "Login",
-            "type": "Login"
         },
         {
             "name": "Queries",

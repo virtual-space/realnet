@@ -1,8 +1,7 @@
 from flask import render_template
 from realnet.core.type import Resource
-from realnet.core.hierarchy import import_types
 
-class Main(Resource):
+class Apps(Resource):
 
     def get(self, module, args, path=None, content_type='text/html'):
         account = module.get_account()
@@ -13,22 +12,20 @@ class Main(Resource):
         active_view_name = args.get('view')
         active_subview_name = args.get('subview')
 
-        app = next((a for a in apps if a.name == 'Main'), None)
+        world_app = next((a for a in apps if a.name == 'Apps'), None)
+
+        app = world_app
 
         if apps:
             if active_app_name:
                 app = next((a for a in apps if a.name.lower() == active_app_name),None)
 
-        types = app.attributes.get('types',[]) if app.attributes else []
-        if app.instance.type.types:
-            import_types(module, app.instance.type.types)
-
-        views = [i for i in app.items if i.instance.type.is_derived_from('View')]
+        views = [i for i in world_app.items if i.instance.type.is_derived_from('View')]
         items = []
         query = app.attributes.get('query')
+        types = app.attributes.get('types',[])
         
-        
-        menu = next((i for i in app.items if i.instance.type.is_derived_from('Menu')),None)
+        menu = next((i for i in world_app.items if i.instance.type.is_derived_from('Menu')),None)
 
         if views:
             active_view = None
@@ -69,8 +66,8 @@ class Main(Resource):
         if query:
             items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
 
-        return render_template('main.html', 
-                                app=app,
+        return render_template('apps.html', 
+                                world=world_app,
                                 item=app,
                                 apps=apps, 
                                 org=org,

@@ -1,0 +1,105 @@
+{% set views=view.items_of_type('View') %}
+{% if views %}
+    <div class="row">
+        <ul class="nav nav-pills justify-content-center">
+            {% for subview in views %}
+                {% if app %}
+                    {% if active_subview_name and subview.name == active_subview_name %}
+                    <li class="nav-item">
+                    <a class="nav-link active" href="?app={{app.name | lower}}&view={{view.name}}&subview={{subview.name}}">{{subview.name}}</a> 
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="?app={{app.name | lower}}&view={{view.name}}&subview={{subview.name}}">{{subview.name}}</a> 
+                    </li>
+                    {% endif %}
+                {% else %}
+                    {% if active_subview_name and subview.name == active_subview_name %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="?view={{view.name}}&subview={{subview.name}}">{{subview.name}}</a> 
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="?view={{view.name}}&subview={{subview.name}}">{{subview.name}}</a> 
+                    </li>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% for subview in views %}
+                {% if active_subview_name and subview.name == active_subview_name %}
+                    {% with item=item, items=items, view=subview %}
+                        {% include "view.html" %}
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+    </div>
+{% else %}
+    {% if view.instance.type.name == 'ListView' %}
+    <div class="row  justify-content-center align-items-center mt-4 mb-4">
+        <div class="col-4">
+            <h4>{{types|join(',')}} - {{items|length}}</h4>
+        </div>
+    </div>
+    <div class="row  justify-content-center align-items-center">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        {% if view.columns %}
+                            {% for column in view.columns%}
+                                <th>
+                                    {{column}}
+                                </th>
+                            {% endfor %}    
+                        {% endif %}
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr >
+                        <th scope="row">
+                            {{loop.index}}
+                        </th>
+                        <td>
+                            {% if item.attributes['app'] == 'true' %}
+                                <a  href="/apps/{{item.name.lower()}}">{{item.name}}</a>
+                            {% else %}
+                                <a  href="/items/{{item.id}}">{{item.name}}</a>
+                            {% endif %}
+                        </td>
+                        {% if view.columns %}
+                            {% for column in view.columns%}
+                                <td>
+                                    {{column}}
+                                </td>
+                            {% endfor %}    
+                        {% endif %}
+                        <td>
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                  <button type="submit" class="btn btn-warning">Edit</button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                  <button type="button" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    type:{{view.type}} showing {{item.name}} with {{items | length}} items
+    {% endif %}
+{% endif %}

@@ -16,7 +16,12 @@ class GenericResourceProvider(ResourceProvider):
 
     def get_resource(self, module, resource_name):
         account = module.get_account()
-        resource_item = next(iter([r for r in module.find_items({'types': ['Resource'], 'name': resource_name, 'children': 'true'}) if module.can_account_read_item(account, r)]), None)
+        resources = [r for r in module.find_items({ 'types': ['Resource'], 
+                                                    'name': resource_name, 
+                                                    'children': 'true',
+                                                    'keys': ['module'], 
+                                                    'values': ['true']}) if module.can_account_read_item(account, r)]
+        resource_item = next(iter(resources), None)
         if resource_item:
             module_path = resource_item.attributes.get('module_path')
             module_class_name = resource_item.attributes.get('module_class')
@@ -27,7 +32,7 @@ class GenericResourceProvider(ResourceProvider):
 
             code = resource_item.attributes.get('code')
             if not code:
-                resource_data = self.data.get_data(resource_item.id)
+                resource_data = module.get_data(resource_item.id)
                 if resource_data:
                     code = resource_data.decode('utf-8')
                     return
