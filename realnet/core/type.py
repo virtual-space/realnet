@@ -80,6 +80,8 @@ class Instance(Type):
         fdel = _del_attributes
     )
 
+
+
 class Item(Instance):
     
     def __init__(self, owner_id, org_id, instance, id, name, attributes=dict(), items=[], acls=[]):
@@ -93,7 +95,7 @@ class Item(Instance):
         self.acls = acls
 
     def _get_attributes(self):
-        return  self.instance.attributes | self._attributes
+        return  self.instance.attributes | self._attributes if self._attributes else self.instance.attributes
 
     def _del_attributes(self):
         self._attributes = dict()
@@ -109,6 +111,16 @@ class Item(Instance):
 
     def items_of_type(self, type_name):
         return [i for i in self.items if i.instance.type.is_derived_from(type_name)]
+
+    def is_of_type(self, type_name):
+        return self.instance.type.is_derived_from(type_name)
+
+    def get_base_types(self):
+        pass
+
+    def get_child_instances(self):
+        pass
+
 
 class Data:
 
@@ -156,7 +168,7 @@ class Endpoint:
         self.item = item
 
     def invoke(self, module, method, args, path=None, content_type='text/html'):
-        resource = module.get_resource(self.item.attributes['resource'])
+        resource = module.get_resource(module, self.item.attributes['resource'])
         
         if resource:
             method_name = method.lower()
