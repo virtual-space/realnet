@@ -114,14 +114,14 @@
             "types": [
                 {
                     "name": "AppForm",
-                    "type": "Form",
+                    "base": "Form",
                     "attributes": {
                         "type": "App"
                     }
                 },
                 {
                     "name": "AppsMenu",
-                    "type": "Menu"
+                    "base": "Menu"
                 }
             ],
             "instances": [
@@ -278,13 +278,6 @@
             "base": "App",
             "attributes": {
                 "types": ["Endpoint"]
-            }
-        },
-        {
-            "name": "Forms",
-            "base": "App",
-            "attributes": {
-                "types": ["Form"]
             }
         },
         {

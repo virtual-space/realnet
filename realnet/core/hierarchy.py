@@ -44,10 +44,6 @@ def import_types(module, type_data):
             else:
                 primitive_types.append(td)
 
-            child_types = td.get('types')
-            if child_types:
-                import_types(module, child_types)
-
         existing_types_by_name = {t.name:t for t in module.get_types()}
         
         for td in type_data:
@@ -75,6 +71,11 @@ def import_types(module, type_data):
                     instances.append({ "instance": base_instance, "parent_type_name": existing_type.name})
             
             types[existing_type.name] = {"type": existing_type, "instances": td.get('instances', []) }
+
+        for td in type_data:
+            child_types = td.get('types')
+            if child_types:
+                import_types(module, child_types)
 
         existing_types_by_name = {t.name:t for t in module.get_types()}
         for td in type_data:
@@ -132,17 +133,70 @@ def traverse_item(module, item_ids, items_by_id, children_by_id, item):
     for child in children_by_id.get(item['id'], []):
         traverse_item(module, item_ids, items_by_id, children_by_id, items_by_id.get(child))
 
-def traverse_instance(module, item_ids, items_by_id, children_by_id, item):
-    parent_id = item.get('parent_id')
-    if parent_id:
-        module.create_item(item | {'parent_id': parent_id})
-    else:
-        module.create_item(item)
-    for child in children_by_id.get(item['id'], []):
-        traverse_item(module, item_ids, items_by_id, children_by_id, items_by_id.get(child))
+def traverse_instance(instances, instance, parent_type_name):
+    for inst in instance.get('instances', []):
+        instances.append({ "instance": inst, "parent_type_name": parent_type_name})
+        traverse_instance(instances, inst, inst.get('type'))
 
-def materialize_instance(module, item, instance):
+
+def get_base_types(module, type, base_types):
+    base_types.add(type)
+    if type and type.base:
+        return get_base_types(module, type.base, base_types)
+    return base_types
+
+def get_instance_types(module, instance):
+    return get_base_types(module, instance.type, set())
+
+
+def materialize_instance(module, parent_item, instance):
     pass
+
+
+def build_instance_tree(module, parent_item, instance):
+    for base_type in get_instance_types(module, instance):
+        for base_instance in base_type.instances:
+            materialize_instance(module, parent_item, base_instance)
+
+def build_item(module, item):
+    item_attributes = item.get('attributes', dict())
+    item_parent_id = item.get('parent_id')
+    item_id = item.get('id', str(uuid.uuid4()))
+    item_location = item.get('location')
+    if item_location and not isinstance(item_location,str):
+        item_location = json.dumps(item_location)
+    item_type = item.get('type')
+    item_name = item.get('name')
+    item_is_public = str(item.get('public')).lower() == 'true'
+    # item_visibility = VisibilityType.visible
+    item_tags = item.get('tags')
+
+    item_data = dict()
+
+    if item_parent_id == item_id:
+        item_data = {"id": item_id,
+                    "type": item_type,
+                    "attributes": item_attributes,
+                    "name": item_name,
+                    "location": item_location,
+                    #"visibility": item_visibility,
+                    "tags": item_tags,
+                    "public": item_is_public}
+    else:
+        item_data = {"id": item_id,
+                    "type": item_type,
+                    "attributes": item_attributes,
+                    "name": item_name,
+                    "location": item_location,
+                    # "visibility": item_visibility,
+                    "tags": item_tags,
+                    "parent_id": item_parent_id,
+                    "public": item_is_public}
+    created_item = module.create_item(**item_data)
+    
+    build_instance_tree(module, created_item, created_item.instance)
+
+    return created_item
 
 def import_items(module, items):
 
@@ -182,8 +236,9 @@ def import_items(module, items):
                         "public": item_is_public}
         created_item = module.create_item(**item_data)
         
-        for instance in item.get_child_instances():
-            materialize_instance(module, item, instance)
+        # return created_item
+        # for instance in item.get_child_instances():
+        #    materialize_instance(module, item, instance)
 
 def import_structure_from_resource(context, path):
     with open(os.path.join(os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir)),

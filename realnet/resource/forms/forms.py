@@ -4,81 +4,27 @@ from realnet.core.type import Resource
 class Forms(Resource):
 
     def get(self, module, args, path=None, content_type='text/html'):
-        account = module.get_account()
         org = module.get_org()
-        apps = module.get_apps(module)
-
-        active_app_name = args.get('app')
-        active_view_name = args.get('view')
-        active_subview_name = args.get('subview')
-
-        world_app = next((a for a in apps if a.name == 'Apps'), None)
-
-        app = world_app
-
-        if apps:
-            if active_app_name:
-                app = next((a for a in apps if a.name.lower() == active_app_name),None)
-
-        views = [i for i in world_app.items if i.instance.type.is_derived_from('View')]
-        items = []
-        query = app.attributes.get('query')
-        types = app.attributes.get('types',[])
+        account = module.get_account()
+        active_type = args.get('type')
+        item_id = args.get('item_id')
+        form_type = args.get('form_type')
+        parent_id = args.get('parent_id')
+        types = args.get('types',[])
+        if types and isinstance(types, str):
+            types = [types]
+        controls = []
+        form = None
+        if types:
+            if not active_type:
+                active_type = next(iter([t for t in types]), None)    
         
-        menu = next((i for i in world_app.items if i.instance.type.is_derived_from('Menu')),None)
-
-        if views:
-            active_view = None
-            active_subview = None
-            if not active_view_name:
-                active_view = next((v for v in views), None)
-                if active_view:
-                    active_view_name = active_view.name
-            else:
-                active_view = next((v for v in views if v.name == active_view_name), None)
-            
-            if active_view:
-                view_query = active_view.attributes.get('query')
-                if view_query:
-                    query = view_query
-
-                view_types = active_view.attributes.get('types')
-                if view_types:
-                    types = view_types
-
-                subviews = [i for i in active_view.items if i.instance.type.is_derived_from('View')]
-                if not active_subview_name:
-                    active_subview = next((v for v in subviews), None)
-                    if active_subview:
-                        active_subview_name = active_subview.name
-                else:
-                    active_subview = next((v for v in subviews if v.name == active_subview_name), None)
-
-            if active_subview:
-                subview_query = active_subview.attributes.get('query')
-                if subview_query:
-                    query = subview_query
-
-                subview_types = active_subview.attributes.get('types')
-                if subview_types:
-                    types = subview_types
+        if active_type:
+            form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': [active_type], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
         
-        if query:
-            items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
-
-        return render_template('apps.html', 
-                                world=world_app,
-                                item=app,
-                                apps=apps, 
-                                org=org,
-                                account=account,
-                                items=items, 
-                                views=views, 
-                                active_view_name=active_view_name, 
-                                active_app_name=active_app_name, 
-                                active_subview_name = active_subview_name, 
-                                types=types,
-                                menu=menu)
+        if form:
+            controls = [i for i in form.items if i.instance.type.is_derived_from('Ctrl')]
+        return render_template('form.html', org=org, form=form, controls=controls,  types=types, active_type=active_type )
 
     def post(self, module, args, path=None, content_type='text/html'):
         pass
