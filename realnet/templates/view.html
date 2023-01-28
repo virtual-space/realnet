@@ -71,7 +71,7 @@
                         </th>
                         <td>
                             {% if item.attributes['app'] == 'true' %}
-                                <a  href="/apps/{{item.name.lower()}}">{{item.name}}</a>
+                                <a  href="?app={{item.name.lower()}}">{{item.name}}</a>
                             {% else %}
                                 <a  href="/items/{{item.id}}">{{item.name}}</a>
                             {% endif %}
@@ -86,10 +86,10 @@
                         <td>
                             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                                 <div class="btn-group mr-2" role="group" aria-label="First group">
-                                  <a href="/forms?item_id={{item.id}}" class="btn btn-warning">Edit</a>
+                                    <a href="{{root_url}}&item={{item.id}}&form=edit" class="btn btn-warning">Edit</a>
                                 </div>
                                 <div class="btn-group mr-2" role="group" aria-label="Second group">
-                                  <button type="button" class="btn btn-danger">Delete</button>
+                                    <a href="{{root_url}}&item={{item.id}}&form=delete" class="btn btn-danger">Delete</a>
                                 </div>
                             </div>
                         </td>

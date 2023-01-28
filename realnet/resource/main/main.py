@@ -12,16 +12,24 @@ class Main(Resource):
         active_app_name = args.get('app')
         active_view_name = args.get('view')
         active_subview_name = args.get('subview')
+        active_form_name = args.get('form')
+        root_url = ''
+
+        form = None
 
         app = next((a for a in apps if a.name == 'Main'), None)
 
         if apps:
             if active_app_name:
                 app = next((a for a in apps if a.name.lower() == active_app_name),None)
+                root_url = '?app={}'.format(app.name.lower())
 
+        if active_form_name:
+            form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': [active_form_name], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
+        
         types = app.attributes.get('types',[]) if app.attributes else []
-        if app.instance.type.types:
-            import_types(module, app.instance.type.types)
+        # if app.instance.type.types:
+        #    import_types(module, app.instance.type.types)
 
         views = [i for i in app.items if i.instance.type.is_derived_from('View')]
         items = []
@@ -81,7 +89,9 @@ class Main(Resource):
                                 active_app_name=active_app_name, 
                                 active_subview_name = active_subview_name, 
                                 types=types,
-                                menu=menu)
+                                menu=menu,
+                                form=form,
+                                root_url=root_url)
 
     def post(self, module, args, path=None, content_type='text/html'):
         pass

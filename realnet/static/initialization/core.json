@@ -134,7 +134,7 @@
                     "type": "AppForm"
                 },
                 {
-                    "name": "Menu",
+                    "name": "AppsMenu",
                     "type": "AppsMenu"
                 },
                 {
@@ -223,35 +223,19 @@
                 {
                     "name": "TypesForm",
                     "type": "Form"
-                },
-                {
-                    "name": "TypesMenu",
-                    "type": "Menu"
-                },
-                {
-                    "name": "TypesView",
-                    "type": "View"
-                },
-                {
-                    "name": "TypesQuery",
-                    "type": "Query"
                 }
             ],
             "instances": [
                 {
                     "name": "All",
-                    "type": "TypesView"
+                    "type": "ListView"
                 },
                 {
-                    "name": "Query",
-                    "type": "TypesQuery"
-                },
-                {
-                    "name": "Form",
+                    "name": "TypesForm",
                     "type": "TypesForm"
                 },
                 {
-                    "name": "Menu",
+                    "name": "TypesMenu",
                     "type": "TypesMenu"
                 },
                 {

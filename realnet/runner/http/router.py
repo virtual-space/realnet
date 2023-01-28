@@ -90,9 +90,15 @@ def router(endpoint_name, path):
 
     endpoint = context.get_endpoint(context, endpoint_name)
 
-    args = request.args.to_dict()
+    if endpoint:
+        args = request.args.to_dict()
 
-    if request.method.lower() == 'post' or request.method.lower() == 'put':
-        args |= request.form.to_dict() 
+        if request.method.lower() == 'post' or request.method.lower() == 'put':
+            args |= request.form.to_dict() 
 
-    return endpoint.invoke(context, request.method, args, path=path, content_type=content_type)
+        return endpoint.invoke(context, request.method, args, path=path, content_type=content_type)
+    else:
+        return jsonify(isError=True,
+                        message="Failure",
+                        statusCode=404,
+                        data='Not found'.format(id)), 404

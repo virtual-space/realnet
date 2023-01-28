@@ -71,7 +71,7 @@
                         <button type="button" class="btn btn-primary">Filters</button>
                       </div>
                       <div class="btn-group mr-2" role="group" aria-label="Second group">
-                        <a href="/forms?types={{types|join('&types=')}}" class="btn btn-primary">Add</a>
+                        <a href="{{root_url}}&form=add" class="btn btn-primary">Add</a>
                       </div>
                   </div>
               </form>
@@ -108,13 +108,13 @@
     {% endfor %}
     </div>
   </main>
-  {% for form_name in forms%}
-  <div class="modal fade" id="{{forms[form_name].name}}Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  {% if form %}
+  <div class="modal fade" id="form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form action="{{forms[form_name].attributes['path']}}" method="{{forms[form_name].attributes['method']}}">
+        <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add new account</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{{form.name}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -158,14 +158,21 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Create Account</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-  {% endfor %}
+  {% endif %}
 </div>
   {{ bootstrap.load_js() }}
+  {% if form %}
+    <script>
+      $(document).ready(function(){
+        $("#form").modal('show');
+      }); 
+    </script>
+  {% endif %}
 </body>
 </html>
