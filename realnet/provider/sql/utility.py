@@ -86,8 +86,8 @@ def get_type_instances(type):
     instances = []
     if type.instances:
         instances.extend(type.instances)
-    if type.base:
-        instances.extend(get_type_instances(type.base))
+    # if type.base:
+    #     instances.extend(get_type_instances(type.base))
     return instances
 
 def build_item( item_id,

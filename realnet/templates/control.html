@@ -1,0 +1,19 @@
+{% if control.instance.type.name == 'EditCtrl' %}
+    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+    <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" >
+{% elif control.instance.type.name == 'MultiSelectCtrl' %}
+    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+    <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
+        {% if control.attributes['typenames'] %}
+            {% for typename in typenames %}
+                <option value="{{typename}}">{{typename}}</option>
+            {% endfor %}
+        {% else %}
+            {% for opt in control.attributes['options'] %}
+                <option value="{{opt}}">{{opt}}</option>
+            {% endfor %}    
+        {% endif %}
+    </select>
+{% else %}
+    {{control.instance.type.name}}
+{% endif %}

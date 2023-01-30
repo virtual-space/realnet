@@ -40,7 +40,7 @@
 <div class="container-fluid p-0">
   <header class="masthead mb-auto">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="/">{{app.name}}</a>
+      <a class="navbar-brand" href="/">REALNET</a>
       <button class="navbar-toggler" 
               type="button" 
               data-toggle="collapse" 
@@ -52,30 +52,14 @@
           {% for app in apps %}
             {% if active_app_name == app.name | lower %}
             <li class="nav-item active">
-              <a class="nav-link" href="?app={{app.name | lower}}">{{app.name}}</a>
+              <a class="nav-link" href="/{{app.name | lower}}">{{app.name}}</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="?app={{app.name | lower}}">{{app.name}}</a>
+              <a class="nav-link" href="/{{app.name | lower}}">{{app.name}}</a>
             </li>
             {% endif %}
           {% endfor %}
-        </ul>
-        <ul class="nav mr-auto">
-          <li>
-              <form class="form-inline" action="typemgmt" method="get" role="form">
-                  <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                      <div class="btn-group mr-2" role="group" aria-label="First group">
-                        <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                        <button type="button" class="btn btn-primary">Filters</button>
-                      </div>
-                      <div class="btn-group mr-2" role="group" aria-label="Second group">
-                        <a href="{{root_url}}&form=add" class="btn btn-primary">Add</a>
-                      </div>
-                  </div>
-              </form>
-          </li>
         </ul>
         <ul class="nav navbar-right">
           <li class="nav-item dropdown endpoint-inline my-2 my-lg-0">
@@ -99,13 +83,7 @@
   </header>
   <main role="main">
     <div class="container-fluid p-0">
-      {% for view in views %}
-      {% if active_view_name and view.name == active_view_name %}
-        {% with item=item, items=items %}
-            {% include "view.html" %}
-        {% endwith %}
-      {% endif %}
-    {% endfor %}
+      {% block content %}{% endblock %}
     </div>
   </main>
   {% if form %}
@@ -120,6 +98,11 @@
             </button>
           </div>
           <div class="modal-body">
+            {% for control in form.items %}
+              {% with item=item, control=control %}
+                {% include "control.html" %}
+              {% endwith %}
+            {% endfor %}
             <!--
               <div class="form-group">
                 <label for="username">Username</label>

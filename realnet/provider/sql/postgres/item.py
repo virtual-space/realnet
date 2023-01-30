@@ -23,7 +23,9 @@ class PostgresItemProvider(ItemProvider):
         pass
 
     def get_item(self, id):
-        pass
+        item_model = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
+        tbn = get_types_by_name(self.org_id)
+        return item_model_to_item(self.org_id, item_model, tbn)
 
     def delete_item(self, id):
         pass
@@ -145,7 +147,7 @@ class PostgresItemProvider(ItemProvider):
         if parent_id:
             data['parent_id'] = parent_id
         else:
-            if 'children' in data and str(data['children']).lower() == 'true': 
+            if 'any_level' in data and str(data['any_level']).lower() == 'true': 
                 pass
             else:
                 data['parent_id'] = None
@@ -199,7 +201,7 @@ class PostgresItemProvider(ItemProvider):
         if parent_id:
             conditions.append(ItemModel.parent_id == parent_id)
         else:
-            if 'children' in data and str(data['children']).lower() == 'true': 
+            if 'any_level' in data and str(data['any_level']).lower() == 'true': 
                 pass
             else:
                 conditions.append(ItemModel.parent_id == None)

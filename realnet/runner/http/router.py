@@ -81,12 +81,17 @@ def router(endpoint_name, path):
     else:
         account = current_token.account
 
+    context = contextProvider.context(account.org.id, account.id)
+
     if endpoint_name == 'login':
         return render_template('login.html')
     elif not endpoint_name:
-        endpoint_name = 'main'
+        endpoints = context.get_endpoints(context)
+        endpoint = next((e for e in endpoints), None)
+        endpoint_name = endpoint.item.name.lower()
+        return redirect('/{}'.format(endpoint_name))
     
-    context = contextProvider.context(account.org.id, account.id)
+    
 
     endpoint = context.get_endpoint(context, endpoint_name)
 

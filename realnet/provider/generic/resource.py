@@ -18,7 +18,7 @@ class GenericResourceProvider(ResourceProvider):
         account = module.get_account()
         resources = [r for r in module.find_items({ 'types': ['Resource'], 
                                                     'name': resource_name, 
-                                                    'children': 'true',
+                                                    'any_level': 'true',
                                                     'keys': ['module'], 
                                                     'values': ['true']}) if module.can_account_read_item(account, r)]
         resource_item = next(iter(resources), None)

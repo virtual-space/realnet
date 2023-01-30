@@ -1,0 +1,38 @@
+{% extends "main.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">{{item.name}}@{{active_subview_name}}</a>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active" href="&subview=general">General</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=query">Query</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=views">Views</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=types">Types</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=endpoints">Endpoints</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=resources">Resources</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="&subview=files">Files</a>
+    </li>
+  </ul>
+</nav>
+
+  {% for view in views %}
+    {% if active_view_name and view.name == active_view_name %}
+      {% with item=item, items=items %}
+          {% include "view.html" %}
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+    

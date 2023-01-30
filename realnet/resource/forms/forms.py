@@ -20,7 +20,7 @@ class Forms(Resource):
                 active_type = next(iter([t for t in types]), None)    
         
         if active_type:
-            form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': [active_type], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
+            form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': [active_type], 'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
         
         if form:
             controls = [i for i in form.items if i.instance.type.is_derived_from('Ctrl')]
