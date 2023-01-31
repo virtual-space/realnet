@@ -92,7 +92,7 @@
       <div class="modal-content">
         <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{form.name}}</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -141,7 +141,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
           </div>
         </form>
       </div>

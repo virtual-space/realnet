@@ -20,109 +20,84 @@ def collect_inheritance_hierarchy(children, td, instances):
                 # logging.getLogger().info('*** {} is derived from {} ***'.format(derived_type['name'], name))
             collect_inheritance_hierarchy(children, derived_type, instances)
 
-def import_types(module, type_data):
-        types = dict()
-        instances = []
-        commit_needed = False
-        
-        primitive_types = []
-        derived = dict()
-        base_types = dict()
 
 
-        for td in type_data:
-            name = td.get('name')
-            if name:
-                base_types[name] = td
+def collect_type_dependencies(module, td):
+    name = td.get('name')
+    deps = set()
+    base_name = td.get('base')
+    if base_name:
+        deps.add(base_name)
+    for instance in td.get('instances', []):
+        deps.add(instance['type'])
+    return deps
 
-            base_name = td.get('base')
-            if base_name:
-                if base_name in derived:
-                    derived[base_name].append(td)
-                else:
-                    derived[base_name] = [td]
-            else:
-                primitive_types.append(td)
-
-        existing_types_by_name = {t.name:t for t in module.get_types()}
-        
-        for td in type_data:
-            existing_type = existing_types_by_name.get(td['name'])
-            if not existing_type:
-                base_id = None
-                base_instances = []
-                base_name = td.get('base')
-                if base_name:
-                    base_type = existing_types_by_name.get(base_name)
-                    if not base_type:
-                        existing_base_type = types.get(base_name)
-                        if existing_base_type:
-                            base_type = existing_base_type['type']
-                    if base_type:
-                        base_id = base_type.id
-
-                params = td | {'base_id': base_id}
-
-                existing_type = module.create_type(**params)
-                
-                for instance in td.get('instances', []):
-                    instances.append({ "instance": instance, "parent_type_name": existing_type.name})
-                for base_instance in base_instances:
-                    instances.append({ "instance": base_instance, "parent_type_name": existing_type.name})
-            
-            types[existing_type.name] = {"type": existing_type, "instances": td.get('instances', []) }
-
-        for td in type_data:
+def collect_type_defs(module, type_data, type_defs):
+    for td in type_data:
+        name = td.get('name')
+        deps = collect_type_dependencies(module, td)
+        if not name in type_defs: 
+            type_defs[name] = {'type': td, 'deps': deps}
             child_types = td.get('types')
             if child_types:
-                import_types(module, child_types)
+                collect_type_defs(module, child_types, type_defs)
 
-        existing_types_by_name = {t.name:t for t in module.get_types()}
-        for td in type_data:
-            existing_type = existing_types_by_name.get(td['name'])
-            base = td.get('base')
-            if not existing_type and base:
-                params = td | {'base_id': types[base]['type']['id']}
-                existing_type = module.create_type(**params)
-                for instance in td.get('instances', []):
-                    instances.append({ "instance": instance, "parent_type_name": existing_type.name})                     
-            
-            types[existing_type.name] = {"type": existing_type, "instances": td.get('instances', []) }
-    
-        
-        subinstances = []
+def build_type(module, type, existing_types_by_name):
+    base_id = None
+    base_name = type.get('base')
+    if base_name:
+        base_type = existing_types_by_name.get(base_name)
+        if base_type:
+            base_id = base_type.id
 
-        for ie in instances:
-            instance = ie['instance']
-            parent_type_name = ie['parent_type_name']
-            traverse_instance(subinstances, instance, parent_type_name)
+    params = type | {'base_id': base_id}
 
-        instances.extend(subinstances)   
+    created_type = module.create_type(**params)
 
-        for pt in primitive_types:
-            collect_inheritance_hierarchy(derived, pt, instances) 
-
-        for ie in instances:
-            instance = ie['instance']
-            parent_type_name = ie['parent_type_name']
-            target = types.get(instance['type'], existing_types_by_name.get(instance['type']))
-            if target:
-                parent = types.get(parent_type_name, existing_types_by_name.get(parent_type_name))
-                attributes = instance.get('attributes', dict())
-                is_public = instance.get('public')
-                if is_public:
-                    is_public = is_public.lower() in ['true', 'True', '1']
-                
-                type_id = target.id if isinstance(target, Type) else target['type'].id 
-                parent_type_id = parent.id if isinstance(parent, Type) else parent['type'].id  
-                module.create_instance(**{'id': str(uuid.uuid4()),
+    for instance in type.get('instances', []):
+        attributes = instance.get('attributes', dict())
+        is_public = instance.get('public')
+        if is_public:
+            is_public = is_public.lower() in ['true', 'True', '1']
+        type_id = existing_types_by_name[instance['type']].id
+        if type_id:
+            module.create_instance(**{  'id': str(uuid.uuid4()),
                                         'name': instance['name'],
-                                        'attributes': instance.get('attributes'),
+                                        'attributes': attributes,
                                         'public': is_public,
                                         'type_id': type_id,
-                                        'parent_type_id': parent_type_id})
-        
-        return [dv['type'] for dv in types.values()]
+                                        'parent_type_id': created_type.id})
+
+    existing_types_by_name[created_type.name] = created_type
+
+def build_type_tree(module, queue, built, existing_types_by_name):
+    to_build = []
+    on_hold = []
+
+    for element in queue:
+        if element['deps'] <= built:
+            to_build.append(element)
+        else:
+            on_hold.append(element)
+
+    for element in to_build:
+        build_type(module, element['type'], existing_types_by_name)
+        built.add(element['type']['name'])
+
+    if on_hold:
+        build_type_tree(module, on_hold, built, existing_types_by_name)
+
+
+
+
+def import_types(module, type_data):
+    type_defs = dict()
+    collect_type_defs(module, type_data, type_defs)
+    existing_types_by_name = {t.name:t for t in module.get_types()}
+
+    build_type_tree(module, type_defs.values(), set(existing_types_by_name.keys()), existing_types_by_name)
+
+
 
 def traverse_item(module, item_ids, items_by_id, children_by_id, item):
     parent_id = item.get('parent_id')
@@ -148,55 +123,6 @@ def get_base_types(module, type, base_types):
 def get_instance_types(module, instance):
     return get_base_types(module, instance.type, set())
 
-
-def materialize_instance(module, parent_item, instance):
-    pass
-
-
-def build_instance_tree(module, parent_item, instance):
-    for base_type in get_instance_types(module, instance):
-        for base_instance in base_type.instances:
-            materialize_instance(module, parent_item, base_instance)
-
-def build_item(module, item):
-    item_attributes = item.get('attributes', dict())
-    item_parent_id = item.get('parent_id')
-    item_id = item.get('id', str(uuid.uuid4()))
-    item_location = item.get('location')
-    if item_location and not isinstance(item_location,str):
-        item_location = json.dumps(item_location)
-    item_type = item.get('type')
-    item_name = item.get('name')
-    item_is_public = str(item.get('public')).lower() == 'true'
-    # item_visibility = VisibilityType.visible
-    item_tags = item.get('tags')
-
-    item_data = dict()
-
-    if item_parent_id == item_id:
-        item_data = {"id": item_id,
-                    "type": item_type,
-                    "attributes": item_attributes,
-                    "name": item_name,
-                    "location": item_location,
-                    #"visibility": item_visibility,
-                    "tags": item_tags,
-                    "public": item_is_public}
-    else:
-        item_data = {"id": item_id,
-                    "type": item_type,
-                    "attributes": item_attributes,
-                    "name": item_name,
-                    "location": item_location,
-                    # "visibility": item_visibility,
-                    "tags": item_tags,
-                    "parent_id": item_parent_id,
-                    "public": item_is_public}
-    created_item = module.create_item(**item_data)
-    
-    build_instance_tree(module, created_item, created_item.instance)
-
-    return created_item
 
 def import_items(module, items):
 
@@ -235,10 +161,6 @@ def import_items(module, items):
                         "parent_id": item_parent_id,
                         "public": item_is_public}
         created_item = module.create_item(**item_data)
-        
-        # return created_item
-        # for instance in item.get_child_instances():
-        #    materialize_instance(module, item, instance)
 
 def import_structure_from_resource(context, path):
     with open(os.path.join(os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir)),

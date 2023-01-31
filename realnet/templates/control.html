@@ -1,6 +1,18 @@
 {% if control.instance.type.name == 'EditCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" >
+{% elif control.instance.type.name == 'HiddenCtrl' %}
+    {% if control.attributes['source'] == 'control' %}
+        <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
+    {% else %}
+        {% if control.attributes['target'] == 'id' %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.id}}">
+        {% elif control.attributes['target'] == 'name' %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+        {% else %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
+        {% endif %}
+    {% endif %}
 {% elif control.instance.type.name == 'MultiSelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>

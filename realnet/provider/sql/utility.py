@@ -86,8 +86,8 @@ def get_type_instances(type):
     instances = []
     if type.instances:
         instances.extend(type.instances)
-    # if type.base:
-    #     instances.extend(get_type_instances(type.base))
+    if type.base:
+        instances.extend(get_type_instances(type.base))
     return instances
 
 def build_item( item_id,
@@ -147,6 +147,8 @@ def build_item( item_id,
         db.add(acl)
         db.commit()
     
+    # instances1 = instance.type.instances
+    # instances2 = instance.type.base.instances
     instances = get_type_instances(instance.type)
     for child_instance in instances:
         attributes = get_type_attributes(child_instance.type)

@@ -55,42 +55,81 @@
             "name": "Form",
             "base": "Type",
             "attributes": {
-                "form": "true"
+                "form": "true",
+                "method": "post"
             }
         },
         {
             "name": "DeleteForm",
             "base": "Form",
             "attributes": {
-                "form": "true"
-            }
-        },
-        {
-            "name": "AddForm",
-            "base": "Form",
-            "attributes": {
-                "form": "true"
+                "delete": "true",
+                "title_prefix": "Delete",
+                "submit_text": "Delete"
             },
             "instances": [
                 {
-                    "name": "Name",
-                    "type": "EditCtrl",
+                    "name": "Id",
+                    "type": "HiddenCtrl",
                     "attributes": {
-                        "target": "name"
+                        "target": "id"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "CreateForm",
+            "base": "Form",
+            "attributes": {
+                "add": "true",
+                "title_prefix": "Create",
+                "submit_text": "Create"
+            },
+            "instances": [
+                {
+                    "name": "Type",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "source": "control"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "EditForm",
+            "base": "Form",
+            "attributes": {
+                "edit": "true",
+                "title_prefix": "Edit",
+                "submit_text": "Save"
+            },
+            "instances": [
+                {
+                    "name": "Id",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "id"
                     }
                 }
             ]
         },
         {
             "name": "UploadForm",
-            "base": "Type",
+            "base": "Form",
             "attributes": {
-                "form": "true"
+                "upload": "true",
+                "title_prefix": "Upload",
+                "submit_text": "Upload"
             }
         },
         {
             "name": "Ctrl",
             "base": "Type"
+        },
+        {
+            "name": "HiddenCtrl",
+            "base": "Ctrl"
         },
         {
             "name": "TabCtrl",
@@ -132,12 +171,11 @@
             },
             "types": [
                 {
-                    "name": "AppSettings",
-                    "base": "Form",
+                    "name": "AppCreateForm",
+                    "base": "CreateForm",
                     "attributes": {
                         "type": "App",
-                        "path": "apps",
-                        "method": "post"
+                        "path": "apps"
                     },
                     "instances": [
                         {
@@ -146,32 +184,35 @@
                             "attributes": {
                                 "target": "name"
                             }
-                        },
-                        {
-                            "name": "Types",
-                            "type": "MultiSelectCtrl",
-                            "attributes": {
-                                "target": "types",
-                                "typenames": "true"
-                            }
                         }
                     ]
                 },
                 {
-                    "name": "AppSettingsView",
-                    "base": "FormView",
+                    "name": "AppEditForm",
+                    "base": "EditForm",
+                    "attributes": {
+                        "type": "App",
+                        "path": "apps"
+                    },
                     "instances": [
                         {
-                            "name": "AppSettings",
-                            "type": "AppSettings"
+                            "name": "Name",
+                            "type": "EditCtrl",
+                            "attributes": {
+                                "target": "name"
+                            }
                         }
                     ]
                 }
             ],
             "instances": [
                 {
-                    "name": "Settings",
-                    "type": "AppSettingsView"
+                    "name": "AppCreateForm",
+                    "type": "AppCreateForm"
+                },
+                {
+                    "name": "AppEditForm",
+                    "type": "AppEditForm"
                 },
                 {
                     "name": "Views",
@@ -235,10 +276,6 @@
                     "type": "ListView"
                 },
                 {
-                    "name": "AppForm",
-                    "type": "AppForm"
-                },
-                {
                     "name": "AppsMenu",
                     "type": "AppsMenu"
                 },
@@ -271,11 +308,11 @@
             "types": [
                 {
                     "name": "TypesMenu",
-                    "type": "Menu"
+                    "base": "Menu"
                 },
                 {
                     "name": "TypesForm",
-                    "type": "Form"
+                    "base": "Form"
                 }
             ],
             "instances": [

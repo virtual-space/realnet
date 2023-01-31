@@ -89,8 +89,10 @@ class Apps(Resource):
                 if subview_types:
                     types = subview_types
 
-        if args.get('add') == 'true' or args.get('edit') == 'true':
-            pass
+        if args.get('add') == 'true':
+            form = next(iter([f for f in module.find_items({'keys': ['type','add'], 'values': ['App','true'], 'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
+        elif args.get('edit') == 'true':
+            form = next(iter([f for f in module.find_items({'keys': ['type','edit'], 'values': ['App','true'], 'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
         elif args.get('delete') == 'true':
             form = next(iter([f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
         
