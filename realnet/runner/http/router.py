@@ -94,14 +94,18 @@ def router(endpoint_name, path):
     
 
     endpoint = context.get_endpoint(context, endpoint_name)
+    method = request.method.lower()
 
     if endpoint:
         args = request.args.to_dict()
 
         if request.method.lower() == 'post' or request.method.lower() == 'put':
-            args |= request.form.to_dict() 
+            args |= request.form.to_dict()
 
-        return endpoint.invoke(context, request.method, args, path=path, content_type=content_type)
+        if '_method' in args:
+            method = args['_method'].lower() 
+
+        return endpoint.invoke(context, method, args, path=path, content_type=content_type)
     else:
         return jsonify(isError=True,
                         message="Failure",

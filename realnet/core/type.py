@@ -2,6 +2,44 @@ from abc import ABC, abstractmethod
 from .acl import Acl, AclType
 from .provider import *
 
+class Resource(ABC):
+    
+    @abstractmethod
+    def get(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def post(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def put(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def delete(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def message(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def run(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    @abstractmethod
+    def get_data(self, id):
+        pass
+
+    @abstractmethod
+    def update_data(self, id, storage):
+        pass
+
+    @abstractmethod
+    def delete_data(self, id):
+        pass
+    
 class Type:
     
     def __init__(self, id, name, base=None, attributes=dict(), instances=[], module=None, types=dict()):
@@ -136,31 +174,7 @@ class Authenticator:
         self.name = name
         self.url = url
 
-class Resource(ABC):
-    
-    @abstractmethod
-    def get(self, module, args, path=None, content_type='text/html'):
-        pass
 
-    @abstractmethod
-    def post(self, module, args, path=None, content_type='text/html'):
-        pass
-
-    @abstractmethod
-    def put(self, module, args, path=None, content_type='text/html'):
-        pass
-
-    @abstractmethod
-    def delete(self, module, args, path=None, content_type='text/html'):
-        pass
-
-    @abstractmethod
-    def message(self, module, args, path=None, content_type='text/html'):
-        pass
-
-    @abstractmethod
-    def run(self, module, args, path=None, content_type='text/html'):
-        pass
 
 class Endpoint:
     
@@ -168,6 +182,7 @@ class Endpoint:
         self.item = item
 
     def invoke(self, module, method, args, path=None, content_type='text/html'):
+        
         resource = module.get_resource(module, self.item.attributes['resource'])
         
         if resource:
@@ -177,9 +192,19 @@ class Endpoint:
             elif method_name == "post":
                 return resource.post(module, args, path, content_type)
             elif method_name == "put":
-                return resource.post(module, args, path, content_type)
+                return resource.put(module, args, path, content_type)
             elif method_name == "delete":
-                return resource.post(module, args, path, content_type)
+                return resource.delete(module, args, path, content_type)
+            elif method_name == "message":
+                return resource.message(module, args, path, content_type)
+            elif method_name == "run":
+                return resource.run(module, args, path, content_type)
+            elif method_name == "get_data":
+                return resource.get_data(args, path, content_type)
+            elif method_name == "update_data":
+                return resource.update_data(args, path, content_type)
+            elif method_name == "delete_data":
+                return resource.delete_data(args, path, content_type)
 
         return None
 

@@ -4,8 +4,20 @@
             "name": "Resource"
         },
         {
-            "name": "Type",
+            "name": "Item",
             "base": "Resource"
+        },
+        {
+            "name": "Instance",
+            "base": "Item"
+        },
+        {
+            "name": "Type",
+            "base": "Instance"
+        },
+        {
+            "name": "Attribute",
+            "base": "Instance"
         },
         {
             "name": "Exp",
@@ -14,14 +26,6 @@
         {
             "name": "Op",
             "base": "Type"
-        },
-        {
-            "name": "Instance",
-            "base": "Type"
-        },
-        {
-            "name": "Item",
-            "base": "Instance"
         },
         {
             "name": "Endpoint",
@@ -65,7 +69,9 @@
             "attributes": {
                 "delete": "true",
                 "title_prefix": "Delete",
-                "submit_text": "Delete"
+                "submit_text": "Delete",
+                "text": "If you are sure that you want to do this, click 'Delete'",
+                "_method": "delete"
             },
             "instances": [
                 {
@@ -73,6 +79,14 @@
                     "type": "HiddenCtrl",
                     "attributes": {
                         "target": "id"
+                    }
+                },
+                {
+                    "name": "Method",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "_method",
+                        "source": "form"
                     }
                 }
             ]
@@ -91,7 +105,7 @@
                     "type": "HiddenCtrl",
                     "attributes": {
                         "target": "type",
-                        "source": "control"
+                        "source": "form"
                     }
                 }
             ]
@@ -141,6 +155,10 @@
         },
         {
             "name": "MultiSelectCtrl",
+            "base": "Ctrl"
+        },
+        {
+            "name": "TypeSelectCtrl",
             "base": "Ctrl"
         },
         {
@@ -258,6 +276,96 @@
             ]
         },
         {
+            "name": "Items",
+            "base": "App",
+            "attributes": {
+                "types": ["Item"],
+                "query": {"types": ["Item"]}
+            },
+            "types": [
+                {
+                    "name": "ItemsMenu",
+                    "base": "Menu"
+                },
+                {
+                    "name": "ViewCreateForm",
+                    "base": "CreateForm",
+                    "attributes": {
+                        "type": "View",
+                        "path": "./views"
+                    },
+                    "instances": [
+                        {
+                            "name": "Name",
+                            "type": "EditCtrl",
+                            "attributes": {
+                                "target": "name"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "type": "TypeSelectCtrl",
+                            "attributes": {
+                                "target": "type"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "ViewEditForm",
+                    "base": "EditForm",
+                    "attributes": {
+                        "type": "View",
+                        "path": "./views"
+                    },
+                    "instances": [
+                        {
+                            "name": "Name",
+                            "type": "EditCtrl",
+                            "attributes": {
+                                "target": "name"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "ViewCreateForm",
+                    "type": "ViewCreateForm"
+                },
+                {
+                    "name": "ViewEditForm",
+                    "type": "ViewEditForm"
+                },
+                {
+                    "name": "ItemsMenu",
+                    "type": "ItemsMenu"
+                },
+                {
+                    "name": "items",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.items.items",
+                        "module_class": "Items",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "items",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "items",
+                        "resource": "items"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Apps",
             "base": "App",
             "attributes": {
@@ -351,16 +459,8 @@
     ],
     "items": [
         {
-            "name": "Apps",
-            "type": "Apps"
-        },
-        {
-            "name": "Types",
-            "type": "Types"
-        },
-        {
-            "name": "DeleteForm",
-            "type": "DeleteForm"
+            "name": "Items",
+            "type": "Items"
         }
     ]
 }

@@ -1,0 +1,44 @@
+{% extends "main.html" %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">{{item.name}}</a>
+  <ul class="nav nav-tabs">
+    {% for view in views %}
+      {% if active_view_name and (view.name | lower) == active_view_name %}
+      <li class="nav-item active">
+        <a class="nav-link active" href="?view={{view.name | lower}}">{{view.name}}</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="?view={{view.name | lower}}">{{view.name}}</a>
+      </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <ul class="nav mr-auto">
+    <li>
+        <form class="form-inline" action="typemgmt" method="get" role="form">
+            <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                  <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
+                  <button type="button" class="btn btn-primary">Filters</button>
+                </div>
+                <div class="btn-group mr-2" role="group" aria-label="Second group">
+                  <a href="{{root_path}}add=true" class="btn btn-primary">Add</a>
+                </div>
+            </div>
+        </form>
+    </li>
+  </ul>
+</nav>
+  {% for view in views %}
+    {% if active_view_name and (view.name | lower) == active_view_name %}
+      {% with item=item, items=items %}
+          {% include "view.html" %}
+      {% endwith %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+    

@@ -4,7 +4,7 @@ from typing import cast
 from urllib.parse import unquote
 import uuid
 
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, or_
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from realnet.core.provider import ItemProvider
@@ -28,7 +28,14 @@ class PostgresItemProvider(ItemProvider):
         return item_model_to_item(self.org_id, item_model, tbn)
 
     def delete_item(self, id):
-        pass
+        try:
+            if id:
+                target_item = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
+                if target_item:
+                    db.delete(target_item)
+                    db.commit()
+        except Exception as e:
+            print(e)
 
     def update_item(self, id, **kwargs):
         pass
@@ -117,6 +124,8 @@ class PostgresItemProvider(ItemProvider):
 
     def find_items(self, data):
 
+        op_or = False
+
         type_names = data.get('type_names')
         if type_names:
             data['type_names'] = type_names
@@ -182,6 +191,12 @@ class PostgresItemProvider(ItemProvider):
         if visibility:
             data['visibility'] = visibility
 
+        op = data.get('op')
+
+        if op:
+            if op.lower() == 'or':
+                op_or = True
+
         conditions = []
 
         if type_names:
@@ -232,9 +247,16 @@ class PostgresItemProvider(ItemProvider):
 
         
         if keys and values:
-            for kv in zip(keys, values):
-                # conditions.append(ItemModel.attributes[kv[0]].astext == kv[1])
-                conditions.append(ItemModel.attributes.op('->>')(kv[0]) == kv[1])
+            if len(keys) > 1 and op_or:
+                subconditions = []
+                for kv in zip(keys, values):
+                    subconditions.append(ItemModel.attributes.op('->>')(kv[0]) == kv[1])
+                
+                conditions.append(or_(*subconditions))
+            else:
+                for kv in zip(keys, values):
+                    # conditions.append(ItemModel.attributes[kv[0]].astext == kv[1])
+                    conditions.append(ItemModel.attributes.op('->>')(kv[0]) == kv[1])
 
         if visibility:
             conditions.append(ItemModel.visibility == VisibilityType[visibility])

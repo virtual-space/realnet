@@ -1,12 +1,13 @@
 from flask import render_template
 from realnet.core.type import Resource
 
-class Apps(Resource):
+class Items(Resource):
 
-    def render_apps(self, module, args, path=None, content_type='text/html'):
+    def render_item(self, module, args, path=None, content_type='text/html'):
         account = module.get_account()
         org = module.get_org()
         apps = module.get_apps(module)
+        forms = []
         
         active_app_name = 'apps'
         active_view_name = args.get('view')
@@ -14,11 +15,11 @@ class Apps(Resource):
 
         typenames = [t.name for t in module.get_types()]
 
-        app = next((a for a in apps if a.name == 'Apps'), None)
+        app = next((a for a in apps if a.name == 'Items'), None)
         
         if apps:
             if active_app_name:
-                app = next((a for a in apps if a.name.lower() == active_app_name),None)
+                app = next((a for a in apps if a.name.lower() == active_app_name), app)
 
         item = app
         
@@ -36,8 +37,8 @@ class Apps(Resource):
 
         if item_id:
             item = module.get_item(item_id)
-            if item:
-                app = item
+            # if item:
+            #    app = item
 
 
         views = [i for i in app.items if i.instance.type.is_derived_from('View')]
@@ -91,12 +92,14 @@ class Apps(Resource):
                 if subview_types:
                     types = subview_types
 
+        keys = { 'keys': ['type' for type in types ]  }
+
         if args.get('add') == 'true':
-            form = next(iter([f for f in module.find_items({'keys': ['type','add'], 'values': ['App','true'], 'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
+            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['CreateForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f)]
         elif args.get('edit') == 'true':
-            form = next(iter([f for f in module.find_items({'keys': ['type','edit'], 'values': ['App','true'], 'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
+            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
         elif args.get('delete') == 'true':
-            form = next(iter([f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]), None)
+            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['DeleteForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
         
         if query:
             if item and 'children' in query and query['children'] == 'true':
@@ -113,7 +116,7 @@ class Apps(Resource):
         else:
             root_path = root_path + '?'
 
-        return render_template('app.html', 
+        return render_template('item.html', 
                                 app=app,
                                 item=app,
                                 apps=apps, 
@@ -126,26 +129,35 @@ class Apps(Resource):
                                 active_subview_name = active_subview_name, 
                                 types=types,
                                 menu=menu,
-                                form=form,
+                                forms=forms,
                                 typenames=typenames,
                                 root_path=root_path)
 
     def get(self, module, args, path=None, content_type='text/html'):
-        return self.render_apps(module, args, path, content_type)
+        return self.render_item(module, args, path, content_type)
 
     def post(self, module, args, path=None, content_type='text/html'):
         module.create_item(**args)
-        return self.render_apps(module, args, path, content_type)
+        return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):
         pass
 
     def delete(self, module, args, path=None, content_type='text/html'):
         module.delete_item(args['id'])
-        return self.render_apps(module, args, path, content_type)
+        return self.render_item(module, args, path, content_type)
 
     def message(self, module, args, path=None, content_type='text/html'):
         pass
 
     def run(self, module, args, path=None, content_type='text/html'):
+        pass
+
+    def get_data(self, id):
+        pass
+
+    def update_data(self, id, storage):
+        pass
+
+    def delete_data(self, id):
         pass

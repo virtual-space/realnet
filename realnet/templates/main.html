@@ -86,58 +86,33 @@
       {% block content %}{% endblock %}
     </div>
   </main>
-  {% if form %}
-  <div class="modal fade" id="form" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  {% if forms %}
+  {% for form in forms %}
+  <div class="modal fade" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+            {% if item %}
+              <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+            {% else %}
+              <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+            {% endif %}
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
+            {% if form.attributes['text'] %}
+            <div>
+              {{form.attributes['text']}}
+            </div>
+            {% endif %}
             {% for control in form.items %}
-              {% with item=item, control=control %}
+              {% with item=item, control=control, form=form %}
                 {% include "control.html" %}
               {% endwith %}
             {% endfor %}
-            <!--
-              <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" name="username">
-              </div>
-              <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
-                <small id="emailHelp" class="form-text text-muted">User's existing email address.</small>
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password">
-              </div>
-              <div class="form-group">
-                <label for="repeat_password">Repeat Password</label>
-                <input type="password" class="form-control" id="repeat_password" name="repeat_password">
-              </div>
-              <div class="form-group">
-                <label for="type">Type</label>
-                <select class="form-control" id="type" name="type">
-                  {% for type in types %}
-                  <option>{{type}}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="type">Org Role</label>
-                <select class="form-control" id="role" name="role">
-                  {% for role in roles %}
-                  <option>{{role}}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            -->
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -147,13 +122,52 @@
       </div>
     </div>
   </div>
+  {% endfor %}
+  <div class="modal fade form" id="form_Add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        
+        <div class="modal-header">
+            {% if item %}
+            <h5 class="modal-title" id="exampleModalLabel">Add {{item.name}}</h5>
+            {% else %}
+              <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+            {% endif %}
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+          
+          <label for="control_type_select">Select Type:</label>
+          <select class="form-control" id="control_type_select" name="control_type_select" multiple>
+            {% for form in forms %}
+                <option value="{{form.name}}">{{form.name}}</option>
+            {% endfor %} 
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
   {% endif %}
 </div>
   {{ bootstrap.load_js() }}
-  {% if form %}
+  {% if forms %}
     <script>
       $(document).ready(function(){
-        $("#form").modal('show');
+         $('.form').on('change', (e) => {
+          if (e.target.value) {
+            form_id = 'form_' + e.target.Value
+            $('#form_Add').modal('hide');//hide();
+            $("#" + form_id).modal('show');
+           } 
+        });
+        $("#form_Add").modal('show');
+       
       }); 
     </script>
   {% endif %}

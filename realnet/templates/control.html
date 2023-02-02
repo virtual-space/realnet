@@ -4,6 +4,8 @@
 {% elif control.instance.type.name == 'HiddenCtrl' %}
     {% if control.attributes['source'] == 'control' %}
         <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
+    {% elif control.attributes['source'] == 'form' %}
+        <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{form.attributes[control.attributes['target']]}}">
     {% else %}
         {% if control.attributes['target'] == 'id' %}
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.id}}">
@@ -14,18 +16,31 @@
         {% endif %}
     {% endif %}
 {% elif control.instance.type.name == 'MultiSelectCtrl' %}
-    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
-        {% if control.attributes['typenames'] %}
-            {% for typename in typenames %}
-                <option value="{{typename}}">{{typename}}</option>
-            {% endfor %}
-        {% else %}
-            {% for opt in control.attributes['options'] %}
-                <option value="{{opt}}">{{opt}}</option>
-            {% endfor %}    
-        {% endif %}
-    </select>
-{% else %}
-    {{control.instance.type.name}}
+        <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
+            {% if control.attributes['typenames'] %}
+                {% for typename in typenames %}
+                    <option value="{{typename}}">{{typename}}</option>
+                {% endfor %}
+            {% else %}
+                {% for opt in control.attributes['options'] %}
+                    <option value="{{opt}}">{{opt}}</option>
+                {% endfor %}    
+            {% endif %}
+        </select>
+    {% elif control.instance.type.name == 'TypeSelectCtrl' %}
+        <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
+            {% if control.attributes['typenames'] %}
+                {% for typename in typenames %}
+                    <option value="{{typename}}">{{typename}}</option>
+                {% endfor %}
+            {% else %}
+                {% for opt in control.attributes['options'] %}
+                    <option value="{{opt}}">{{opt}}</option>
+                {% endfor %}    
+            {% endif %}
+        </select>
+    {% else %}
+        {{control.instance.type.name}}
 {% endif %}
