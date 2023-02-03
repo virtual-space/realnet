@@ -98,17 +98,7 @@
                 "add": "true",
                 "title_prefix": "Create",
                 "submit_text": "Create"
-            },
-            "instances": [
-                {
-                    "name": "Type",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "source": "form"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "EditForm",
@@ -116,7 +106,8 @@
             "attributes": {
                 "edit": "true",
                 "title_prefix": "Edit",
-                "submit_text": "Save"
+                "submit_text": "Save",
+                "_method": "put"
             },
             "instances": [
                 {
@@ -124,6 +115,14 @@
                     "type": "HiddenCtrl",
                     "attributes": {
                         "target": "id"
+                    }
+                },
+                {
+                    "name": "Method",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "_method",
+                        "source": "form"
                     }
                 }
             ]
@@ -201,6 +200,14 @@
                             "type": "EditCtrl",
                             "attributes": {
                                 "target": "name"
+                            }
+                        },
+                        {
+                            "name": "Type",
+                            "type": "HiddenCtrl",
+                            "attributes": {
+                                "target": "type",
+                                "source": "form"
                             }
                         }
                     ]
@@ -291,8 +298,7 @@
                     "name": "ViewCreateForm",
                     "base": "CreateForm",
                     "attributes": {
-                        "type": "View",
-                        "path": "./views"
+                        "type": "View"
                     },
                     "instances": [
                         {
@@ -306,7 +312,15 @@
                             "name": "Type",
                             "type": "TypeSelectCtrl",
                             "attributes": {
-                                "target": "type"
+                                "target": "type",
+                                "typenames": ["ListView"]
+                            }
+                        },
+                        {
+                            "name": "Id",
+                            "type": "HiddenCtrl",
+                            "attributes": {
+                                "target": "parent_id"
                             }
                         }
                     ]
@@ -315,8 +329,7 @@
                     "name": "ViewEditForm",
                     "base": "EditForm",
                     "attributes": {
-                        "type": "View",
-                        "path": "./views"
+                        "type": "View"
                     },
                     "instances": [
                         {
@@ -461,6 +474,10 @@
         {
             "name": "Items",
             "type": "Items"
+        },
+        {
+            "name": "DeleteForm",
+            "type": "DeleteForm"
         }
     ]
 }

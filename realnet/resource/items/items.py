@@ -99,11 +99,14 @@ class Items(Resource):
         elif args.get('edit') == 'true':
             forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
         elif args.get('delete') == 'true':
-            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['DeleteForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
+            forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
         
         if query:
             if item and 'children' in query and query['children'] == 'true':
-                query['parent_id'] = item.id
+                if args.get('edit') == 'true' or args.get('delete') == 'true':
+                    query['parent_id'] = app.id
+                else:
+                    query['parent_id'] = item.id
             items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
 
         root_path = '/apps'
@@ -118,7 +121,7 @@ class Items(Resource):
 
         return render_template('item.html', 
                                 app=app,
-                                item=app,
+                                item=item,
                                 apps=apps, 
                                 org=org,
                                 account=account,
@@ -138,13 +141,26 @@ class Items(Resource):
 
     def post(self, module, args, path=None, content_type='text/html'):
         module.create_item(**args)
+        del args['add']
         return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):
-        pass
+        params = dict()
+        if 'name' in args:
+            params['name'] = args['name']
+        if 'attributes' in args:
+            params['attributes'] = args['attributes']
+        module.update_item(args['id'], **params)
+        del args['id']
+        del args['edit']
+        del args['item_id']
+        return self.render_item(module, args, path, content_type)
 
     def delete(self, module, args, path=None, content_type='text/html'):
         module.delete_item(args['id'])
+        del args['id']
+        del args['delete']
+        del args['item_id']
         return self.render_item(module, args, path, content_type)
 
     def message(self, module, args, path=None, content_type='text/html'):

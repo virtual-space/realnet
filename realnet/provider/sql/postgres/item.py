@@ -38,7 +38,14 @@ class PostgresItemProvider(ItemProvider):
             print(e)
 
     def update_item(self, id, **kwargs):
-        pass
+        item_model = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
+        if item_model:
+            for key, value in kwargs.items():
+                if key == 'name':
+                    item_model.name = value
+                elif key == 'attributes':
+                    item_model.attributes = value
+            db.commit()
 
     def create_item(self, **kwargs):
         item_id=str(uuid.uuid4())

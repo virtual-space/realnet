@@ -87,89 +87,99 @@
     </div>
   </main>
   {% if forms %}
-  {% for form in forms %}
-  <div class="modal fade" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
-          <div class="modal-header">
-            {% if item %}
-              <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
-            {% else %}
-              <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
-            {% endif %}
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {% if form.attributes['text'] %}
-            <div>
-              {{form.attributes['text']}}
+    {% for form in forms %}
+    <div class="modal fade itemform" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+            <div class="modal-header">
+              {% if form.attributes['edit'] == 'true' %} 
+                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+              {% elif form.attributes['type'] %} 
+                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+              {% elif item %}
+                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+              {% endif %}
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-            {% endif %}
-            {% for control in form.items %}
-              {% with item=item, control=control, form=form %}
-                {% include "control.html" %}
-              {% endwith %}
-            {% endfor %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
-          </div>
-        </form>
+            <div class="modal-body">
+              {% if form.attributes['text'] %}
+              <div>
+                {{form.attributes['text']}}
+              </div>
+              {% endif %}
+              {% for control in form.items %}
+                {% with item=item, control=control, form=form %}
+                  {% include "control.html" %}
+                {% endwith %}
+              {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
-  {% endfor %}
-  <div class="modal fade form" id="form_Add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        
-        <div class="modal-header">
-            {% if item %}
-            <h5 class="modal-title" id="exampleModalLabel">Add {{item.name}}</h5>
-            {% else %}
-              <h5 class="modal-title" id="exampleModalLabel">Add</h5>
-            {% endif %}
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-          
-          <label for="control_type_select">Select Type:</label>
-          <select class="form-control" id="control_type_select" name="control_type_select" multiple>
-            {% for form in forms %}
-                <option value="{{form.name}}">{{form.name}}</option>
-            {% endfor %} 
-          </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
+    {% endfor %}
+    {% if forms | length > 1 %}
+      <div class="modal fade form" id="form_Add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              
+              <label for="control_type_select">Select Type:</label>
+              <select class="form-control" id="control_type_select" name="control_type_select" multiple>
+                {% for form in forms %}
+                    <option value="{{form.name}}">{{form.attributes['type']}}</option>
+                {% endfor %} 
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
 
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    {% endif %}
   {% endif %}
 </div>
   {{ bootstrap.load_js() }}
   {% if forms %}
+    {% if forms | length > 1 %}
+      <script>
+        $(document).ready(function(){
+          $('.form').on('change', (e) => {
+            if (e.target.value) {
+              form_id = 'form_' + e.target.value;
+              //console.log(e);
+              console.log(form_id);
+              $('#form_Add').modal('hide');//hide();
+              $("#" + form_id).modal('show');
+            } 
+          });
+          $("#form_Add").modal('show');
+        
+        }); 
+      </script>
+    {% else %}
     <script>
       $(document).ready(function(){
-         $('.form').on('change', (e) => {
-          if (e.target.value) {
-            form_id = 'form_' + e.target.Value
-            $('#form_Add').modal('hide');//hide();
-            $("#" + form_id).modal('show');
-           } 
-        });
-        $("#form_Add").modal('show');
-       
+        $(".itemform").modal('show');
       }); 
     </script>
+    {% endif %}
   {% endif %}
 </body>
 </html>
