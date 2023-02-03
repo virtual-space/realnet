@@ -2,7 +2,7 @@
 
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">{{item.name}}</a>
+  <a class="navbar-brand" href="/">{{app.name}}</a>
   <ul class="nav nav-tabs">
     {% for view in views %}
       {% if active_view_name and (view.name | lower) == active_view_name %}

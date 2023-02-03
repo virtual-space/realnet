@@ -1,11 +1,11 @@
 {
     "types": [
         {
-            "name": "Resource"
+            "name": "Item"
         },
         {
-            "name": "Item",
-            "base": "Resource"
+            "name": "Resource",
+            "base": "Item"
         },
         {
             "name": "Instance",
@@ -17,34 +17,58 @@
         },
         {
             "name": "Attribute",
-            "base": "Instance"
+            "base": "Item"
+        },
+        {
+            "name": "Account",
+            "base": "Item"
+        },
+        {
+            "name": "Role",
+            "base": "Item"
+        },
+        {
+            "name": "Group",
+            "base": "Item"
+        },
+        {
+            "name": "Org",
+            "base": "Item"
+        },
+        {
+            "name": "Auth",
+            "base": "Item"
         },
         {
             "name": "Exp",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Op",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Endpoint",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Task",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Exec",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "View",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "ListView",
+            "base": "View"
+        },
+        {
+            "name": "AttributeView",
             "base": "View"
         },
         {
@@ -57,7 +81,7 @@
         },
         {
             "name": "Form",
-            "base": "Type",
+            "base": "Item",
             "attributes": {
                 "form": "true",
                 "method": "post"
@@ -138,7 +162,7 @@
         },
         {
             "name": "Ctrl",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "HiddenCtrl",
@@ -166,79 +190,116 @@
         },
         {
             "name": "Query",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Menu",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "File",
-            "base": "Type"
+            "base": "Item"
         },
         {
             "name": "Page",
-            "base": "Type"
+            "base": "Item"
+        },
+        {
+            "name": "AppCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "App",
+                "path": "apps"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "source": "form"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "AppEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "App",
+                "path": "apps"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "ViewCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "View"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "TypeSelectCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "typenames": ["ListView"]
+                    }
+                },
+                {
+                    "name": "Id",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "parent_id"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "ViewEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "View"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                }
+            ]
         },
         {
             "name": "App",
-            "base": "Type",
+            "base": "Item",
             "attributes": {
                 "app": "true"
             },
-            "types": [
-                {
-                    "name": "AppCreateForm",
-                    "base": "CreateForm",
-                    "attributes": {
-                        "type": "App",
-                        "path": "apps"
-                    },
-                    "instances": [
-                        {
-                            "name": "Name",
-                            "type": "EditCtrl",
-                            "attributes": {
-                                "target": "name"
-                            }
-                        },
-                        {
-                            "name": "Type",
-                            "type": "HiddenCtrl",
-                            "attributes": {
-                                "target": "type",
-                                "source": "form"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "AppEditForm",
-                    "base": "EditForm",
-                    "attributes": {
-                        "type": "App",
-                        "path": "apps"
-                    },
-                    "instances": [
-                        {
-                            "name": "Name",
-                            "type": "EditCtrl",
-                            "attributes": {
-                                "target": "name"
-                            }
-                        }
-                    ]
-                }
-            ],
             "instances": [
-                {
-                    "name": "AppCreateForm",
-                    "type": "AppCreateForm"
-                },
-                {
-                    "name": "AppEditForm",
-                    "type": "AppEditForm"
-                },
                 {
                     "name": "Views",
                     "type": "ListView",
@@ -248,29 +309,8 @@
                     }
                 },
                 {
-                    "name": "Types",
-                    "type": "ListView",
-                    "attributes": {
-                        "types": ["Type"],
-                        "query": {"types": ["Type"], "children": "true"}
-                    }
-                    
-                },
-                {
-                    "name": "Endpoints",
-                    "type": "ListView",
-                    "attributes": {
-                        "types": ["Endpoint"],
-                        "query": {"types": ["Endpoint"], "children": "true"}
-                    }
-                },
-                {
-                    "name": "Resources",
-                    "type": "ListView",
-                    "attributes": {
-                        "types": ["Resource"],
-                        "query": {"types": ["Resource"], "children": "true"}
-                    }
+                    "name": "Attributes",
+                    "type": "AttributeView"
                 },
                 {
                     "name": "Files",
@@ -293,67 +333,12 @@
                 {
                     "name": "ItemsMenu",
                     "base": "Menu"
-                },
-                {
-                    "name": "ViewCreateForm",
-                    "base": "CreateForm",
-                    "attributes": {
-                        "type": "View"
-                    },
-                    "instances": [
-                        {
-                            "name": "Name",
-                            "type": "EditCtrl",
-                            "attributes": {
-                                "target": "name"
-                            }
-                        },
-                        {
-                            "name": "Type",
-                            "type": "TypeSelectCtrl",
-                            "attributes": {
-                                "target": "type",
-                                "typenames": ["ListView"]
-                            }
-                        },
-                        {
-                            "name": "Id",
-                            "type": "HiddenCtrl",
-                            "attributes": {
-                                "target": "parent_id"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "ViewEditForm",
-                    "base": "EditForm",
-                    "attributes": {
-                        "type": "View"
-                    },
-                    "instances": [
-                        {
-                            "name": "Name",
-                            "type": "EditCtrl",
-                            "attributes": {
-                                "target": "name"
-                            }
-                        }
-                    ]
                 }
             ],
             "instances": [
                 {
                     "name": "All",
                     "type": "ListView"
-                },
-                {
-                    "name": "ViewCreateForm",
-                    "type": "ViewCreateForm"
-                },
-                {
-                    "name": "ViewEditForm",
-                    "type": "ViewEditForm"
                 },
                 {
                     "name": "ItemsMenu",
@@ -420,34 +405,78 @@
             ]
         },
         {
-            "name": "Types",
+            "name": "Endpoints",
             "base": "App",
             "attributes": {
-                "types": ["Type"],
-                "query": {"types": ["Type"]}
+                "types": ["Endpoint"],
+                "query": {"types": ["Endpoint"], "any_level": "true"}
             },
-            "types": [
-                {
-                    "name": "TypesMenu",
-                    "base": "Menu"
-                },
-                {
-                    "name": "TypesForm",
-                    "base": "Form"
-                }
-            ],
             "instances": [
                 {
                     "name": "All",
                     "type": "ListView"
                 },
                 {
-                    "name": "TypesForm",
-                    "type": "TypesForm"
+                    "name": "endpoints",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.endpoints.endpoints",
+                        "module_class": "Endpoints",
+                        "module": "true"
+                    }
                 },
                 {
-                    "name": "TypesMenu",
-                    "type": "TypesMenu"
+                    "name": "endpoints",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "endpoints",
+                        "resource": "endpoints"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Resources",
+            "base": "App",
+            "attributes": {
+                "types": ["Resource"],
+                "query": {"types": ["Resource"], "any_level": "true"}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "resources",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.resources.resources",
+                        "module_class": "Resources",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "resources",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "resources",
+                        "resource": "resources"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Types",
+            "base": "App",
+            "attributes": {
+                "types": ["Type"],
+                "query": {"types": ["Type"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
                 },
                 {
                     "name": "types",
@@ -467,6 +496,99 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Accounts",
+            "base": "App",
+            "attributes": {
+                "types": ["Account"],
+                "query": {"types": ["Account"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "accounts",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.accounts.accounts",
+                        "module_class": "Accounts",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "accounts",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "accounts",
+                        "resource": "accounts"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Roles",
+            "base": "App",
+            "attributes": {
+                "types": ["Role"],
+                "query": {"types": ["Role"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "roles",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.roles.roles",
+                        "module_class": "Roles",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "roles",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "roles",
+                        "resource": "roles"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Forms",
+            "base": "App",
+            "attributes": {
+                "types": ["Form"],
+                "query": {"types": ["Form"], "any_level": "true"}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "forms",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.forms.forms",
+                        "module_class": "Forms",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "forms",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "forms",
+                        "resource": "forms"
+                    }
+                }
+            ]
         }
 
     ],
@@ -474,6 +596,50 @@
         {
             "name": "Items",
             "type": "Items"
+        },
+        {
+            "name": "Apps",
+            "type": "Apps"
+        },
+        {
+            "name": "Endpoints",
+            "type": "Endpoints"
+        },
+        {
+            "name": "Resources",
+            "type": "Resources"
+        },
+        {
+            "name": "Types",
+            "type": "Types"
+        },
+        {
+            "name": "Accounts",
+            "type": "Accounts"
+        },
+        {
+            "name": "Roles",
+            "type": "Roles"
+        },
+        {
+            "name": "Forms",
+            "type": "Forms"
+        },
+        {
+            "name": "AppCreateForm",
+            "type": "AppCreateForm"
+        },
+        {
+            "name": "AppEditForm",
+            "type": "AppEditForm"
+        },
+        {
+            "name": "ViewCreateForm",
+            "type": "ViewCreateForm"
+        },
+        {
+            "name": "ViewEditForm",
+            "type": "ViewEditForm"
         },
         {
             "name": "DeleteForm",

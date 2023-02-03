@@ -9,36 +9,39 @@ class Items(Resource):
         apps = module.get_apps(module)
         forms = []
         
-        active_app_name = 'apps'
+        active_app_name = self.get_endpoint_name()
         active_view_name = args.get('view')
         active_subview_name = args.get('subview')
 
         typenames = [t.name for t in module.get_types()]
 
-        app = next((a for a in apps if a.name == 'Items'), None)
+        app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
         
         if apps:
             if active_app_name:
                 app = next((a for a in apps if a.name.lower() == active_app_name), app)
 
-        item = app
-        
+        path_item = app
+        target_item = app
+
         path_segments = []
 
-        item_id = None
+        path_item_id = None
+        target_item_id = None
 
         if path:
             path_segments = path.split('/')
 
         if path_segments:
-            item_id = path_segments[0]
-        elif 'item_id' in args:
-            item_id = args['item_id']
+            path_item_id = path_segments[0]
+            path_item =  module.get_item(path_item_id)
+        
+        if 'item_id' in args:
+            target_item_id = args['item_id']
+            target_item = module.get_item(target_item_id)
 
-        if item_id:
-            item = module.get_item(item_id)
-            # if item:
-            #    app = item
+        if path_item:
+            app = path_item
 
 
         views = [i for i in app.items if i.instance.type.is_derived_from('View')]
@@ -102,17 +105,17 @@ class Items(Resource):
             forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
         
         if query:
-            if item and 'children' in query and query['children'] == 'true':
+            if path_item and 'children' in query and query['children'] == 'true':
                 if args.get('edit') == 'true' or args.get('delete') == 'true':
-                    query['parent_id'] = app.id
+                    query['parent_id'] = path_item.id
                 else:
-                    query['parent_id'] = item.id
+                    query['parent_id'] = target_item.id
             items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
 
-        root_path = '/apps'
+        root_path = '/' + self.get_endpoint_name()
 
-        if item_id:
-            root_path = root_path + '/' + item_id
+        if path_item_id:
+            root_path = root_path + '/' + path_item_id
 
         if active_view_name:
             root_path = '?view={}&'.format(active_view_name)
@@ -121,7 +124,7 @@ class Items(Resource):
 
         return render_template('item.html', 
                                 app=app,
-                                item=item,
+                                item=target_item,
                                 apps=apps, 
                                 org=org,
                                 account=account,
@@ -177,3 +180,6 @@ class Items(Resource):
 
     def delete_data(self, id):
         pass
+
+    def get_endpoint_name(self):
+        return 'items'

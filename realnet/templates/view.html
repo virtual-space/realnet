@@ -70,11 +70,7 @@
                             {{loop.index}}
                         </th>
                         <td>
-                            {% if item.attributes['app'] == 'true' %}
-                                <a  href="/apps/{{item.id}}">{{item.name}}</a>
-                            {% else %}
-                                <a  href="/items/{{item.id}}">{{item.name}}</a>
-                            {% endif %}
+                            <a  href="/items/{{item.id}}">{{item.name}}</a>
                         </td>
                         {% if view.columns %}
                             {% for column in view.columns%}
