@@ -16,6 +16,7 @@
       </style>
     <link rel="stylesheet" href="{{url_for('static', filename='/font-awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    {{ bootstrap.load_js() }}
 </head>
 <body>  
 
@@ -155,7 +156,6 @@
     {% endif %}
   {% endif %}
 </div>
-  {{ bootstrap.load_js() }}
   {% if forms %}
     {% if forms | length > 1 %}
       <script>

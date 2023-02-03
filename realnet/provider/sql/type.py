@@ -2,7 +2,7 @@ import uuid
 from realnet.core.type import Type
 from realnet.provider.sql.models import Type as TypeModel, session as db
 from realnet.core.provider import TypeProvider
-from .utility import get_types_by_name, create_instance_model, create_type_model, instance_model_to_instance
+from .utility import get_types_by_name, create_instance_model, create_type_model, instance_model_to_instance, get_derived_types
 
 class SqlTypeProvider(TypeProvider):
 
@@ -12,6 +12,9 @@ class SqlTypeProvider(TypeProvider):
 
     def get_types(self):
         return get_types_by_name(self.org_id).values()
+
+    def get_derived_types(self, type_ids):
+        return get_derived_types(self.org_id, type_ids)
 
     def get_type_by_id(self, id):
         return {t.id:t for t in get_types_by_name(self.org_id).values()}.get(id)

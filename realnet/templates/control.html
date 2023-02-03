@@ -45,6 +45,10 @@
             {% for typename in control.attributes['typenames'] %}
                 <option value="{{typename}}">{{typename}}</option>
             {% endfor %}
+        {% elif typenames %}
+            {% for typename in typenames %}
+                <option value="{{typename}}">{{typename}}</option>
+            {% endfor %}
         {% else %}
             {% for opt in control.attributes['options'] %}
                 <option value="{{opt}}">{{opt}}</option>

@@ -45,6 +45,24 @@
         <div class="col-4">
             <h4>{{types|join(',')}} - {{items|length}}</h4>
         </div>
+        <div class="col-4">
+            <ul class="nav mr-auto">
+                <li>
+                    <form class="form-inline" action="typemgmt" method="get" role="form">
+                        <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                              <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
+                              <button type="button" class="btn btn-primary">Filters</button>
+                            </div>
+                            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                              <a href="{{root_path}}add=true" class="btn btn-primary">Add</a>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+              </ul>
+        </div>
     </div>
     <div class="row  justify-content-center align-items-center">
         <div class="col-md-12">
@@ -95,6 +113,129 @@
             </table>
         </div>
     </div>
+    {% elif view.instance.type.name == 'AttributesView' %}
+    <div class="row  justify-content-center align-items-center mt-4 mb-4">
+        <div class="col-4">
+            <h4>Attributes - {{item.attributes.values() | length}}</h4>
+        </div>
+        <div class="col-4">
+            <ul class="nav mr-auto">
+                <li>
+                    <form class="form-inline" action="typemgmt" method="get" role="form">
+                        <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                              <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
+                              <button type="button" class="btn btn-primary">Filters</button>
+                            </div>
+                            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                              <a href="{{root_path}}add=true" class="btn btn-primary">Add</a>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+              </ul>
+        </div>
+    </div>
+    <div class="row  justify-content-center align-items-center">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Value</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key,value in item.attributes.items() %}
+                    <tr >
+                        <th scope="row">
+                            {{loop.index}}
+                        </th>
+                        <td>
+                            {{key}}
+                        </td>
+                        <td>
+                            {{value}}
+                        </td>
+                        <td>
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <a href="{{root_path}}edit=true&item_id={{item.id}}" class="btn btn-warning">Edit</a>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                    <a href="{{root_path}}delete=true&item_id={{item.id}}" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% elif view.instance.type.name == 'CodeView' %}
+      <div class="row justify-content-end mb-1 mt-1">
+        <div class="col-10">
+        </div>
+        <div class="col-2">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                  <button type="button" class="btn btn-success ml-2 mr-2">Reset</button>
+                  <button type="button" class="btn btn-warning" id="save">Save</button>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row justify-content-center align-items-center">
+        <div class="col-md-12">
+          <div id="editor" style="min-height: 85vh; width:100%;">Code goes here....</div>
+        </div>
+      </div>
+    <script src="{{url_for('static', filename='/scripts/ace/ace.js')}}"></script>
+    <script src="{{url_for('static', filename='/scripts/ace/ext-beautify.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+        var editor = ace.edit("editor");
+        editor.setOption("useWorker", false);
+        //console.log(editor);
+        editor.setTheme("ace/theme/monokai");
+        editor.setFontSize("18px");
+        var filename = $('#file_name').val();
+        if (filename.endsWith('.js')) {
+            editor.session.setMode("ace/mode/javascript");
+        } else if (filename.endsWith('.py')) {
+            editor.session.setMode("ace/mode/python");
+        } else if (filename.endsWith('.json')) {
+            editor.session.setMode("ace/mode/json");
+        } else if (filename.endsWith('.html')) {
+            editor.session.setMode("ace/mode/html");
+        } else if (filename.endsWith('.css')) {
+            editor.session.setMode("ace/mode/css");
+        }
+        
+        $('#save').on('click', function(event) {
+            //console.log('clicked');
+            const formData = new FormData();
+            var ed = ace.edit("editor");
+
+            formData.append('data', ed.getSession().getValue());
+            //console.log(ed.getSession().getValue());
+            $.ajax({
+                    url: '/admin/filemgmt/' + $('#file_id').val() + '/edit',
+                    type: 'POST',
+                    data : formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(result){ 
+                    window.location.reload();
+                    }   
+            });
+        });
+        });
+    </script>
     {% else %}
     type:{{view.type}} showing {{item.name}} with {{items | length}} items
     {% endif %}

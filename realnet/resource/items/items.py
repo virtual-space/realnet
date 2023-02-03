@@ -13,8 +13,6 @@ class Items(Resource):
         active_view_name = args.get('view')
         active_subview_name = args.get('subview')
 
-        typenames = [t.name for t in module.get_types()]
-
         app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
         
         if apps:
@@ -35,6 +33,7 @@ class Items(Resource):
         if path_segments:
             path_item_id = path_segments[0]
             path_item =  module.get_item(path_item_id)
+            target_item = path_item
         
         if 'item_id' in args:
             target_item_id = args['item_id']
@@ -109,7 +108,7 @@ class Items(Resource):
                 if args.get('edit') == 'true' or args.get('delete') == 'true':
                     query['parent_id'] = path_item.id
                 else:
-                    query['parent_id'] = target_item.id
+                    query['parent_id'] = path_item.id
             items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
 
         root_path = '/' + self.get_endpoint_name()
@@ -121,6 +120,15 @@ class Items(Resource):
             root_path = '?view={}&'.format(active_view_name)
         else:
             root_path = root_path + '?'
+
+        typenames = []
+
+        if types:
+            type_filter = set(types)
+            tbn = module.get_types()
+            types_by_id = {t.id:t for t in tbn}
+            type_ids = set([t.id for t in tbn if t.name in type_filter])
+            typenames = [types_by_id[t].name for t in module.get_derived_types(type_ids)]
 
         return render_template('item.html', 
                                 app=app,

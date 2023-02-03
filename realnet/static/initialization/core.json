@@ -4,20 +4,48 @@
             "name": "Item"
         },
         {
-            "name": "Resource",
-            "base": "Item"
-        },
-        {
             "name": "Instance",
             "base": "Item"
         },
         {
             "name": "Type",
-            "base": "Instance"
+            "base": "Instance",
+            "attributes": {
+                "types": ["Instance"],
+                "query": {"types": ["Instance"]}
+            },
+            "instances": [
+                {
+                    "name": "Instances",
+                    "type": "ListView"
+                },
+                {
+                    "name": "Attributes",
+                    "type": "AttributesView"
+                },
+                {
+                    "name": "Data",
+                    "type": "DataView"
+                }
+            ]
         },
         {
             "name": "Attribute",
             "base": "Item"
+        },
+        {
+            "name": "Func",
+            "base": "Item",
+            "instances": [
+                {
+                    "name": "Code",
+                    "type": "CodeView"
+                },
+                {
+                    "name": "Attributes",
+                    "type": "AttributesView"
+                }
+            ]
         },
         {
             "name": "Account",
@@ -40,6 +68,14 @@
             "base": "Item"
         },
         {
+            "name": "Group",
+            "base": "Item"
+        },
+        {
+            "name": "Client",
+            "base": "Item"
+        },
+        {
             "name": "Exp",
             "base": "Item"
         },
@@ -49,7 +85,13 @@
         },
         {
             "name": "Endpoint",
-            "base": "Item"
+            "base": "Item",
+            "instances": [
+                {
+                    "name": "Attributes",
+                    "type": "AttributesView"
+                }
+            ]
         },
         {
             "name": "Task",
@@ -68,7 +110,15 @@
             "base": "View"
         },
         {
-            "name": "AttributeView",
+            "name": "AttributesView",
+            "base": "View"
+        },
+        {
+            "name": "CodeView",
+            "base": "View"
+        },
+        {
+            "name": "DataView",
             "base": "View"
         },
         {
@@ -80,12 +130,42 @@
             "base": "View"
         },
         {
+            "name": "Resource",
+            "base": "Item",
+            "attributes": {
+                "types": ["Func"],
+                "query": {"types": ["Func"], "children": "true"}
+            },
+            "instances": [
+                {
+                    "name": "Methods",
+                    "type": "ListView"
+                },
+                {
+                    "name": "Attributes",
+                    "type": "AttributesView"
+                }
+            ]
+        },
+        {
             "name": "Form",
             "base": "Item",
             "attributes": {
                 "form": "true",
-                "method": "post"
-            }
+                "method": "post",
+                "types": ["Ctrl"],
+                "query": {"types": ["Ctrl"], "children": "true"}
+            },
+            "instances": [
+                {
+                    "name": "Controls",
+                    "type": "ListView"
+                },
+                {
+                    "name": "Attributes",
+                    "type": "AttributesView"
+                }
+            ]
         },
         {
             "name": "DeleteForm",
@@ -205,6 +285,139 @@
             "base": "Item"
         },
         {
+            "name": "CtrlCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Ctrl"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "TypeSelectCtrl",
+                    "attributes": {
+                        "target": "type"
+                    }
+                },
+                {
+                    "name": "Id",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "parent_id"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "FormCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Form"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "TypeSelectCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "typenames": ["CreateForm", "EditForm", "DeleteForm"]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "EndpointCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Endpoint"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "source": "form"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "ResourceCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Resource"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "source": "form"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "FuncCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Func"
+            },
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Type",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "type",
+                        "source": "form"
+                    }
+                },
+                {
+                    "name": "Id",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "parent_id"
+                    }
+                }
+            ]
+        },
+        {
             "name": "AppCreateForm",
             "base": "CreateForm",
             "attributes": {
@@ -310,7 +523,7 @@
                 },
                 {
                     "name": "Attributes",
-                    "type": "AttributeView"
+                    "type": "AttributesView"
                 },
                 {
                     "name": "Files",
@@ -589,6 +802,99 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Groups",
+            "base": "App",
+            "attributes": {
+                "types": ["Group"],
+                "query": {"types": ["Group"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "groups",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.groups.groups",
+                        "module_class": "Groups",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "groups",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "groups",
+                        "resource": "groups"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Auths",
+            "base": "App",
+            "attributes": {
+                "types": ["Auth"],
+                "query": {"types": ["Auth"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "auths",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.auths.auths",
+                        "module_class": "Auths",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "auths",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "auths",
+                        "resource": "auths"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Clients",
+            "base": "App",
+            "attributes": {
+                "types": ["Client"],
+                "query": {"types": ["Client"]}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "clients",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.clients.clients",
+                        "module_class": "Clients",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "clients",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "clients",
+                        "resource": "clients"
+                    }
+                }
+            ]
         }
 
     ],
@@ -624,6 +930,38 @@
         {
             "name": "Forms",
             "type": "Forms"
+        },
+        {
+            "name": "Groups",
+            "type": "Groups"
+        },
+        {
+            "name": "Auths",
+            "type": "Auths"
+        },
+        {
+            "name": "Clients",
+            "type": "Clients"
+        },
+        {
+            "name": "CtrlCreateForm",
+            "type": "CtrlCreateForm"
+        },
+        {
+            "name": "FormCreateForm",
+            "type": "FormCreateForm"
+        },
+        {
+            "name": "EndpointCreateForm",
+            "type": "EndpointCreateForm"
+        },
+        {
+            "name": "ResourceCreateForm",
+            "type": "ResourceCreateForm"
+        },
+        {
+            "name": "FuncCreateForm",
+            "type": "FuncCreateForm"
         },
         {
             "name": "AppCreateForm",

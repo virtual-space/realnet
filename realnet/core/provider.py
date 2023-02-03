@@ -7,6 +7,10 @@ class TypeProvider(ABC):
         pass
 
     @abstractmethod
+    def get_derived_types(self, type_ids):
+        pass
+
+    @abstractmethod
     def get_type_by_id(self, id):
         pass
 
@@ -386,6 +390,9 @@ class Context(Module):
 
     def get_types(self):
         return self.types.get_types()
+
+    def get_derived_types(self, type_ids):
+        return self.types.get_derived_types(type_ids)
 
     def get_type_by_id(self, id):
         return self.types.get_type_by_id(id)
