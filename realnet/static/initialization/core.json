@@ -649,6 +649,68 @@
             ]
         },
         {
+            "name": "Forms",
+            "base": "App",
+            "attributes": {
+                "types": ["Form"],
+                "query": {"types": ["Form"], "any_level": "true"}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "forms",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.forms.forms",
+                        "module_class": "Forms",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "forms",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "forms",
+                        "resource": "forms"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Files",
+            "base": "App",
+            "attributes": {
+                "types": ["File"],
+                "query": {"types": ["File"], "any_level": "true"}
+            },
+            "instances": [
+                {
+                    "name": "All",
+                    "type": "ListView"
+                },
+                {
+                    "name": "files",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.files.files",
+                        "module_class": "Files",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "files",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "files",
+                        "resource": "files"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Resources",
             "base": "App",
             "attributes": {
@@ -773,37 +835,6 @@
             ]
         },
         {
-            "name": "Forms",
-            "base": "App",
-            "attributes": {
-                "types": ["Form"],
-                "query": {"types": ["Form"], "any_level": "true"}
-            },
-            "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
-                {
-                    "name": "forms",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.forms.forms",
-                        "module_class": "Forms",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "forms",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "forms",
-                        "resource": "forms"
-                    }
-                }
-            ]
-        },
-        {
             "name": "Groups",
             "base": "App",
             "attributes": {
@@ -912,6 +943,14 @@
             "type": "Endpoints"
         },
         {
+            "name": "Forms",
+            "type": "Forms"
+        },
+        {
+            "name": "Files",
+            "type": "Files"
+        },
+        {
             "name": "Resources",
             "type": "Resources"
         },
@@ -926,10 +965,6 @@
         {
             "name": "Roles",
             "type": "Roles"
-        },
-        {
-            "name": "Forms",
-            "type": "Forms"
         },
         {
             "name": "Groups",

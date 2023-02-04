@@ -29,15 +29,15 @@ class Resource(ABC):
         pass
 
     @abstractmethod
-    def get_data(self, id):
+    def get_data(self, module, args, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def update_data(self, id, storage):
+    def update_data(self, module, args, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def delete_data(self, id):
+    def delete_data(self, module, args, path=None, content_type='text/html'):
         pass
     
 class Type:
@@ -174,6 +174,26 @@ class Authenticator:
         self.name = name
         self.url = url
 
+class Func:
+    
+    def __init__(self, item=None, callback = None):
+        self.item = item
+        self.callback = callback
+
+    def invoke(self, module, args, path=None, content_type='text/html'):
+        if self.callback:
+            return self.callback(module, args, path, content_type)
+        elif self.item:
+            code = self.item.attributes.get('code')
+            if not code:
+                data = module.get_data(self.item.id)
+                if data:
+                    code = data.decode('utf-8')
+                    result = dict()
+                    exec(code, {'module': module, 'args': args, 'path': path, 'content_type': content_type, 'item': self.item, 'result': result})
+                    return result['response']
+        else:
+            return None
 
 
 class Endpoint:
@@ -183,28 +203,10 @@ class Endpoint:
 
     def invoke(self, module, method, args, path=None, content_type='text/html'):
         
-        resource = module.get_resource(module, self.item.attributes['resource'])
+        func = module.get_resource_method(module, self.item.attributes['resource'], method.lower())
         
-        if resource:
-            method_name = method.lower()
-            if method_name == "get":
-                return resource.get(module, args, path, content_type)
-            elif method_name == "post":
-                return resource.post(module, args, path, content_type)
-            elif method_name == "put":
-                return resource.put(module, args, path, content_type)
-            elif method_name == "delete":
-                return resource.delete(module, args, path, content_type)
-            elif method_name == "message":
-                return resource.message(module, args, path, content_type)
-            elif method_name == "run":
-                return resource.run(module, args, path, content_type)
-            elif method_name == "get_data":
-                return resource.get_data(args, path, content_type)
-            elif method_name == "update_data":
-                return resource.update_data(args, path, content_type)
-            elif method_name == "delete_data":
-                return resource.delete_data(args, path, content_type)
+        if func:
+            return func.invoke(module, args, path, content_type)
 
         return None
 

@@ -180,13 +180,13 @@ class Items(Resource):
     def run(self, module, args, path=None, content_type='text/html'):
         pass
 
-    def get_data(self, id):
+    def get_data(self, module, args, path=None, content_type='text/html'):
         pass
 
-    def update_data(self, id, storage):
+    def update_data(self, module, args, path=None, content_type='text/html'):
         pass
 
-    def delete_data(self, id):
+    def delete_data(self, module, args, path=None, content_type='text/html'):
         pass
 
     def get_endpoint_name(self):
