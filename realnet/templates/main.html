@@ -279,7 +279,7 @@
             //$('#create_submit').hide();
             $('#create_submitting').show();
             $.getJSON({ 
-                        url: '/items/data/upload-url',
+                        url: $('#create').attr('action') + '/upload-url',
                         data: {
                           filename: $('#file')[0].files[0].name,
                           size: $('#file')[0].files[0].size,

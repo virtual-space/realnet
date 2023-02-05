@@ -40,7 +40,15 @@ class S3DataProvider(DataProvider):
         bucket.Object(id).delete()
 
     def get_data_upload_url(self, id):
-        pass
+        s3 = self.session.client('s3')
+        try:
+            response = s3.generate_presigned_post(self.bucket_name,
+                                                  id,
+                                                  ExpiresIn=3600)
+            return response
+        except Exception as e:
+            print(e)
+            return None
 
     def confirm_data_upload(self, id):
         pass
