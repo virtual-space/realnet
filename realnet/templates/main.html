@@ -13,7 +13,30 @@
         'GRAD' 0,
         'opsz' 48
       }
-      </style>
+      .custom-file-input ~ .custom-file-label::after {
+        content: "Choose file";
+        background-color:#0072bc;
+        color:white;
+        position: absolute;
+        top:38px;
+        left: 0px;
+      }
+      .custom-file .custom-file-input {
+        cursor: pointer;
+        height:76px;
+      }
+      label.custom-file-label {
+        border:0px;
+      }
+      .custom-file {
+        max-width: 300px;
+        margin-bottom:20px;
+        margin-top:20px;
+      }
+      .after-hide::after {
+        display: none;
+      }
+    </style>
     <link rel="stylesheet" href="{{url_for('static', filename='/font-awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
     {{ bootstrap.load_js() }}
@@ -92,36 +115,85 @@
     <div class="modal fade itemform" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
-            <div class="modal-header">
-              {% if form.attributes['edit'] == 'true' %} 
-                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
-              {% elif form.attributes['type'] %} 
-                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
-              {% elif item %}
-                <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
-              {% endif %}
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              {% if form.attributes['text'] %}
-              <div>
-                {{form.attributes['text']}}
+          {% if form.attributes['upload'] == 'true' %} 
+            <form enctype="multipart/form-data" id="create" action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+              <div class="modal-header">
+                {% if form.attributes['edit'] == 'true' %} 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+                {% elif form.attributes['type'] %} 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+                {% elif item %}
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                {% endif %}
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              {% endif %}
-              {% for control in form.items %}
-                {% with item=item, control=control, form=form %}
-                  {% include "control.html" %}
-                {% endwith %}
-              {% endfor %}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
-            </div>
-          </form>
+              <div class="modal-body">
+                {% if form.attributes['text'] %}
+                <div>
+                  {{form.attributes['text']}}
+                </div>
+                {% endif %}
+                {% for control in form.items %}
+                  {% with item=item, control=control, form=form %}
+                    {% include "control.html" %}
+                  {% endwith %}
+                {% endfor %}
+                <div class="form-group">
+                  <div class="custom-file" id="customFile" lang="sr">
+                    <input type="file" class="custom-file-input" id="file" aria-describedby="fileHelp" name="file">
+                      <label class="custom-file-label" for="file">
+                        File not selected...
+                      </label>
+                  </div>
+                </div>
+                <div class="progress" >
+                  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:20%;">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="create_cancel">Close</button>
+                <button type="submit" class="btn btn-primary" id="create_submit">{{form.attributes['submit_text']}}</button>
+                <button type="button" class="btn btn-primary" id="create_submitting" disabled>
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Uploading in progress...
+                </button>
+              </div>
+            </form>
+          {% else %} 
+            <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+              <div class="modal-header">
+                {% if form.attributes['edit'] == 'true' %} 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+                {% elif form.attributes['type'] %} 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+                {% elif item %}
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                {% endif %}
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {% if form.attributes['text'] %}
+                <div>
+                  {{form.attributes['text']}}
+                </div>
+                {% endif %}
+                {% for control in form.items %}
+                  {% with item=item, control=control, form=form %}
+                    {% include "control.html" %}
+                  {% endwith %}
+                {% endfor %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
+              </div>
+            </form>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -180,6 +252,98 @@
       }); 
     </script>
     {% endif %}
+    <script>
+      $(document).on('change', '#file', function(e) {
+        //console.log(e);
+        var nextSibling = e.target.nextElementSibling;
+        if (e.target.files && e.target.files.length > 0) {
+          nextSibling.innerText = e.target.files[0].name;
+          //$('#create_submit').show();
+          //$('#create_cancel').show();
+          //$('#update_submit').show();
+          //$('#update_cancel').show();
+          $('.custom-file-label').addClass('after-hide');
+          $('#create').submit();
+        } else {
+          nextSibling.innerText = '';
+          e.target.value = '';
+        }
+        
+      });
+      $(document).ready(function(){
+        $('.progress').hide();
+        $('#create_submit').hide();
+        $('#create_cancel').hide();
+        $('#create_submitting').hide();
+        $('#create').submit(function(){
+            //$('#create_submit').hide();
+            $('#create_submitting').show();
+            $.getJSON({ 
+                        url: '/items/data/upload-url',
+                        data: {
+                          filename: $('#file')[0].files[0].name,
+                          size: $('#file')[0].files[0].size,
+                          type: 'Receipt',
+                          app_id: $('#app_id').val(),
+                          processing: 'true',
+                          extracted: 'false'
+                        },
+                        success: function(result) {
+                          console.log('getjson', result);
+                          const formData = new FormData();
+                          Object.keys(result['url']['fields']).forEach(key => {
+                            formData.append(key, result['url']['fields'][key]);
+                          });
+                          formData.append('file', $('#file')[0].files[0]);
+                          $('.progress').show();
+                          $.ajax({
+                            xhr: function() {
+                                  var xhr = new window.XMLHttpRequest();
+                                  xhr.upload.addEventListener("progress", function(evt) {
+                                      console.log(evt);
+                                      if (evt.lengthComputable) {
+                                          var percentComplete = evt.loaded / evt.total;
+                                          percentComplete = parseInt(percentComplete * 100);
+                                          $('.progress-bar').css('width',percentComplete+"%");
+                                          $('.progress-bar').html(percentComplete+"%");
+                                          if (percentComplete === 100) {
+
+                                      }
+                                    }
+                                  }, false);
+                                  return xhr;
+                                },
+                            url: result['url']['url'],
+                            type: 'POST',
+                            data : formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(result2){
+                              console.log(result2);
+                              $.ajax({
+                                dataType: "json",
+                                type: 'POST',
+                                url: '/items/' + result['ticket'] + '/data/upload-confirm',
+                                data: JSON.stringify({
+                                  ticket: result['ticket'], 
+                                  filename: $('#file')[0].files[0].name, 
+                                  size: $('#file')[0].files[0].size,
+                                  processing: 'true',
+                                  extracted: 'false'}),
+                                contentType: "application/json; charset=utf-8",
+                                success: function(result3) {
+                                  window.location.href = '/apps/'  + $('#app_name').val() + '/' + result['ticket'];
+                                }
+                              });
+                            }
+                          });
+                        }
+                      });
+            
+            return false;
+        });
+      }); 
+    </script>
   {% endif %}
 </body>
 </html>

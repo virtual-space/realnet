@@ -418,6 +418,24 @@
             ]
         },
         {
+            "name": "FileCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "File",
+                "upload": "true",
+                "path": "files"
+            },
+            "instances": [
+                {
+                    "name": "Id",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "parent_id"
+                    }
+                }
+            ]
+        },
+        {
             "name": "AppCreateForm",
             "base": "CreateForm",
             "attributes": {
@@ -985,6 +1003,10 @@
         {
             "name": "FormCreateForm",
             "type": "FormCreateForm"
+        },
+        {
+            "name": "FileCreateForm",
+            "type": "FileCreateForm"
         },
         {
             "name": "EndpointCreateForm",

@@ -26,7 +26,7 @@ class GenericResourceProvider(ResourceProvider):
             # Check if there is a child function with that name and return that
             funcs = [f for f in resource_item.items_of_type('Func') if f.name.lower() == method_name.lower()]
             if funcs:
-                func = next(iter(funcs, None))
+                func = next(iter(funcs), None)
                 if func:
                     return Func(func)
 

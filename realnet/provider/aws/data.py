@@ -19,10 +19,14 @@ class S3DataProvider(DataProvider):
     def get_data(self, id):
         s3 = self.session.resource('s3')
         bucket = s3.Bucket(self.bucket_name)
-        s3_obj = bucket.Object(id).get()
-        if s3_obj:
-            return Data(id, s3_obj['ContentType'], s3_obj['ContentLength'], s3_obj['Body'].read())
-        else:
+        try:
+            s3_obj = bucket.Object(id)
+            if s3_obj:
+                s3_obj_data = s3_obj.get()
+                return Data(id, s3_obj_data['ContentType'], s3_obj_data['ContentLength'], s3_obj_data['Body'].read())
+            else:
+                return None
+        except:
             return None
 
     def update_data(self, id, storage):
@@ -34,3 +38,9 @@ class S3DataProvider(DataProvider):
         s3 = self.session.resource('s3')
         bucket = s3.Bucket(self.bucket_name)
         bucket.Object(id).delete()
+
+    def get_data_upload_url(self, id):
+        pass
+
+    def confirm_data_upload(self, id):
+        pass

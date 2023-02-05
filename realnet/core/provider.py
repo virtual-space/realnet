@@ -78,6 +78,14 @@ class DataProvider(ABC):
     def delete_data(self, id):
         pass
 
+    @abstractmethod
+    def get_data_upload_url(self, id):
+        pass
+
+    @abstractmethod
+    def confirm_data_upload(self, id):
+        pass
+
 class AclProvider(ABC):
     
     @abstractmethod
@@ -441,6 +449,12 @@ class Context(Module):
 
     def delete_data(self, id):
         return self.data.delete_data(id)
+
+    def get_data_upload_url(self, id):
+        return self.data.get_data_upload_url(id)
+
+    def confirm_data_upload(self, id):
+        return self.data.confirm_data_upload(id)
 
     def is_item_public(self, item):
         return self.acls.is_item_public(item)
