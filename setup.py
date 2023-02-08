@@ -26,6 +26,7 @@ setup(
     packages=find_packages(exclude=("tests",)),
     include_package_data=True,
     package_data={  'realnet.static.initialization': ['*'],
+                    'realnet.templates': ['*'],
                     'realnet.runner.http.static': ['scripts/ace/*', 'font-awesome/css/*', 'font-awesome/fonts/*']},
     install_requires=["python-dotenv",
                       "boto3",
