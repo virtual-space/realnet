@@ -118,6 +118,24 @@ class AppProvider(ABC):
     def get_apps(self, module):
         pass
 
+class RolesProvider(ABC):
+    
+    @abstractmethod
+    def get_roles(self, module):
+        pass
+
+    @abstractmethod
+    def create_role(self, **kwargs):
+        pass
+
+    @abstractmethod
+    def delete_role(self, id):
+        pass
+
+    @abstractmethod
+    def update_role(self, id, **kwargs):
+        pass
+
 class OrgProvider(ABC):
     
     @abstractmethod

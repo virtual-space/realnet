@@ -111,6 +111,7 @@
     </div>
   </main>
   {% if forms %}
+    <input type="hidden" id="parent_id" name="parent_id" value="{{item.id}}">
     {% for form in forms %}
     <div class="modal fade itemform" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -283,16 +284,15 @@
                         data: {
                           filename: $('#file')[0].files[0].name,
                           size: $('#file')[0].files[0].size,
-                          type: 'Receipt',
-                          app_id: $('#app_id').val(),
+                          parent_id: $('#parent_id').val(),
                           processing: 'true',
                           extracted: 'false'
                         },
                         success: function(result) {
                           console.log('getjson', result);
                           const formData = new FormData();
-                          Object.keys(result['url']['fields']).forEach(key => {
-                            formData.append(key, result['url']['fields'][key]);
+                          Object.keys(result['fields']).forEach(key => {
+                            formData.append(key, result['fields'][key]);
                           });
                           formData.append('file', $('#file')[0].files[0]);
                           $('.progress').show();
@@ -313,7 +313,7 @@
                                   }, false);
                                   return xhr;
                                 },
-                            url: result['url']['url'],
+                            url: result['url'],
                             type: 'POST',
                             data : formData,
                             processData: false,
@@ -323,16 +323,14 @@
                               $.ajax({
                                 dataType: "json",
                                 type: 'POST',
-                                url: '/items/' + result['ticket'] + '/data/upload-confirm',
+                                url: $('#create').attr('action') + '/upload-confirm',
                                 data: JSON.stringify({
-                                  ticket: result['ticket'], 
+                                  item_id: result['fields']['key'], 
                                   filename: $('#file')[0].files[0].name, 
-                                  size: $('#file')[0].files[0].size,
-                                  processing: 'true',
-                                  extracted: 'false'}),
+                                  size: $('#file')[0].files[0].size}),
                                 contentType: "application/json; charset=utf-8",
                                 success: function(result3) {
-                                  window.location.href = '/apps/'  + $('#app_name').val() + '/' + result['ticket'];
+                                  window.location.href = '/items/'  + result['fields']['key'];
                                 }
                               });
                             }

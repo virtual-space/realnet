@@ -29,6 +29,7 @@ setup(
                     'realnet.runner.http.static': ['scripts/ace/*', 'font-awesome/css/*', 'font-awesome/fonts/*']},
     install_requires=["python-dotenv",
                       "boto3",
+                      "Flask==2.2.2",
                       "SQLAlchemy==1.4.23",
                       "psycopg2-binary",
                       "sqlalchemy-serializer",
@@ -36,7 +37,6 @@ setup(
                       "GeoAlchemy2",
                       "Werkzeug",
                       "authlib",
-                      "Flask",
                       "flask-cors",
                       "bootstrap-flask"],
     entry_points={

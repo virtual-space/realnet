@@ -281,8 +281,24 @@
             "base": "Item"
         },
         {
+            "name": "Image",
+            "base": "File"
+        },
+        {
+            "name": "Document",
+            "base": "File"
+        },
+        {
+            "name": "Video",
+            "base": "File"
+        },
+        {
             "name": "Page",
-            "base": "Item"
+            "base": "File"
+        },
+        {
+            "name": "Scene",
+            "base": "File"
         },
         {
             "name": "CtrlCreateForm",

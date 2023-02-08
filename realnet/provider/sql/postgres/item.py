@@ -280,5 +280,5 @@ class PostgresItemProvider(ItemProvider):
                 result_item_models = db.query(ItemModel).filter(*conditions).all()
 
         tbn = get_types_by_name(self.org_id)
-
-        return [item_model_to_item(self.org_id, i, tbn) for i in result_item_models]
+        items = [item_model_to_item(self.org_id, i, tbn) for i in result_item_models]
+        return items

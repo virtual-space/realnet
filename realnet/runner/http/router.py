@@ -101,6 +101,12 @@ def router(endpoint_name, path):
 
         if request.method.lower() == 'post' or request.method.lower() == 'put':
             args |= request.form.to_dict()
+            if args:
+                json_args = request.get_json(silent=True)
+                if json_args:
+                    args |= json_args
+            else:
+                args = request.get_json(silent=True)
 
         if '_method' in args:
             method = args['_method'].lower() 

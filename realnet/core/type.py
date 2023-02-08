@@ -159,6 +159,15 @@ class Item(Instance):
     def get_child_instances(self):
         pass
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'type': self.instance.type.name,
+            'attributes': self.attributes,
+            'items': [i.to_dict() for i in self.items]
+        }
+
 
 class Data:
 
@@ -243,6 +252,20 @@ class Account:
         self.id = id
         self.name = name
         self.org = org
+
+class App:
+    
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+class Role:
+    
+    def __init__(self, id, name, org, apps):
+        self.id = id
+        self.name = name
+        self.org = org
+        self.apps = apps
 
 
 

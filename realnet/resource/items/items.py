@@ -103,13 +103,7 @@ class Items(Resource):
         elif args.get('delete') == 'true':
             forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
         
-        if query:
-            if path_item and 'children' in query and query['children'] == 'true':
-                if args.get('edit') == 'true' or args.get('delete') == 'true':
-                    query['parent_id'] = path_item.id
-                else:
-                    query['parent_id'] = path_item.id
-            items = [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
+        items = self.get_items(module, account, query, path_item)
 
         root_path = '/' + self.get_endpoint_name()
 
@@ -191,3 +185,10 @@ class Items(Resource):
 
     def get_endpoint_name(self):
         return 'items'
+
+    def get_items(self, module, account, query, parent_item=None):
+        if query:
+            if parent_item and 'children' in query and query['children'] == 'true':
+                query['parent_id'] = parent_item.id
+            return [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
+        return []
