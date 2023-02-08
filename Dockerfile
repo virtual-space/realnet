@@ -9,4 +9,4 @@ COPY README.md ./
 COPY runner ./
 RUN python setup.py install
 
-CMD [ "./runner" ]
+CMD [ "realnet", "server", "start" ]
