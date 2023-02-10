@@ -22,10 +22,10 @@ class PostgresItemProvider(ItemProvider):
     def get_items(self):
         pass
 
-    def get_item(self, id):
+    def get_item(self, id, children=False):
         item_model = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
         tbn = get_types_by_name(self.org_id)
-        return item_model_to_item(self.org_id, item_model, tbn)
+        return item_model_to_item(self.org_id, item_model, tbn, children)
 
     def delete_item(self, id):
         try:

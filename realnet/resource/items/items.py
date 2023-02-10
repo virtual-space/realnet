@@ -1,9 +1,22 @@
-from flask import render_template
+from flask import render_template, jsonify
 from realnet.core.type import Resource
 
 class Items(Resource):
 
-    def render_item(self, module, args, path=None, content_type='text/html'):
+    def render_items_json(self, module, args, path):
+        account = module.get_account()
+        query = self.get_query(module, args, path)
+        if path:
+            item = self.get_item(module, account, path)
+            if item:
+                return jsonify(item.to_dict())
+            else:
+                return {}
+        else:        
+            items = self.get_items(module, account, query)
+            return jsonify([item.to_dict() for item in items])
+
+    def render_items_html(self, module, args, path=None):
         account = module.get_account()
         org = module.get_org()
         apps = module.get_apps(module)
@@ -141,6 +154,13 @@ class Items(Resource):
                                 typenames=typenames,
                                 root_path=root_path)
 
+    def render_item(self, module, args, path=None, content_type='text/html'):
+        if content_type == 'application/json':
+            return self.render_items_json(module, args, path)
+        else:
+            return self.render_items_html(module, args, path)
+        
+
     def get(self, module, args, path=None, content_type='text/html'):
         return self.render_item(module, args, path, content_type)
 
@@ -188,7 +208,71 @@ class Items(Resource):
 
     def get_items(self, module, account, query, parent_item=None):
         if query:
+            external_types = []
+            internal_types = []
+            if 'types' in query:
+                tbn = {t.name: t for t in module.get_types()}
+                if isinstance(query['types'], str):
+                    type = tbn.get(query['types'],None)
+                    if type:
+                        if type.attributes and 'resource' in type.attributes:
+                            external_types.append(type)
+                        else:
+                            internal_types.append(type)
+                else:
+                    for typename in query['types']:
+                        type = tbn.get(typename, None)
+                        if type:
+                            if type.attributes and 'resource' in type.attributes:
+                                external_types.append(type)
+                            else:
+                                internal_types.append(type)
+                if external_types:
+                    results = []
+                    external_query = dict()
+                    for k,v in query.items():
+                        if k != 'types' and k != 'type_names':
+                            external_query[k] = v
+
+                    if parent_item and 'children' in external_query and external_query['children'] == 'true':
+                        external_query['parent_id'] = parent_item.id
+                    
+                    for external_type in external_types:
+                        func = module.get_resource_method(module, external_type.attributes['resource'], 'get_items')
+                        if func:
+                            results = results + func.invoke(module, account, external_query, parent_item)
+                    
+                    if internal_types:
+                        external_query['types'] = [t.name for t in internal_types]
+                        results = results +  [i for i in module.find_items(external_query) if module.can_account_read_item(account, i)]
+                    return results
+            
             if parent_item and 'children' in query and query['children'] == 'true':
                 query['parent_id'] = parent_item.id
             return [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
+
         return []
+
+    def get_item(self, module, account, path):
+        item = module.get_item(path)
+        if item and module.can_account_read_item(account, item):
+            return item
+
+        return None
+
+    def get_query(self, module, args, path):
+        query = dict()
+        
+        if 'types' in args:
+            if isinstance(args['types'], str):
+                query['types'] = [args['types']]
+            else:
+                query['types'] = args['types']
+
+        if 'any_level' in args:
+            query['any_level'] = args['any_level']
+        
+        return query
+
+    def get_types(self, module, account, query, parent_item=None):
+        return None

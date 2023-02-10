@@ -45,7 +45,7 @@ class ItemProvider(ABC):
         pass
 
     @abstractmethod
-    def get_item(self, id):
+    def get_item(self, id, children=False):
         pass
 
     @abstractmethod
@@ -204,6 +204,16 @@ class ModuleProvider(ABC):
     def get_module(self, module_name):
         pass
 
+class ClientProvider(ABC):
+    
+    @abstractmethod
+    def get_clients(self):
+        pass
+
+    @abstractmethod
+    def get_client(self, client_id):
+        pass
+
 class ResponseProvider(ABC):
     
     @abstractmethod
@@ -351,6 +361,34 @@ class OrgsProvider(ABC):
     def get_org_authenticators(self, org_id):
         pass
 
+    @abstractmethod
+    def get_org_clients(self, org_id):
+        pass
+
+    @abstractmethod
+    def get_org_client(self, org_id, client_id):
+        pass
+
+    @abstractmethod
+    def get_public_apps(self, org_id):
+        pass
+
+    @abstractmethod
+    def get_public_types(self, org_id):
+        pass
+
+    @abstractmethod
+    def get_public_forms(self, org_id):
+        pass
+
+    @abstractmethod
+    def get_public_orgs(self):
+        pass
+
+    @abstractmethod
+    def get_public_item(self, id):
+        pass
+
 class InitializationProvider(ABC):    
 
     @abstractmethod
@@ -382,7 +420,8 @@ class Module( TypeProvider,
               ModuleProvider,
               AccountProvider,
               ResourceProvider,
-              ImportProvider):
+              ImportProvider,
+              ClientProvider):
     pass
 
 class Context(Module):
@@ -399,7 +438,8 @@ class Context(Module):
                     accounts, 
                     acls,
                     resources,
-                    importer):
+                    importer,
+                    client):
         self.types = types
         self.items = items
         self.data = data
@@ -413,6 +453,7 @@ class Context(Module):
         self.acls = acls
         self.resources = resources
         self.importer = importer
+        self.client = client
 
     def get_types(self):
         return self.types.get_types()
@@ -444,8 +485,8 @@ class Context(Module):
     def get_items(self):
         return self.items.get_items()
 
-    def get_item(self, id):
-        return self.items.get_item(id)
+    def get_item(self, id, children=False):
+        return self.items.get_item(id, children)
 
     def delete_item(self, id):
         return self.items.delete_item(id)
@@ -539,6 +580,12 @@ class Context(Module):
 
     def import_structure(self, module, path):
         return self.importer.import_structure(module, path)
+
+    def get_clients(self):
+        return self.client.get_clients()
+
+    def get_client(self, client_id):
+        return self.client.get_client(client_id)
         
 
 

@@ -12,6 +12,7 @@ from realnet.provider.aws.data import S3DataProvider
 from realnet.provider.sql.org import SqlOrgProvider
 from realnet.provider.sql.orgs import SqlOrgsProvider
 from realnet.provider.sql.init import SqlInitProvider
+from realnet.provider.sql.client import SqlClientProvider
 
 from realnet.runner.http.runner import HttpRunner
 
@@ -31,7 +32,8 @@ class StandardContextProvider(ContextProvider):
                         org_provider,
                         org_provider,
                         GenericResourceProvider(),
-                        GenericImportProvider())
+                        GenericImportProvider(),
+                        SqlClientProvider(org_id, account_id))
 
         
     def get_orgs(self):
@@ -51,6 +53,27 @@ class StandardContextProvider(ContextProvider):
 
     def check_password(self, org_id, account_id, password):
         return SqlOrgsProvider().check_password(org_id, account_id, password)
+
+    def get_org_clients(self, org_id):
+        return SqlOrgsProvider().get_org_clients(org_id)
+
+    def get_org_client(self, org_id, client_id):
+        return SqlOrgsProvider().get_org_client(org_id, client_id)
+
+    def get_public_apps(self, org_id):
+        return SqlOrgsProvider().get_public_apps(org_id)
+
+    def get_public_types(self, org_id):
+        return SqlOrgsProvider().get_public_types(org_id)
+
+    def get_public_forms(self, org_id):
+        return SqlOrgsProvider().get_public_forms(org_id)
+
+    def get_public_item(self, id):
+        return SqlOrgsProvider().get_public_item(id)
+
+    def get_public_orgs(self):
+        return SqlOrgsProvider().get_public_orgs()
 
     def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
         return SqlInitProvider().initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)

@@ -94,6 +94,23 @@ class Type:
             return self.base.is_derived_from(type_name)
         return False
 
+    def to_dict(self):
+        base_data = None
+        if self.base:
+            base_data = self.base.to_dict()
+        instances = []
+        internal_instances = self.instances
+        if internal_instances:
+            instances = [i.to_dict() for i in internal_instances]
+
+        return {
+            'id': self.id,
+            'name': self.name,
+            'base': base_data,
+            'attributes': self.attributes,
+            'instances': instances
+        }
+
 
 class Instance(Type):
     
@@ -117,6 +134,14 @@ class Instance(Type):
         fset = _set_attributes,
         fdel = _del_attributes
     )
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'type': self.type.name,
+            'attributes': self.attributes
+        }
 
 
 
@@ -163,7 +188,7 @@ class Item(Instance):
         return {
             'id': self.id,
             'name': self.name,
-            'type': self.instance.type.name,
+            'type': self.instance.type.to_dict(),
             'attributes': self.attributes,
             'items': [i.to_dict() for i in self.items]
         }
@@ -253,6 +278,9 @@ class Account:
         self.name = name
         self.org = org
 
+    def get_user_id(self):
+        return self.id
+
 class App:
     
     def __init__(self, id, name):
@@ -266,6 +294,14 @@ class Role:
         self.name = name
         self.org = org
         self.apps = apps
+
+class Client:
+    
+    def __init__(self, id, name, org, attributes):
+        self.id = id
+        self.name = name
+        self.org = org
+        self.apps = attributes
 
 
 

@@ -1,33 +1,16 @@
 {
     "types": [
         {
-            "name": "Item"
-        },
-        {
-            "name": "Instance",
-            "base": "Item"
-        },
-        {
             "name": "Type",
-            "base": "Instance",
             "attributes": {
-                "types": ["Instance"],
-                "query": {"types": ["Instance"]}
-            },
-            "instances": [
-                {
-                    "name": "Instances",
-                    "type": "ListView"
-                },
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                },
-                {
-                    "name": "Data",
-                    "type": "DataView"
-                }
-            ]
+                "resource": "types"
+            }
+        },
+        {
+            "name": "Instance"
+        },
+        {
+            "name": "Item"
         },
         {
             "name": "Attribute",
@@ -36,16 +19,18 @@
         {
             "name": "Func",
             "base": "Item",
-            "instances": [
-                {
-                    "name": "Code",
-                    "type": "CodeView"
-                },
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                }
-            ]
+            "attributes": {
+                "views": [
+                    {
+                        "name": "Code",
+                        "type": "CodeView"
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
+            }
         },
         {
             "name": "Account",
@@ -86,12 +71,14 @@
         {
             "name": "Endpoint",
             "base": "Item",
-            "instances": [
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                }
-            ]
+            "attributes": {
+                "views": [
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
+            }
         },
         {
             "name": "Task",
@@ -134,18 +121,18 @@
             "base": "Item",
             "attributes": {
                 "types": ["Func"],
-                "query": {"types": ["Func"], "children": "true"}
-            },
-            "instances": [
-                {
-                    "name": "Methods",
-                    "type": "ListView"
-                },
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                }
-            ]
+                "query": {"types": ["Func"], "children": "true"},
+                "views": [
+                    {
+                        "name": "Methods",
+                        "type": "ListView"
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
+            }
         },
         {
             "name": "Form",
@@ -154,18 +141,18 @@
                 "form": "true",
                 "method": "post",
                 "types": ["Ctrl"],
-                "query": {"types": ["Ctrl"], "children": "true"}
-            },
-            "instances": [
-                {
-                    "name": "Controls",
-                    "type": "ListView"
-                },
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                }
-            ]
+                "query": {"types": ["Ctrl"], "children": "true"},
+                "views": [
+                    {
+                        "name": "Controls",
+                        "type": "ListView"
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
+            }
         },
         {
             "name": "DeleteForm",
@@ -175,25 +162,25 @@
                 "title_prefix": "Delete",
                 "submit_text": "Delete",
                 "text": "If you are sure that you want to do this, click 'Delete'",
-                "_method": "delete"
-            },
-            "instances": [
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "id"
+                "_method": "delete",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
                     }
-                },
-                {
-                    "name": "Method",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "_method",
-                        "source": "form"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "CreateForm",
@@ -211,25 +198,25 @@
                 "edit": "true",
                 "title_prefix": "Edit",
                 "submit_text": "Save",
-                "_method": "put"
-            },
-            "instances": [
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "id"
+                "_method": "put",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
                     }
-                },
-                {
-                    "name": "Method",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "_method",
-                        "source": "form"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "UploadForm",
@@ -304,134 +291,134 @@
             "name": "CtrlCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Ctrl"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "Ctrl",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "TypeSelectCtrl",
-                    "attributes": {
-                        "target": "type"
-                    }
-                },
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "parent_id"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "FormCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Form"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "Form",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "typenames": ["CreateForm", "EditForm", "DeleteForm"]
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "TypeSelectCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "typenames": ["CreateForm", "EditForm", "DeleteForm"]
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "EndpointCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Endpoint"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "Endpoint",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "source": "form"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "ResourceCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Resource"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "Resource",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "source": "form"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "FuncCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Func"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "Func",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "source": "form"
-                    }
-                },
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "parent_id"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "FileCreateForm",
@@ -439,158 +426,128 @@
             "attributes": {
                 "type": "File",
                 "upload": "true",
-                "path": "files"
-            },
-            "instances": [
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "parent_id"
+                "path": "files",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "AppCreateForm",
             "base": "CreateForm",
             "attributes": {
                 "type": "App",
-                "path": "apps"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "path": "apps",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "source": "form"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "AppEditForm",
             "base": "EditForm",
             "attributes": {
                 "type": "App",
-                "path": "apps"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "path": "apps",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "ViewCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "View"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "View",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "typenames": ["ListView"]
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
                     }
-                },
-                {
-                    "name": "Type",
-                    "type": "TypeSelectCtrl",
-                    "attributes": {
-                        "target": "type",
-                        "typenames": ["ListView"]
-                    }
-                },
-                {
-                    "name": "Id",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "parent_id"
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "ViewEditForm",
             "base": "EditForm",
             "attributes": {
-                "type": "View"
-            },
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
+                "type": "View",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "App",
             "base": "Item",
             "attributes": {
                 "app": "true"
-            },
-            "instances": [
-                {
-                    "name": "Views",
-                    "type": "ListView",
-                    "attributes": {
-                        "types": ["View"],
-                        "query": {"types": ["View"], "children": "true"}
-                    }
-                },
-                {
-                    "name": "Attributes",
-                    "type": "AttributesView"
-                },
-                {
-                    "name": "Files",
-                    "type": "ListView",
-                    "attributes": {
-                        "types": ["File"],
-                        "query": {"types": ["File"], "children": "true"}
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Items",
             "base": "App",
             "attributes": {
                 "types": ["Item"],
-                "query": {"types": ["Item"]}
+                "query": {"types": ["Item"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
-            "types": [
-                {
-                    "name": "ItemsMenu",
-                    "base": "Menu"
-                }
-            ],
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
-                {
-                    "name": "ItemsMenu",
-                    "type": "ItemsMenu"
-                },
                 {
                     "name": "items",
                     "type": "Resource",
@@ -615,23 +572,15 @@
             "base": "App",
             "attributes": {
                 "types": ["App"],
-                "query": {"types": ["App"]}
+                "query": {"types": ["App"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
-            "types": [
-                {
-                    "name": "AppsMenu",
-                    "base": "Menu"
-                }
-            ],
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
-                {
-                    "name": "AppsMenu",
-                    "type": "AppsMenu"
-                },
                 {
                     "name": "apps",
                     "type": "Resource",
@@ -656,13 +605,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Endpoint"],
-                "query": {"types": ["Endpoint"], "any_level": "true"}
+                "query": {"types": ["Endpoint"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "endpoints",
                     "type": "Resource",
@@ -687,13 +638,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Form"],
-                "query": {"types": ["Form"], "any_level": "true"}
+                "query": {"types": ["Form"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "forms",
                     "type": "Resource",
@@ -718,13 +671,15 @@
             "base": "App",
             "attributes": {
                 "types": ["File"],
-                "query": {"types": ["File"], "any_level": "true"}
+                "query": {"types": ["File"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "files",
                     "type": "Resource",
@@ -749,13 +704,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Resource"],
-                "query": {"types": ["Resource"], "any_level": "true"}
+                "query": {"types": ["Resource"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "resources",
                     "type": "Resource",
@@ -780,13 +737,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Type"],
-                "query": {"types": ["Type"]}
+                "query": {"types": ["Type"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "types",
                     "type": "Resource",
@@ -811,13 +770,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Account"],
-                "query": {"types": ["Account"]}
+                "query": {"types": ["Account"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "accounts",
                     "type": "Resource",
@@ -842,13 +803,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Role"],
-                "query": {"types": ["Role"]}
+                "query": {"types": ["Role"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "roles",
                     "type": "Resource",
@@ -873,13 +836,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Group"],
-                "query": {"types": ["Group"]}
+                "query": {"types": ["Group"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "groups",
                     "type": "Resource",
@@ -904,13 +869,15 @@
             "base": "App",
             "attributes": {
                 "types": ["Auth"],
-                "query": {"types": ["Auth"]}
+                "query": {"types": ["Auth"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "auths",
                     "type": "Resource",
@@ -931,17 +898,52 @@
             ]
         },
         {
+            "name": "Public",
+            "base": "App",
+            "attributes": {
+                "types": ["Item"],
+                "query": {"types": ["Item"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
+            },
+            "instances": [
+                {
+                    "name": "public",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.public.public",
+                        "module_class": "Public",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "public",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "public",
+                        "resource": "public"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Clients",
             "base": "App",
             "attributes": {
                 "types": ["Client"],
-                "query": {"types": ["Client"]}
+                "query": {"types": ["Client"]},
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             },
             "instances": [
-                {
-                    "name": "All",
-                    "type": "ListView"
-                },
                 {
                     "name": "clients",
                     "type": "Resource",
@@ -960,8 +962,19 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Login",
+            "base": "App",
+            "attributes": {
+                "icon": "key",
+                "api": "",
+                "client_id": "IEmf5XYQJXIHvWcQtZ5FXbLM",
+                "authenticator_name": "password",
+                "authenticator_type": "password",
+                "tenant": "public"
+            }
         }
-
     ],
     "items": [
         {
@@ -1007,6 +1020,16 @@
         {
             "name": "Auths",
             "type": "Auths"
+        },
+        {
+            "name": "Login",
+            "type": "Login",
+            "public": "True"
+        },
+        {
+            "name": "Public",
+            "type": "Public",
+            "public": "True"
         },
         {
             "name": "Clients",

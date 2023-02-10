@@ -11,7 +11,7 @@ class SqlTypeProvider(TypeProvider):
         self.account_id = account_id
 
     def get_types(self):
-        return get_types_by_name(self.org_id).values()
+        return [t for t in get_types_by_name(self.org_id).values()]
 
     def get_derived_types(self, type_ids):
         return get_derived_types(self.org_id, type_ids)

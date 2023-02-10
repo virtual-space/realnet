@@ -328,6 +328,62 @@ def create_client(name,
 
     return client
 
+def create_account(org,
+                   account_type,
+                   account_role,
+                   account_username,
+                   account_password,
+                   account_email,
+                   account_external_id):
+    id = str(uuid.uuid4())
+    account = Account( id=id, 
+                            type=account_type,
+                            username=account_username, 
+                            email=account_email, 
+                            org_id=org.id,
+                            org_role_type=account_role,
+                            external_id=account_external_id)
+
+    if account_password:
+        account.set_password(account_password)
+
+    session.add(account)
+
+    return account
+
+def get_or_create_delegated_account(org,
+                                    account_type,
+                                    account_role,
+                                    account_business_role,
+                                    account_username,
+                                    account_password,
+                                    account_email,
+                                    account_external_id):
+    id = str(uuid.uuid4())
+
+    account = session.query(Account).filter(Account.external_id == account_external_id, Account.org_id == org.id).first()
+
+    if account:
+        return account
+
+    account = create_account(   org,
+                                AccountType[account_type],
+                                OrgRoleType[account_role],
+                                account_username,
+                                None,
+                                account_email,
+                                account_external_id)
+
+    session.add(account)
+
+    role = Role.query.filter(Role.org_id == org.id, Role.name == account_business_role).first()
+    if role:
+        ar = AccountRole(id=str(uuid.uuid4()), org_id=org.id, account_id=account.id, role_id=role.id)
+        session.add(ar)
+        session.commit()
+    
+    return account
+
 def initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
     Model.metadata.create_all(engine)
 

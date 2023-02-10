@@ -60,17 +60,27 @@ def instance_model_to_instance(instance_model, types_by_name):
 def acl_model_to_acl(acl_model):
     return Acl(acl_model.type, acl_model.permission, acl_model.target_id, acl_model.org_id, acl_model.owner_id)
 
-def item_model_to_item(org_id, item_model, types_by_name):
+def item_model_to_item(org_id, item_model, types_by_name, children=True):
     type = types_by_name.get(item_model.type.name)
-    child_items = db.query(ItemModel).filter(ItemModel.parent_id == item_model.id, InstanceModel.org_id == org_id).all()
-    return Item(item_model.owner_id,
-                item_model.org_id,
-                Instance(item_model.id, type, item_model.name),
-                item_model.id, 
-                item_model.name, 
-                item_model.attributes, 
-                [item_model_to_item(org_id, ci, types_by_name) for ci in child_items], 
-                [acl_model_to_acl(acl) for acl in item_model.acls])
+    if children:
+        child_items = db.query(ItemModel).filter(ItemModel.parent_id == item_model.id, InstanceModel.org_id == org_id).all()
+        return Item(item_model.owner_id,
+                    item_model.org_id,
+                    Instance(item_model.id, type, item_model.name),
+                    item_model.id, 
+                    item_model.name, 
+                    item_model.attributes, 
+                    [item_model_to_item(org_id, ci, types_by_name) for ci in child_items], 
+                    [acl_model_to_acl(acl) for acl in item_model.acls])
+    else:
+        return Item(item_model.owner_id,
+                    item_model.org_id,
+                    Instance(item_model.id, type, item_model.name),
+                    item_model.id, 
+                    item_model.name, 
+                    item_model.attributes, 
+                    [], 
+                    [acl_model_to_acl(acl) for acl in item_model.acls])
 
 def get_type_attributes(item_type):
     attributes = item_type.attributes
@@ -143,7 +153,7 @@ def build_item( item_id,
             create_public_acl = True
 
     if create_public_acl:
-        acl = AclModel(id=str(uuid.uuid4()),type=AclType.public, org_id=org_id, item_id=item_id)
+        acl = AclModel(id=str(uuid.uuid4()),type='public', org_id=org_id, item_id=item_id)
         db.add(acl)
         db.commit()
     

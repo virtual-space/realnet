@@ -39,7 +39,8 @@ setup(
                       "Werkzeug",
                       "authlib",
                       "flask-cors",
-                      "bootstrap-flask"],
+                      "bootstrap-flask",
+                      "requests"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",

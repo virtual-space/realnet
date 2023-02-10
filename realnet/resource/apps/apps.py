@@ -5,3 +5,6 @@ class Apps(Items):
     
     def get_endpoint_name(self):
         return 'apps'
+
+    def get_query(self, module, account, query, parent_item=None):
+        return {'types':['App']}
