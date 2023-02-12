@@ -417,13 +417,6 @@
                 "title_prefix": "Add Role App", 
                 "controls": [
                     {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
                         "name": "RoleId",
                         "type": "HiddenCtrl",
                         "attributes": {

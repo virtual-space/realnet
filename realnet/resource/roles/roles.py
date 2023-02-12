@@ -24,7 +24,15 @@ class Roles(Items):
         return None
 
     def post(self, module, args, path=None, content_type='text/html'):
-        role = module.create_role(**args)
+        account = module.get_account()
+        if account.is_superuser() or account.is_admin():
+            if 'type' in args and args['type'] == 'RoleApp':
+                app_id = args['app_id']
+                role_id = args['parent_id']
+                module.add_role_app(role_id, app_id)
+            else:
+                role = module.create_role(**args)
+            
         return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):

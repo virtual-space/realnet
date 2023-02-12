@@ -273,13 +273,20 @@ class Org:
 
 class Account:
     
-    def __init__(self, id, name, org):
+    def __init__(self, id, name, org, org_role_type):
         self.id = id
         self.name = name
         self.org = org
+        self.org_role_type = org_role_type
 
     def get_user_id(self):
         return self.id
+
+    def is_superuser(self):
+        return self.org_role_type.name == 'superuser'
+
+    def is_admin(self):
+        return self.org_role_type.name == 'admin'
 
 class App:
     

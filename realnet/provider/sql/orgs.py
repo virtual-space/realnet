@@ -24,7 +24,7 @@ class SqlOrgsProvider(OrgsProvider):
     def get_account_by_id(self,id):
         account = db.query(AccountModel).get(id)
         if account:
-            return Account(account.id, account.username, Org(account.org.id, account.org.name))
+            return Account(account.id, account.username, Org(account.org.id, account.org.name), account.org_role_type)
         else:
             return None
 
@@ -32,7 +32,7 @@ class SqlOrgsProvider(OrgsProvider):
         account = db.query(AccountModel).filter(AccountModel.org_id == org_id, AccountModel.username == account_id).first()
         if account:
             if password and account.check_password(password):
-                return Account(account.id, account.username, Org(account.org.id, account.org.name))
+                return Account(account.id, account.username, Org(account.org.id, account.org.name), account.org_role_type)
         return None
 
     def get_org_authenticators(self, org_id):

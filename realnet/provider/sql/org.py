@@ -128,7 +128,7 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
     def get_account(self):
         account = db.query(AccountModel).filter(AccountModel.id == self.account_id).first()
         if account:
-            return Account(account.id, account.username, Org(account.org.id, account.org.name))
+            return Account(account.id, account.username, Org(account.org.id, account.org.name), account.org_role_type)
         return None
 
     def get_org(self):

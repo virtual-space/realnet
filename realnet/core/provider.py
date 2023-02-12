@@ -140,6 +140,14 @@ class RolesProvider(ABC):
     def get_role(self, id):
         pass
 
+    @abstractmethod
+    def add_role_app(self, role_id, app_id):
+        pass
+
+    @abstractmethod
+    def remove_role_app(self, role_id, app_id):
+        pass
+
 class OrgProvider(ABC):
     
     @abstractmethod
@@ -608,6 +616,12 @@ class Context(Module):
 
     def get_role(self, id):
         return self.roles.get_role(id)
+
+    def add_role_app(self, role_id, app_id):
+        return self.roles.add_role_app(role_id, app_id)
+
+    def remove_role_app(self, role_id, app_id):
+        return self.roles.remove_role_app(role_id, app_id)
         
 
 
