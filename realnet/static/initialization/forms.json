@@ -434,7 +434,11 @@
                         "name": "AppId",
                         "type": "ItemSelectCtrl",
                         "attributes": {
-                            "target": "app_id"
+                            "target": "app_id",
+                            "query": {
+                                "types": ["App"],
+                                "any_level": "true"
+                            }
                         }
                     },
                     {
@@ -526,6 +530,10 @@
         {
             "name": "RoleCreateForm",
             "type": "RoleCreateForm"
+        },
+        {
+            "name": "RoleAppForm",
+            "type": "RoleAppForm"
         }
     ]
 }
