@@ -13,6 +13,7 @@ from realnet.provider.sql.org import SqlOrgProvider
 from realnet.provider.sql.orgs import SqlOrgsProvider
 from realnet.provider.sql.init import SqlInitProvider
 from realnet.provider.sql.client import SqlClientProvider
+from realnet.provider.sql.roles import SqlRolesProvider
 
 from realnet.runner.http.runner import HttpRunner
 
@@ -33,7 +34,8 @@ class StandardContextProvider(ContextProvider):
                         org_provider,
                         GenericResourceProvider(),
                         GenericImportProvider(),
-                        SqlClientProvider(org_id, account_id))
+                        SqlClientProvider(org_id, account_id),
+                        SqlRolesProvider(org_id, account_id))
 
         
     def get_orgs(self):
@@ -120,6 +122,10 @@ class Initialize(ProtoCmd):
             context = context_provider.context(account.org.id, account.id)
             if context:
                 import_structure_from_resource(context, 'static/initialization/core.json')
+                import_structure_from_resource(context, 'static/initialization/controls.json')
+                import_structure_from_resource(context, 'static/initialization/views.json')
+                import_structure_from_resource(context, 'static/initialization/forms.json')
+                import_structure_from_resource(context, 'static/initialization/apps.json')
         
 
         # with app.app_context():

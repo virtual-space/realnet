@@ -3,23 +3,35 @@
         {
             "name": "Type",
             "attributes": {
+                "icon": "extension",
                 "resource": "types"
             }
         },
         {
-            "name": "Instance"
+            "name": "Instance",
+            "attributes": {
+                "icon": "approval",
+                "resource": "types"
+            }
         },
         {
-            "name": "Item"
+            "name": "Item",
+            "attributes": {
+                "icon": "square"
+            }
         },
         {
             "name": "Attribute",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "segment"
+            }
         },
         {
             "name": "Func",
             "base": "Item",
             "attributes": {
+                "icon": "function",
                 "views": [
                     {
                         "name": "Code",
@@ -34,44 +46,83 @@
         },
         {
             "name": "Account",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "person",
+                "resource": "accounts"
+            }
         },
         {
             "name": "Role",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "switch_account",
+                "resource": "roles",
+                "views": [
+                    {
+                        "name": "Apps",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add",
+                        "icon": "add",
+                        "form": "RoleAppForm"
+                    }
+                ]
+            }
         },
         {
             "name": "Group",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "group",
+                "resource": "groups"
+            }
         },
         {
             "name": "Org",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "supervisor_account"
+            }
         },
         {
             "name": "Auth",
-            "base": "Item"
-        },
-        {
-            "name": "Group",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "lock_open",
+                "resource": "auths"
+            }
         },
         {
             "name": "Client",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "safety_check",
+                "resource": "clients"
+            }
         },
         {
             "name": "Exp",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "calculate"
+            }
         },
         {
             "name": "Op",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "rebase"
+            }
         },
         {
             "name": "Endpoint",
             "base": "Item",
             "attributes": {
+                "icon": "functions",
                 "views": [
                     {
                         "name": "Attributes",
@@ -82,44 +133,20 @@
         },
         {
             "name": "Task",
-            "base": "Item"
+            "base": "Item",
+            "attributes": {
+                "icon": "assignment_turned_in"
+            }
         },
         {
             "name": "Exec",
             "base": "Item"
         },
         {
-            "name": "View",
-            "base": "Item"
-        },
-        {
-            "name": "ListView",
-            "base": "View"
-        },
-        {
-            "name": "AttributesView",
-            "base": "View"
-        },
-        {
-            "name": "CodeView",
-            "base": "View"
-        },
-        {
-            "name": "DataView",
-            "base": "View"
-        },
-        {
-            "name": "QueryView",
-            "base": "View"
-        },
-        {
-            "name": "FormView",
-            "base": "View"
-        },
-        {
             "name": "Resource",
             "base": "Item",
             "attributes": {
+                "icon": "border_all",
                 "types": ["Func"],
                 "query": {"types": ["Func"], "children": "true"},
                 "views": [
@@ -135,127 +162,6 @@
             }
         },
         {
-            "name": "Form",
-            "base": "Item",
-            "attributes": {
-                "form": "true",
-                "method": "post",
-                "types": ["Ctrl"],
-                "query": {"types": ["Ctrl"], "children": "true"},
-                "views": [
-                    {
-                        "name": "Controls",
-                        "type": "ListView"
-                    },
-                    {
-                        "name": "Attributes",
-                        "type": "AttributesView"
-                    }
-                ]
-            }
-        },
-        {
-            "name": "DeleteForm",
-            "base": "Form",
-            "attributes": {
-                "delete": "true",
-                "title_prefix": "Delete",
-                "submit_text": "Delete",
-                "text": "If you are sure that you want to do this, click 'Delete'",
-                "_method": "delete",
-                "controls": [
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "id"
-                        }
-                    },
-                    {
-                        "name": "Method",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "_method",
-                            "source": "form"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "CreateForm",
-            "base": "Form",
-            "attributes": {
-                "add": "true",
-                "title_prefix": "Create",
-                "submit_text": "Create"
-            }
-        },
-        {
-            "name": "EditForm",
-            "base": "Form",
-            "attributes": {
-                "edit": "true",
-                "title_prefix": "Edit",
-                "submit_text": "Save",
-                "_method": "put",
-                "controls": [
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "id"
-                        }
-                    },
-                    {
-                        "name": "Method",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "_method",
-                            "source": "form"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "UploadForm",
-            "base": "Form",
-            "attributes": {
-                "upload": "true",
-                "title_prefix": "Upload",
-                "submit_text": "Upload"
-            }
-        },
-        {
-            "name": "Ctrl",
-            "base": "Item"
-        },
-        {
-            "name": "HiddenCtrl",
-            "base": "Ctrl"
-        },
-        {
-            "name": "TabCtrl",
-            "base": "Ctrl"
-        },
-        {
-            "name": "EditCtrl",
-            "base": "Ctrl"
-        },
-        {
-            "name": "MultiSelectCtrl",
-            "base": "Ctrl"
-        },
-        {
-            "name": "TypeSelectCtrl",
-            "base": "Ctrl"
-        },
-        {
-            "name": "TabsCtrl",
-            "base": "Ctrl"
-        },
-        {
             "name": "Query",
             "base": "Item"
         },
@@ -264,820 +170,133 @@
             "base": "Item"
         },
         {
-            "name": "File",
-            "base": "Item"
+            "name": "Media",
+            "base": "Item",
+            "attributes": {
+                "icon": "collections",
+                "creatable": "false"
+            }
         },
         {
-            "name": "Image",
-            "base": "File"
+            "name": "File",
+            "base": "Media"
+        },
+        {
+            "name": "Folder",
+            "base": "Media",
+            "attributes": {
+                "icon": "folder",
+                "creatable": "true",
+                "types": ["Media"],
+                "query": {"types": ["Media"], "my_items": "true"},
+                "menu": [
+                    {
+                        "name": "Upload Media",
+                        "icon": "file_upload",
+                        "form": "Import",
+                        "import": "true"
+                    }
+                ]
+            }
         },
         {
             "name": "Document",
-            "base": "File"
-        },
-        {
-            "name": "Video",
-            "base": "File"
+            "base": "Media",
+            "attributes": {
+                "icon": "description",
+                "creatable": "false",
+                "views": [
+                    {
+                        "name": "View",
+                        "type": "DocumentView"
+                    }
+                ]
+            }
         },
         {
             "name": "Page",
-            "base": "File"
+            "base": "Media",
+            "attributes": {
+                "icon": "web_asset",
+                "creatable": "false",
+                "views": [
+                    {
+                        "name": "View",
+                        "type": "PageView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Image",
+            "base": "Media",
+            "attributes": {
+                "icon": "image",
+                "creatable": "false",
+                "views": [
+                    {
+                        "name": "View",
+                        "type": "ImageView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Video",
+            "base": "Media",
+            "attributes": {
+                "icon": "ondemand_video",
+                "creatable": "false",
+                "views": [
+                    {
+                        "name": "View",
+                        "type": "VideoView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Drawing",
+            "base": "Media",
+            "attributes": {
+                "icon": "gesture",
+                "creatable": "false",
+                "views": [
+                    {
+                        "name": "View",
+                        "type": "DrawingView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Folder",
+            "base": "Media",
+            "attributes": {
+                "icon": "folder",
+                "creatable": "true",
+                "views": [
+                    {
+                        "name": "Children",
+                        "type": "ListView"
+                    }
+                ]
+            }
         },
         {
             "name": "Scene",
-            "base": "File"
-        },
-        {
-            "name": "CtrlCreateForm",
-            "base": "CreateForm",
+            "base": "Media",
             "attributes": {
-                "type": "Ctrl",
-                "controls": [
+                "icon": "view_in_ar",
+                "creatable": "false",
+                "types": ["Layer", "Query"],
+                "views": [
                     {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "TypeSelectCtrl",
-                        "attributes": {
-                            "target": "type"
-                        }
-                    },
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "parent_id"
-                        }
+                        "name": "View",
+                        "type": "SceneView"
                     }
                 ]
             }
-        },
-        {
-            "name": "FormCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "Form",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "TypeSelectCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "typenames": ["CreateForm", "EditForm", "DeleteForm"]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "EndpointCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "Endpoint",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "source": "form"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "ResourceCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "Resource",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "source": "form"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "FuncCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "Func",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "source": "form"
-                        }
-                    },
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "parent_id"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "FileCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "File",
-                "upload": "true",
-                "path": "files",
-                "controls": [
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "parent_id"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "AppCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "App",
-                "path": "apps",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "source": "form"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "AppEditForm",
-            "base": "EditForm",
-            "attributes": {
-                "type": "App",
-                "path": "apps",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "ViewCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "View",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "TypeSelectCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "typenames": ["ListView"]
-                        }
-                    },
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "parent_id"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "ViewEditForm",
-            "base": "EditForm",
-            "attributes": {
-                "type": "View",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "App",
-            "base": "Item",
-            "attributes": {
-                "app": "true"
-            }
-        },
-        {
-            "name": "Items",
-            "base": "App",
-            "attributes": {
-                "types": ["Item"],
-                "query": {"types": ["Item"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "items",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.items.items",
-                        "module_class": "Items",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "items",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "items",
-                        "resource": "items"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Apps",
-            "base": "App",
-            "attributes": {
-                "types": ["App"],
-                "query": {"types": ["App"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "apps",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.apps.apps",
-                        "module_class": "Apps",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "apps",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "apps",
-                        "resource": "apps"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Endpoints",
-            "base": "App",
-            "attributes": {
-                "types": ["Endpoint"],
-                "query": {"types": ["Endpoint"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "endpoints",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.endpoints.endpoints",
-                        "module_class": "Endpoints",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "endpoints",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "endpoints",
-                        "resource": "endpoints"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Forms",
-            "base": "App",
-            "attributes": {
-                "types": ["Form"],
-                "query": {"types": ["Form"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "forms",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.forms.forms",
-                        "module_class": "Forms",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "forms",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "forms",
-                        "resource": "forms"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Files",
-            "base": "App",
-            "attributes": {
-                "types": ["File"],
-                "query": {"types": ["File"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "files",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.files.files",
-                        "module_class": "Files",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "files",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "files",
-                        "resource": "files"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Resources",
-            "base": "App",
-            "attributes": {
-                "types": ["Resource"],
-                "query": {"types": ["Resource"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "resources",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.resources.resources",
-                        "module_class": "Resources",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "resources",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "resources",
-                        "resource": "resources"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Types",
-            "base": "App",
-            "attributes": {
-                "types": ["Type"],
-                "query": {"types": ["Type"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "types",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.types.types",
-                        "module_class": "Types",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "types",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "types",
-                        "resource": "types"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Accounts",
-            "base": "App",
-            "attributes": {
-                "types": ["Account"],
-                "query": {"types": ["Account"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "accounts",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.accounts.accounts",
-                        "module_class": "Accounts",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "accounts",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "accounts",
-                        "resource": "accounts"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Roles",
-            "base": "App",
-            "attributes": {
-                "types": ["Role"],
-                "query": {"types": ["Role"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "roles",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.roles.roles",
-                        "module_class": "Roles",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "roles",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "roles",
-                        "resource": "roles"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Groups",
-            "base": "App",
-            "attributes": {
-                "types": ["Group"],
-                "query": {"types": ["Group"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "groups",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.groups.groups",
-                        "module_class": "Groups",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "groups",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "groups",
-                        "resource": "groups"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Auths",
-            "base": "App",
-            "attributes": {
-                "types": ["Auth"],
-                "query": {"types": ["Auth"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "auths",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.auths.auths",
-                        "module_class": "Auths",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "auths",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "auths",
-                        "resource": "auths"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Public",
-            "base": "App",
-            "attributes": {
-                "types": ["Item"],
-                "query": {"types": ["Item"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "public",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.public.public",
-                        "module_class": "Public",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "public",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "public",
-                        "resource": "public"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Clients",
-            "base": "App",
-            "attributes": {
-                "types": ["Client"],
-                "query": {"types": ["Client"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
-            },
-            "instances": [
-                {
-                    "name": "clients",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.clients.clients",
-                        "module_class": "Clients",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "clients",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "clients",
-                        "resource": "clients"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Login",
-            "base": "App",
-            "attributes": {
-                "icon": "key",
-                "api": "",
-                "client_id": "IEmf5XYQJXIHvWcQtZ5FXbLM",
-                "authenticator_name": "password",
-                "authenticator_type": "password",
-                "tenant": "public"
-            }
-        }
-    ],
-    "items": [
-        {
-            "name": "Items",
-            "type": "Items"
-        },
-        {
-            "name": "Apps",
-            "type": "Apps"
-        },
-        {
-            "name": "Endpoints",
-            "type": "Endpoints"
-        },
-        {
-            "name": "Forms",
-            "type": "Forms"
-        },
-        {
-            "name": "Files",
-            "type": "Files"
-        },
-        {
-            "name": "Resources",
-            "type": "Resources"
-        },
-        {
-            "name": "Types",
-            "type": "Types"
-        },
-        {
-            "name": "Accounts",
-            "type": "Accounts"
-        },
-        {
-            "name": "Roles",
-            "type": "Roles"
-        },
-        {
-            "name": "Groups",
-            "type": "Groups"
-        },
-        {
-            "name": "Auths",
-            "type": "Auths"
-        },
-        {
-            "name": "Login",
-            "type": "Login",
-            "public": "True"
-        },
-        {
-            "name": "Public",
-            "type": "Public",
-            "public": "True"
-        },
-        {
-            "name": "Clients",
-            "type": "Clients"
-        },
-        {
-            "name": "CtrlCreateForm",
-            "type": "CtrlCreateForm"
-        },
-        {
-            "name": "FormCreateForm",
-            "type": "FormCreateForm"
-        },
-        {
-            "name": "FileCreateForm",
-            "type": "FileCreateForm"
-        },
-        {
-            "name": "EndpointCreateForm",
-            "type": "EndpointCreateForm"
-        },
-        {
-            "name": "ResourceCreateForm",
-            "type": "ResourceCreateForm"
-        },
-        {
-            "name": "FuncCreateForm",
-            "type": "FuncCreateForm"
-        },
-        {
-            "name": "AppCreateForm",
-            "type": "AppCreateForm"
-        },
-        {
-            "name": "AppEditForm",
-            "type": "AppEditForm"
-        },
-        {
-            "name": "ViewCreateForm",
-            "type": "ViewCreateForm"
-        },
-        {
-            "name": "ViewEditForm",
-            "type": "ViewEditForm"
-        },
-        {
-            "name": "DeleteForm",
-            "type": "DeleteForm"
         }
     ]
 }

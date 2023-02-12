@@ -1,0 +1,531 @@
+{
+    "types": [
+        {
+            "name": "Form",
+            "base": "Item",
+            "attributes": {
+                "icon": "ballot",
+                "form": "true",
+                "method": "post",
+                "types": ["Ctrl"],
+                "query": {"types": ["Ctrl"], "children": "true"},
+                "views": [
+                    {
+                        "name": "Controls",
+                        "type": "ListView"
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "DeleteForm",
+            "base": "Form",
+            "attributes": {
+                "delete": "true",
+                "title_prefix": "Delete",
+                "submit_text": "Delete",
+                "text": "If you are sure that you want to do this, click 'Delete'",
+                "_method": "delete",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "CreateForm",
+            "base": "Form",
+            "attributes": {
+                "add": "true",
+                "title_prefix": "Create",
+                "submit_text": "Create"
+            }
+        },
+        {
+            "name": "EditForm",
+            "base": "Form",
+            "attributes": {
+                "edit": "true",
+                "title_prefix": "Edit",
+                "submit_text": "Save",
+                "_method": "put",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "UploadForm",
+            "base": "Form",
+            "attributes": {
+                "upload": "true",
+                "title_prefix": "Upload",
+                "submit_text": "Upload"
+            }
+        },
+        {
+            "name": "CtrlCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Ctrl",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Form",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "typenames": ["CreateForm", "EditForm", "DeleteForm"]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "EndpointCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Endpoint",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ResourceCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Resource",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FuncCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Func",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FileCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "File",
+                "upload": "true",
+                "path": "files",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ItemCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Item",
+                "path": "items",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ItemEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Item",
+                "path": "items",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AppCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "App",
+                "path": "apps",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AppEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "App",
+                "path": "apps",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ViewCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "View",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "typenames": ["ListView"]
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "RoleCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Role",
+                "path": "roles",
+                "title_prefix": "Create Role", 
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "RoleAppForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "RoleApp",
+                "path": "roles",
+                "title_prefix": "Add Role App", 
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "RoleId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "AppId",
+                        "type": "ItemSelectCtrl",
+                        "attributes": {
+                            "target": "app_id"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ViewEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "View",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "items": [
+        {
+            "name": "CtrlCreateForm",
+            "type": "CtrlCreateForm"
+        },
+        {
+            "name": "FormCreateForm",
+            "type": "FormCreateForm"
+        },
+        {
+            "name": "FileCreateForm",
+            "type": "FileCreateForm"
+        },
+        {
+            "name": "EndpointCreateForm",
+            "type": "EndpointCreateForm"
+        },
+        {
+            "name": "ResourceCreateForm",
+            "type": "ResourceCreateForm"
+        },
+        {
+            "name": "FuncCreateForm",
+            "type": "FuncCreateForm"
+        },
+        {
+            "name": "AppCreateForm",
+            "type": "AppCreateForm"
+        },
+        {
+            "name": "AppEditForm",
+            "type": "AppEditForm"
+        },
+        {
+            "name": "ItemCreateForm",
+            "type": "ItemCreateForm"
+        },
+        {
+            "name": "ItemEditForm",
+            "type": "ItemEditForm"
+        },
+        {
+            "name": "ViewCreateForm",
+            "type": "ViewCreateForm"
+        },
+        {
+            "name": "ViewEditForm",
+            "type": "ViewEditForm"
+        },
+        {
+            "name": "DeleteForm",
+            "type": "DeleteForm"
+        },
+        {
+            "name": "RoleCreateForm",
+            "type": "RoleCreateForm"
+        }
+    ]
+}

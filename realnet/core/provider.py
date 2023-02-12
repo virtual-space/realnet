@@ -136,6 +136,10 @@ class RolesProvider(ABC):
     def update_role(self, id, **kwargs):
         pass
 
+    @abstractmethod
+    def get_role(self, id):
+        pass
+
 class OrgProvider(ABC):
     
     @abstractmethod
@@ -421,7 +425,8 @@ class Module( TypeProvider,
               AccountProvider,
               ResourceProvider,
               ImportProvider,
-              ClientProvider):
+              ClientProvider,
+              RolesProvider):
     pass
 
 class Context(Module):
@@ -439,7 +444,8 @@ class Context(Module):
                     acls,
                     resources,
                     importer,
-                    client):
+                    client, 
+                    roles):
         self.types = types
         self.items = items
         self.data = data
@@ -454,6 +460,7 @@ class Context(Module):
         self.resources = resources
         self.importer = importer
         self.client = client
+        self.roles = roles
 
     def get_types(self):
         return self.types.get_types()
@@ -586,6 +593,21 @@ class Context(Module):
 
     def get_client(self, client_id):
         return self.client.get_client(client_id)
+
+    def get_roles(self, module):
+        return self.roles.get_roles(module)
+
+    def create_role(self, **kwargs):
+        return self.roles.create_role(**kwargs)
+
+    def delete_role(self, id):
+        return self.roles.delete_role(id)
+
+    def update_role(self, id, **kwargs):
+        return self.roles.update_role(id, **kwargs)
+
+    def get_role(self, id):
+        return self.roles.get_role(id)
         
 
 

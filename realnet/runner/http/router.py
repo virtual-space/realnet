@@ -268,7 +268,7 @@ def tenant_auths(id):
 
 @router_bp.route('/', defaults={'endpoint_name': None, 'path': None}, methods=['GET'])
 @router_bp.route('/<endpoint_name>', defaults={'path': None}, methods=['GET', 'POST'])
-@router_bp.route('/<endpoint_name>/<path:path>', methods=['GET', 'POST'])
+@router_bp.route('/<endpoint_name>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @require_oauth(optional=True)
 def router(endpoint_name, path):
     contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
@@ -358,7 +358,7 @@ def router(endpoint_name, path):
             else:
                 args = request.get_json(silent=True)
 
-        if '_method' in args:
+        if args and '_method' in args:
             method = args['_method'].lower() 
 
         return endpoint.invoke(context, method, args, path=path, content_type=content_type)

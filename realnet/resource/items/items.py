@@ -165,9 +165,12 @@ class Items(Resource):
         return self.render_item(module, args, path, content_type)
 
     def post(self, module, args, path=None, content_type='text/html'):
-        module.create_item(**args)
-        del args['add']
-        return self.render_item(module, args, path, content_type)
+        item = module.create_item(**args)
+        if content_type == 'application/json':
+            return jsonify(item.to_dict())
+        else:
+            del args['add']
+            return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):
         params = dict()

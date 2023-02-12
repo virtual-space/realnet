@@ -1,24 +1,30 @@
 from flask import render_template
 from realnet.resource.items.items import Items
+from realnet.core.type import Instance, Item
 
 class Roles(Items):
     
+    def item_from_role(self, role, role_type):
+        instance = Instance(role.id, role_type, role.name)
+        return Item(role.org.id, role.org.id, instance, role.id, role.name)
+
     def get_endpoint_name(self):
         return 'roles'
 
     def get_items(self, module, account, query, parent_item=None):
-        roles_query = {'types': ['Role']}
-        return [i for i in module.find_items(roles_query) if module.can_account_read_item(account, i)]
+        tbn = {t.name:t for t in module.get_types()}
+        return [self.item_from_role(r, tbn['Role']) for r in module.get_roles(module)]
+
+    def get_item(self, module, account, path):
+        role = module.get_role(path)
+        tbn = {t.name:t for t in module.get_types()}
+        if role:
+            return self.item_from_role(role, tbn['Role'])
+
+        return None
 
     def post(self, module, args, path=None, content_type='text/html'):
-        if path == 'apps':
-            params = dict()
-            parent_id = args.get('id', None)
-            
-
-
-        module.create_item(**args)
-        del args['add']
+        role = module.create_role(**args)
         return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):
@@ -34,8 +40,11 @@ class Roles(Items):
         return self.render_item(module, args, path, content_type)
 
     def delete(self, module, args, path=None, content_type='text/html'):
-        module.delete_item(args['id'])
-        del args['id']
-        del args['delete']
-        del args['item_id']
+        module.delete_role(path)
+        if id in args:
+            del args['id']
+        if 'delete' in args:
+            del args['delete']
+        if 'item_id' in args:
+            del args['item_id']
         return self.render_item(module, args, path, content_type)
