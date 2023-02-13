@@ -6,7 +6,7 @@ class Roles(Items):
     
     def item_from_role(self, role, role_type):
         instance = Instance(role.id, role_type, role.name)
-        return Item(role.org.id, role.org.id, instance, role.id, role.name)
+        return Item(role.org.id, role.org.id, instance, role.id, role.name, dict(), role.apps)
 
     def get_endpoint_name(self):
         return 'roles'
@@ -48,7 +48,11 @@ class Roles(Items):
         return self.render_item(module, args, path, content_type)
 
     def delete(self, module, args, path=None, content_type='text/html'):
-        module.delete_role(path)
+        parts = path.split('/')
+        if len(parts) == 3 and parts[1] == 'apps':
+            module.remove_role_app(parts[0], parts[2])
+        elif len(parts) == 1:
+            module.delete_role(path)
         if id in args:
             del args['id']
         if 'delete' in args:

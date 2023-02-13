@@ -21,6 +21,13 @@
             }
         },
         {
+            "name": "Link",
+            "base": "Item",
+            "attributes": {
+                "icon": "link"
+            }
+        },
+        {
             "name": "Attribute",
             "base": "Item",
             "attributes": {

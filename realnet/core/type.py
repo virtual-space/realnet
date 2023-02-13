@@ -147,7 +147,7 @@ class Instance(Type):
 
 class Item(Instance):
     
-    def __init__(self, owner_id, org_id, instance, id, name, attributes=dict(), items=[], acls=[]):
+    def __init__(self, owner_id, org_id, instance, id, name, attributes=dict(), items=[], acls=[], linked_item_id=None):
         self.owner_id = owner_id
         self.org_id = org_id
         self.id = id
@@ -156,6 +156,7 @@ class Item(Instance):
         self._attributes = attributes
         self.items = items
         self.acls = acls
+        self.linked_item_id = linked_item_id
 
     def _get_attributes(self):
         return  self.instance.attributes | self._attributes if self._attributes else self.instance.attributes
@@ -185,13 +186,16 @@ class Item(Instance):
         pass
 
     def to_dict(self):
-        return {
+        result = {
             'id': self.id,
             'name': self.name,
             'type': self.instance.type.to_dict(),
             'attributes': self.attributes,
             'items': [i.to_dict() for i in self.items]
         }
+        if self.linked_item_id:
+            result['linked_item_id'] = self.linked_item_id
+        return result
 
 
 class Data:
