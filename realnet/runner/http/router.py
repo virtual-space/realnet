@@ -347,7 +347,7 @@ def router(endpoint_name, path):
     method = request.method.lower()
 
     if endpoint:
-        args = request.args.to_dict()
+        args = request.args.to_dict(flat=False)
 
         if request.method.lower() == 'post' or request.method.lower() == 'put':
             args |= request.form.to_dict()

@@ -15,7 +15,7 @@ class Roles(Items):
         tbn = {t.name:t for t in module.get_types()}
         return [self.item_from_role(r, tbn['Role']) for r in module.get_roles(module)]
 
-    def get_item(self, module, account, path):
+    def get_item(self, module, account, args, path):
         role = module.get_role(path)
         tbn = {t.name:t for t in module.get_types()}
         if role:

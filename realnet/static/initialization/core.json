@@ -17,7 +17,45 @@
         {
             "name": "Item",
             "attributes": {
-                "icon": "square"
+                "icon": "square",
+                "menu": [
+                    {
+                        "name": "Add Item",
+                        "icon": "add",
+                        "form": "ItemCreateForm"
+                    },
+                    {
+                        "name": "Add View",
+                        "icon": "add_box",
+                        "form": "ViewCreateForm"
+                    },
+                    {
+                        "name": "Query",
+                        "icon": "search",
+                        "form": "QueryForm"
+                    },
+                    {
+                        "name": "Code",
+                        "icon": "functions",
+                        "form": "CodeForm"
+                    },
+                    {
+                        "name": "Settings",
+                        "icon": "settings",
+                        "form": "SettingsForm"
+                    },
+                    {
+                        "name": "Sharing",
+                        "icon": "lock",
+                        "form": "SharingForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm",
+                        "import": "true"
+                    }
+                ]
             }
         },
         {
@@ -154,16 +192,28 @@
             "base": "Item",
             "attributes": {
                 "icon": "border_all",
-                "types": ["Func"],
-                "query": {"types": ["Func"], "children": "true"},
+                "types": ["Func", "File"],
+                "query": {"types": ["Func", "File"], "my_items": "true"},
                 "views": [
                     {
-                        "name": "Methods",
+                        "name": "Methods and Files",
                         "type": "ListView"
                     },
                     {
                         "name": "Attributes",
                         "type": "AttributesView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Item",
+                        "icon": "add",
+                        "form": "ItemCreateForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm"
                     }
                 ]
             }

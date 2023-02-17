@@ -8,7 +8,7 @@
                 "form": "true",
                 "method": "post",
                 "types": ["Ctrl"],
-                "query": {"types": ["Ctrl"], "children": "true"},
+                "query": {"types": ["Ctrl"], "my_items": "true"},
                 "views": [
                     {
                         "name": "Controls",
@@ -17,6 +17,13 @@
                     {
                         "name": "Attributes",
                         "type": "AttributesView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Control",
+                        "icon": "add",
+                        "form": "CtrlCreateForm"
                     }
                 ]
             }
@@ -99,6 +106,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Ctrl",
+                "path": "ctrls",
                 "controls": [
                     {
                         "name": "Name",
@@ -111,7 +119,8 @@
                         "name": "Type",
                         "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "type"
+                            "target": "type",
+                            "types": ["Ctrl"]
                         }
                     },
                     {
@@ -120,6 +129,26 @@
                         "attributes": {
                             "target": "parent_id"
                         }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
                     }
                 ]
             }
@@ -347,37 +376,6 @@
             }
         },
         {
-            "name": "ViewCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "View",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Type",
-                        "type": "TypeSelectCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "typenames": ["ListView"]
-                        }
-                    },
-                    {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "parent_id"
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "name": "RoleCreateForm",
             "base": "CreateForm",
             "attributes": {
@@ -451,6 +449,51 @@
             }
         },
         {
+            "name": "ViewCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "View",
+                "path": "views",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "types": ["View"]
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
             "name": "ViewEditForm",
             "base": "EditForm",
             "attributes": {
@@ -461,6 +504,93 @@
                         "type": "EditCtrl",
                         "attributes": {
                             "target": "name"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "SettingsForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Form",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "QueryForm",
+            "base": "EditForm",
+            "attributes": {
+                "path": "queries",
+                "controls": [
+                    {
+                        "name": "Item Names",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Types",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "types",
+                            "multiple": "true"
+                        }
+                    },
+                    {
+                        "name": "Tags",
+                        "type": "TagsCtrl",
+                        "attributes": {
+                            "target": "tags",
+                            "multiple": "true"
+                        }
+                    },
+                    {
+                        "name": "Location",
+                        "type": "LocationCtrl",
+                        "attributes": {
+                            "target": "location"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "SharingForm",
+            "base": "Form"
+        },
+        {
+            "name": "CodeForm",
+            "base": "EditForm",
+            "attributes": {
+                "controls": [
+                    {
+                        "name": "Code",
+                        "type": "CodeView",
+                        "attributes": {
+                            "target": "code"
                         }
                     }
                 ]
@@ -527,6 +657,22 @@
         {
             "name": "RoleAppForm",
             "type": "RoleAppForm"
+        },
+        {
+            "name": "SettingsForm",
+            "type": "SettingsForm"
+        },
+        {
+            "name": "CodeForm",
+            "type": "CodeForm"
+        },
+        {
+            "name": "QueryForm",
+            "type": "QueryForm"
+        },
+        {
+            "name": "SharingForm",
+            "type": "SharingForm"
         }
     ]
 }

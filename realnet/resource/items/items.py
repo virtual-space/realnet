@@ -7,7 +7,7 @@ class Items(Resource):
         account = module.get_account()
         query = self.get_query(module, args, path)
         if path:
-            item = self.get_item(module, account, path)
+            item = self.get_item(module, account, args, path)
             if item:
                 return jsonify(item.to_dict())
             else:
@@ -256,7 +256,7 @@ class Items(Resource):
 
         return []
 
-    def get_item(self, module, account, path):
+    def get_item(self, module, account, args, path):
         item = module.get_item(path)
         if item and module.can_account_read_item(account, item):
             return item
@@ -272,8 +272,17 @@ class Items(Resource):
             else:
                 query['types'] = args['types']
 
+        if 'parent_id' in args:
+            if isinstance(args['parent_id'], str):
+                query['parent_id'] = args['parent_id']
+            else:
+                query['parent_id'] = args['parent_id'][0]
+
         if 'any_level' in args:
-            query['any_level'] = args['any_level']
+            if isinstance(args['any_level'], str):
+                query['any_level'] = args['any_level']
+            else:
+                query['any_level'] = args['any_level'][0]
         
         return query
 

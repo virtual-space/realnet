@@ -4,7 +4,13 @@
             "name": "App",
             "base": "Item",
             "attributes": {
-                "app": "true"
+                "app": "true",
+                "views": [
+                    {
+                        "name": "All",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
@@ -13,26 +19,7 @@
             "attributes": {
                 "icon": "square",
                 "types": ["Item"],
-                "query": {"types": ["Item"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add",
-                        "icon": "add",
-                        "form": "ItemCreateForm"
-                    },
-                    {
-                        "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm",
-                        "import": "true"
-                    }
-                ]
+                "query": {"types": ["Item"]}
             },
             "instances": [
                 {
@@ -60,26 +47,7 @@
             "attributes": {
                 "icon": "apps",
                 "types": ["App"],
-                "query": {"types": ["App"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add",
-                        "icon": "add",
-                        "form": "AppCreateForm"
-                    },
-                    {
-                        "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm",
-                        "import": "true"
-                    }
-                ]
+                "query": {"types": ["App"]}
             },
             "instances": [
                 {
@@ -175,13 +143,7 @@
             "attributes": {
                 "icon": "collections",
                 "types": ["File"],
-                "query": {"types": ["File"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["File"], "any_level": "true"}
             },
             "instances": [
                 {
@@ -209,13 +171,7 @@
             "attributes": {
                 "icon": "border_all",
                 "types": ["Resource"],
-                "query": {"types": ["Resource"], "any_level": "true"},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Resource"], "any_level": "true"}
             },
             "instances": [
                 {
@@ -243,13 +199,7 @@
             "attributes": {
                 "icon": "extension",
                 "types": ["Type"],
-                "query": {"types": ["Type"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Type"]}
             },
             "instances": [
                 {
@@ -277,13 +227,7 @@
             "attributes": {
                 "icon": "person",
                 "types": ["Account"],
-                "query": {"types": ["Account"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Account"]}
             },
             "instances": [
                 {
@@ -312,15 +256,9 @@
                 "icon": "switch_account",
                 "types": ["Role"],
                 "query": {"types": ["Role"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ],
                 "menu": [
                     {
-                        "name": "Add",
+                        "name": "Add Role",
                         "icon": "add",
                         "form": "RoleCreateForm"
                     }
@@ -352,13 +290,7 @@
             "attributes": {
                 "icon": "group",
                 "types": ["Group"],
-                "query": {"types": ["Group"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Group"]}
             },
             "instances": [
                 {
@@ -386,13 +318,7 @@
             "attributes": {
                 "icon": "lock_open",
                 "types": ["Auth"],
-                "query": {"types": ["Auth"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Auth"]}
             },
             "instances": [
                 {
@@ -420,13 +346,7 @@
             "attributes": {
                 "icon": "public",
                 "types": ["Item"],
-                "query": {"types": ["Item"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Item"]}
             },
             "instances": [
                 {
@@ -454,13 +374,7 @@
             "attributes": {
                 "icon": "safety_check",
                 "types": ["Client"],
-                "query": {"types": ["Client"]},
-                "views": [
-                    {
-                        "name": "All",
-                        "type": "ListView"
-                    }
-                ]
+                "query": {"types": ["Client"]}
             },
             "instances": [
                 {
@@ -478,6 +392,90 @@
                     "attributes": {
                         "path": "clients",
                         "resource": "clients"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Views",
+            "base": "App",
+            "attributes": {
+                "icon": "fullscreen",
+                "types": ["View"],
+                "query": {"types": ["View"]}
+            },
+            "instances": [
+                {
+                    "name": "views",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.views.views",
+                        "module_class": "Views",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "views",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "views",
+                        "resource": "views"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Ctrls",
+            "base": "App",
+            "attributes": {
+                "icon": "widgets",
+                "types": ["Ctrl"],
+                "query": {"types": ["Ctrl"]}
+            },
+            "instances": [
+                {
+                    "name": "ctrls",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.ctrls.ctrls",
+                        "module_class": "Ctrls",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "ctrls",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "ctrls",
+                        "resource": "ctrls"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Attributes",
+            "base": "App",
+            "attributes": {
+                "icon": "edit_attributes",
+                "types": ["Attribute"],
+                "query": {"types": ["Attribute"]}
+            },
+            "instances": [
+                {
+                    "name": "attributes",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.attributes.attributes",
+                        "module_class": "Attributes",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "attributes",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "attributes",
+                        "resource": "attributes"
                     }
                 }
             ]
@@ -553,6 +551,18 @@
         {
             "name": "Clients",
             "type": "Clients"
+        },
+        {
+            "name": "Views",
+            "type": "Views"
+        },
+        {
+            "name": "Ctrls",
+            "type": "Ctrls"
+        },
+        {
+            "name": "Attributes",
+            "type": "Attributes"
         }
     ]
 }

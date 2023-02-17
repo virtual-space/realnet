@@ -12,7 +12,7 @@ class Types(Items):
             t.attributes['resource'] = 'types'
         return types
 
-    def get_item(self, module, account, path):
+    def get_item(self, module, account, args, path):
         item = module.get_type_by_id(path)
         if item:
             return item
