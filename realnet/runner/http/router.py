@@ -275,12 +275,7 @@ def router(endpoint_name, path):
 
     account = None
     
-    content_type = 'text/html'
-
-    if request.accept_mimetypes.accept_json:
-        content_type = 'application/json'
-    elif 'application/xml' in request.accept_mimetypes:
-        content_type = 'application/xml'
+    content_type = request.accept_mimetypes.best
     
     if not current_token:
         account = current_user(contextProvider)

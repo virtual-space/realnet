@@ -159,7 +159,11 @@ class Item(Instance):
         self.linked_item_id = linked_item_id
 
     def _get_attributes(self):
-        return  self.instance.attributes | self._attributes if self._attributes else self.instance.attributes
+        try:
+            return  self.instance.attributes | self._attributes if self._attributes else self.instance.attributes
+        except Exception as e:
+            print(e)
+            return self._attributes
 
     def _del_attributes(self):
         self._attributes = dict()

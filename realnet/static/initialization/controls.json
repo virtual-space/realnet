@@ -4,7 +4,13 @@
             "name": "Ctrl",
             "base": "Item",
             "attributes": {
-                "icon": "widgets"
+                "icon": "widgets",
+                "views": [
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
+                    }
+                ]
             }
         },
         {
@@ -19,6 +25,10 @@
                         "name": "Controls",
                         "type": "ListView",
                         "query": {"my_items": "true"}
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "AttributesView"
                     }
                 ]
             }
@@ -59,6 +69,22 @@
             "base": "Ctrl",
             "attributes": {
                 "icon": "edit_attributes",
+                "creatable": "true"
+            }
+        },
+        {
+            "name": "CheckboxCtrl",
+            "base": "Ctrl",
+            "attributes": {
+                "icon": "check_box",
+                "creatable": "true"
+            }
+        },
+        {
+            "name": "OptionCtrl",
+            "base": "Ctrl",
+            "attributes": {
+                "icon": "radio_button_checked",
                 "creatable": "true"
             }
         },

@@ -343,6 +343,28 @@
                         }
                     },
                     {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
+                        "name": "Types",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "types",
+                            "multiple": "true"
+                        }
+                    },
+                    {
+                        "name": "Query",
+                        "type": "QueryCtrl",
+                        "attributes": {
+                            "target": "query"
+                        }
+                    },
+                    {
                         "name": "Cancel",
                         "type": "CancelButton",
                         "attributes": {
@@ -371,6 +393,41 @@
                         "attributes": {
                             "target": "name"
                         }
+                    },
+                    {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
+                        "name": "Types",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "types",
+                            "multiple": "true"
+                        }
+                    },
+                    {
+                        "name": "Query",
+                        "type": "QueryCtrl",
+                        "attributes": {
+                            "target": "query"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "SaveButton",
+                        "order": "9"
                     }
                 ]
             }
@@ -505,60 +562,20 @@
                         "attributes": {
                             "target": "name"
                         }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "SettingsForm",
-            "base": "EditForm",
-            "attributes": {
-                "type": "Form",
-                "controls": [
-                    {
-                        "name": "Name",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "QueryForm",
-            "base": "EditForm",
-            "attributes": {
-                "path": "queries",
-                "controls": [
-                    {
-                        "name": "Item Names",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "name"
-                        }
                     },
                     {
-                        "name": "Types",
+                        "name": "Type",
                         "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "types",
-                            "multiple": "true"
+                            "target": "type",
+                            "types": ["View"]
                         }
                     },
                     {
-                        "name": "Tags",
-                        "type": "TagsCtrl",
+                        "name": "Id",
+                        "type": "HiddenCtrl",
                         "attributes": {
-                            "target": "tags",
-                            "multiple": "true"
-                        }
-                    },
-                    {
-                        "name": "Location",
-                        "type": "LocationCtrl",
-                        "attributes": {
-                            "target": "location"
+                            "target": "parent_id"
                         }
                     },
                     {
@@ -576,6 +593,201 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "SettingsForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Form",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "attributes"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "QueryGeneralStepCtrl",
+            "base": "StepCtrl",
+            "instances": [
+                {
+                    "name": "Name",
+                    "type": "EditCtrl",
+                    "attributes": {
+                        "target": "name"
+                    }
+                },
+                {
+                    "name": "Types",
+                    "type": "TypeSelectCtrl",
+                    "attributes": {
+                        "target": "types",
+                        "multiple": "true"
+                    }
+                },
+                {
+                    "name": "Tags",
+                    "type": "TagsCtrl",
+                    "attributes": {
+                        "target": "tags",
+                        "multiple": "true"
+                    }
+                },
+                {
+                    "name": "Children",
+                    "type": "CheckboxCtrl",
+                    "attributes": {
+                        "target": "children"
+                    }
+                },
+                {
+                    "name": "Any level",
+                    "type": "CheckboxCtrl",
+                    "attributes": {
+                        "target": "any_level"
+                    }
+                }
+
+            ]
+        },
+        {
+            "name": "QueryLocationStepCtrl",
+            "base": "StepCtrl",
+            "instances": [
+                {
+                    "name": "Location",
+                    "type": "LocationCtrl",
+                    "attributes": {
+                        "target": "location"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "QueryTimeStepCtrl",
+            "base": "StepCtrl",
+            "instances": [
+                {
+                    "name": "Start",
+                    "type": "DateCtrl",
+                    "attributes": {
+                        "target": "valid_from",
+                        "field_name": "valid_from",
+                        "order": "1"
+                    }
+                },
+                {
+                    "name": "End",
+                    "type": "DateCtrl",
+                    "attributes": {
+                        "target": "valid_to",
+                        "field_name": "valid_to",
+                        "order": "2"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "QueryStepsCtrl",
+            "base": "StepsCtrl",
+            "instances": [
+                {
+                    "name": "General",
+                    "type": "QueryGeneralStepCtrl"
+                },
+                {
+                    "name": "Time",
+                    "type": "QueryTimeStepCtrl"
+                },
+                {
+                    "name": "Location",
+                    "type": "QueryLocationStepCtrl"
+                }
+            ]
+        },
+        {
+            "name": "QueryForm",
+            "base": "EditForm",
+            "attributes": {
+                "path": "queries"
+            },
+            "instances": [
+                {
+                    "name": "Query",
+                    "type": "QueryStepsCtrl"
+                },
+                {
+                    "name": "Cancel",
+                    "type": "CancelButton",
+                    "attributes": {
+                        "close": "true",
+                        "order": "8"
+                    }
+                },
+                {
+                    "name": "Save",
+                    "type": "SaveButton",
+                    "order": "9"
+                }
+            ]
+        },
+        {
+            "name": "ViewQueryForm",
+            "base": "EditForm",
+            "attributes": {
+                "path": "queries"
+            },
+            "instances": [
+                {
+                    "name": "Query",
+                    "type": "QueryStepsCtrl"
+                },
+                {
+                    "name": "View",
+                    "type": "HiddenCtrl",
+                    "attributes": {
+                        "target": "view",
+                        "source": "view"
+                    }
+                },
+                {
+                    "name": "Cancel",
+                    "type": "CancelButton",
+                    "attributes": {
+                        "close": "true",
+                        "order": "8"
+                    }
+                },
+                {
+                    "name": "Save",
+                    "type": "SaveButton",
+                    "order": "9"
+                }
+            ]
         },
         {
             "name": "SharingForm",
@@ -669,6 +881,10 @@
         {
             "name": "QueryForm",
             "type": "QueryForm"
+        },
+        {
+            "name": "ViewQueryForm",
+            "type": "ViewQueryForm"
         },
         {
             "name": "SharingForm",

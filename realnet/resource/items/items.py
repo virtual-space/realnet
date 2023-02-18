@@ -178,10 +178,14 @@ class Items(Resource):
             params['name'] = args['name']
         if 'attributes' in args:
             params['attributes'] = args['attributes']
-        module.update_item(args['id'], **params)
-        del args['id']
-        del args['edit']
-        del args['item_id']
+        if path:
+            module.update_item(path, **params)
+        if 'id' in args:
+            del args['id']
+        if 'edit' in args:
+            del args['edit']
+        if 'item_id' in args:
+            del args['item_id']
         return self.render_item(module, args, path, content_type)
 
     def delete(self, module, args, path=None, content_type='text/html'):

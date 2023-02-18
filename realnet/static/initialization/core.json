@@ -35,6 +35,11 @@
                         "form": "QueryForm"
                     },
                     {
+                        "name": "View Query",
+                        "icon": "pageview",
+                        "form": "ViewQueryForm"
+                    },
+                    {
                         "name": "Code",
                         "icon": "functions",
                         "form": "CodeForm"
