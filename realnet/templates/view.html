@@ -1,4 +1,4 @@
-{% set views=view.items_of_type('View') %}
+{% set views=None %}
 {% if views %}
     <div class="row">
         <ul class="nav nav-pills justify-content-center">
@@ -40,7 +40,7 @@
         
     </div>
 {% else %}
-    {% if view.instance.type.name == 'ListView' %}
+    {% if view['type'] == 'ListView' %}
     <div class="row  justify-content-center align-items-center mt-4 mb-4">
         <div class="col-4">
             <h4>{{types|join(',')}} - {{items|length}}</h4>
@@ -48,18 +48,19 @@
         <div class="col-4">
             <ul class="nav mr-auto">
                 <li>
-                    <form class="form-inline" action="typemgmt" method="get" role="form">
-                        <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group mr-2" role="group" aria-label="First group">
-                              <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                              <button type="button" class="btn btn-primary">Filters</button>
-                            </div>
-                            <div class="btn-group mr-2" role="group" aria-label="Second group">
-                              <a href="{{root_path}}add=true" class="btn btn-primary">Add</a>
-                            </div>
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group mr-2" role="group" aria-label="First group">
+                            <form class="form-inline" role="form">
+                                <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+                                <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
+                            </form>
+                            <button type="button" class="btn btn-primary">Filters</button>
                         </div>
-                    </form>
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
+                          <button data-toggle="modal" data-target="#form_Add" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    
                 </li>
               </ul>
         </div>
@@ -113,7 +114,7 @@
             </table>
         </div>
     </div>
-    {% elif view.instance.type.name == 'AttributesView' %}
+    {% elif view['type'] == 'AttributesView' %}
     <div class="row  justify-content-center align-items-center mt-4 mb-4">
         <div class="col-4">
             <h4>Attributes - {{item.attributes.values() | length}}</h4>
@@ -121,18 +122,19 @@
         <div class="col-4">
             <ul class="nav mr-auto">
                 <li>
-                    <form class="form-inline" action="typemgmt" method="get" role="form">
-                        <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group mr-2" role="group" aria-label="First group">
-                              <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                              <button type="button" class="btn btn-primary">Filters</button>
-                            </div>
-                            <div class="btn-group mr-2" role="group" aria-label="Second group">
-                              <a href="{{root_path}}add=true" class="btn btn-primary">Add</a>
-                            </div>
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group mr-2" role="group" aria-label="First group">
+                            <form class="form-inline"  role="form">
+                                <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+                                <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
+                            </form>
+                            
+                            <button type="button" class="btn btn-primary">Filters</button>
                         </div>
-                    </form>
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
+                            <button data-toggle="modal" data-target="#form_Add" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
                 </li>
               </ul>
         </div>
@@ -176,7 +178,7 @@
             </table>
         </div>
     </div>
-    {% elif view.instance.type.name == 'CodeView' %}
+    {% elif view['type'] == 'CodeView' %}
       <div class="row justify-content-end mb-1 mt-1">
         <div class="col-10">
             <input type="hidden" id="language" value="python">
@@ -238,6 +240,6 @@
         });
     </script>
     {% else %}
-    type:{{view.type}} showing {{item.name}} with {{items | length}} items
+    type:{{view['type']}} showing {{item.name}} with {{items | length}} items
     {% endif %}
 {% endif %}

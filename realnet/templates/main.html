@@ -242,16 +242,10 @@
               $("#" + form_id).modal('show');
             } 
           });
-          $("#form_Add").modal('show');
         
         }); 
       </script>
     {% else %}
-    <script>
-      $(document).ready(function(){
-        $(".itemform").modal('show');
-      }); 
-    </script>
     {% endif %}
     <script>
       $(document).on('change', '#file', function(e) {

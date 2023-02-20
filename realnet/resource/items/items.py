@@ -24,7 +24,14 @@ class Items(Resource):
         
         active_app_name = self.get_endpoint_name()
         active_view_name = args.get('view')
+        
+        if active_view_name and not isinstance(active_view_name, str):
+            active_view_name = active_view_name[0]
+        
         active_subview_name = args.get('subview')
+        
+        if active_subview_name and not isinstance(active_subview_name, str):
+            active_subview_name = active_subview_name[0]
 
         app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
         
@@ -56,13 +63,13 @@ class Items(Resource):
             app = path_item
 
 
-        views = [i for i in app.items if i.instance.type.is_derived_from('View')]
+        views = app.attributes.get('views',[])
 
         items = []
         query = app.attributes.get('query')
         types = app.attributes.get('types',[])
         
-        menu = next((i for i in app.items if i.instance.type.is_derived_from('Menu')),None)
+        menu = app.attributes.get('menu',None)
 
         form = None
         
@@ -77,20 +84,20 @@ class Items(Resource):
             if not active_view_name:
                 active_view = next((v for v in views), None)
                 if active_view:
-                    active_view_name = active_view.name.lower()
+                    active_view_name = active_view['name'].lower()
             else:
-                active_view = next((v for v in views if v.name.lower() == active_view_name), None)
+                active_view = next((v for v in views if v['name'].lower() == active_view_name), None)
             
-            if active_view:
-                view_query = active_view.attributes.get('query')
+            if active_view and 'attributes' in active_view:
+                view_query = active_view['attributes'].get('query')
                 if view_query:
                     query = view_query
 
-                view_types = active_view.attributes.get('types')
+                view_types = active_view['attributes'].get('types')
                 if view_types:
                     types = view_types
 
-                subviews = [i for i in active_view.items if i.instance.type.is_derived_from('View')]
+                subviews = [i for i in active_view.get('items',[])]
                 if not active_subview_name:
                     active_subview = next((v for v in subviews), None)
                     if active_subview:
@@ -107,15 +114,17 @@ class Items(Resource):
                 if subview_types:
                     types = subview_types
 
+        '''
+        
         keys = { 'keys': ['type' for type in types ]  }
-
+        
         if args.get('add') == 'true':
             forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['CreateForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f)]
         elif args.get('edit') == 'true':
             forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
         elif args.get('delete') == 'true':
             forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
-        
+        '''
         items = self.get_items(module, account, query, path_item)
 
         root_path = '/' + self.get_endpoint_name()
@@ -129,13 +138,21 @@ class Items(Resource):
             root_path = root_path + '?'
 
         typenames = []
+        tbn = {t.name:t for t in module.get_types()}
 
         if types:
             type_filter = set(types)
-            tbn = module.get_types()
-            types_by_id = {t.id:t for t in tbn}
-            type_ids = set([t.id for t in tbn if t.name in type_filter])
+            types_by_id = {t.id:t for t in tbn.values()}
+            type_ids = set([t.id for t in tbn.values() if t.name in type_filter])
             typenames = [types_by_id[t].name for t in module.get_derived_types(type_ids)]
+
+        menu_forms = set()
+
+        if menu:
+            for mi in menu:
+                menu_forms.add(mi['form'])
+
+        forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
 
         return render_template('item.html', 
                                 app=app,

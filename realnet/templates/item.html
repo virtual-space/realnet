@@ -7,18 +7,19 @@
     {% for view in views %}
       {% if active_view_name and (view.name | lower) == active_view_name %}
       <li class="nav-item active">
-        <a class="nav-link active" href="?view={{view.name | lower}}">{{view.name}}</a>
+        <a class="nav-link active" href="?view={{view['name'] | lower}}">{{view.name}}</a>
       </li>
       {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="?view={{view.name | lower}}">{{view.name}}</a>
+        <a class="nav-link" href="?view={{view['name'] | lower}}">{{view.name}}</a>
       </li>
       {% endif %}
     {% endfor %}
   </ul>
 </nav>
+{{active_view_name}}
   {% for view in views %}
-    {% if active_view_name and (view.name | lower) == active_view_name %}
+    {% if active_view_name and (view['name'] | lower) == active_view_name %}
       {% with item=item, items=items %}
           {% include "view.html" %}
       {% endwith %}
