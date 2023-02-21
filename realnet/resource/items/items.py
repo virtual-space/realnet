@@ -1,5 +1,6 @@
+import uuid
 from flask import render_template, jsonify
-from realnet.core.type import Resource
+from realnet.core.type import Resource, Item, Instance
 
 class Items(Resource):
 
@@ -17,159 +18,8 @@ class Items(Resource):
             return jsonify([item.to_dict() for item in items])
 
     def render_items_html(self, module, args, path=None):
-        account = module.get_account()
-        org = module.get_org()
-        apps = module.get_apps(module)
-        forms = []
-        
-        active_app_name = self.get_endpoint_name()
-        active_view_name = args.get('view')
-        
-        if active_view_name and not isinstance(active_view_name, str):
-            active_view_name = active_view_name[0]
-        
-        active_subview_name = args.get('subview')
-        
-        if active_subview_name and not isinstance(active_subview_name, str):
-            active_subview_name = active_subview_name[0]
-
-        app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
-        
-        if apps:
-            if active_app_name:
-                app = next((a for a in apps if a.name.lower() == active_app_name), app)
-
-        path_item = app
-        target_item = app
-
-        path_segments = []
-
-        path_item_id = None
-        target_item_id = None
-
-        if path:
-            path_segments = path.split('/')
-
-        if path_segments:
-            path_item_id = path_segments[0]
-            path_item =  module.get_item(path_item_id)
-            target_item = path_item
-        
-        if 'item_id' in args:
-            target_item_id = args['item_id']
-            target_item = module.get_item(target_item_id)
-
-        if path_item:
-            app = path_item
-
-
-        views = app.attributes.get('views',[])
-
-        items = []
-        query = app.attributes.get('query')
-        types = app.attributes.get('types',[])
-        
-        menu = app.attributes.get('menu',None)
-
-        form = None
-        
-
-        #     form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': ['App'], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
-        # elif args.get('delete') == 'true':
-        #    pass
-
-        if views:
-            active_view = None
-            active_subview = None
-            if not active_view_name:
-                active_view = next((v for v in views), None)
-                if active_view:
-                    active_view_name = active_view['name'].lower()
-            else:
-                active_view = next((v for v in views if v['name'].lower() == active_view_name), None)
-            
-            if active_view and 'attributes' in active_view:
-                view_query = active_view['attributes'].get('query')
-                if view_query:
-                    query = view_query
-
-                view_types = active_view['attributes'].get('types')
-                if view_types:
-                    types = view_types
-
-                subviews = [i for i in active_view.get('items',[])]
-                if not active_subview_name:
-                    active_subview = next((v for v in subviews), None)
-                    if active_subview:
-                        active_subview_name = active_subview.name
-                else:
-                    active_subview = next((v for v in subviews if v.name == active_subview_name), None)
-
-            if active_subview:
-                subview_query = active_subview.attributes.get('query')
-                if subview_query:
-                    query = subview_query
-
-                subview_types = active_subview.attributes.get('types')
-                if subview_types:
-                    types = subview_types
-
-        '''
-        
-        keys = { 'keys': ['type' for type in types ]  }
-        
-        if args.get('add') == 'true':
-            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['CreateForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f)]
-        elif args.get('edit') == 'true':
-            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
-        elif args.get('delete') == 'true':
-            forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
-        '''
-        items = self.get_items(module, account, query, path_item)
-
-        root_path = '/' + self.get_endpoint_name()
-
-        if path_item_id:
-            root_path = root_path + '/' + path_item_id
-
-        if active_view_name:
-            root_path = '?view={}&'.format(active_view_name)
-        else:
-            root_path = root_path + '?'
-
-        typenames = []
-        tbn = {t.name:t for t in module.get_types()}
-
-        if types:
-            type_filter = set(types)
-            types_by_id = {t.id:t for t in tbn.values()}
-            type_ids = set([t.id for t in tbn.values() if t.name in type_filter])
-            typenames = [types_by_id[t].name for t in module.get_derived_types(type_ids)]
-
-        menu_forms = set()
-
-        if menu:
-            for mi in menu:
-                menu_forms.add(mi['form'])
-
-        forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
-
-        return render_template('item.html', 
-                                app=app,
-                                item=target_item,
-                                apps=apps, 
-                                org=org,
-                                account=account,
-                                items=items, 
-                                views=views, 
-                                active_view_name=active_view_name, 
-                                active_app_name=active_app_name, 
-                                active_subview_name = active_subview_name, 
-                                types=types,
-                                menu=menu,
-                                forms=forms,
-                                typenames=typenames,
-                                root_path=root_path)
+        return render_template(self.get_template(module, args, path), 
+                               **self.get_template_args(module, args, path))
 
     def render_item(self, module, args, path=None, content_type='text/html'):
         if content_type == 'application/json':
@@ -304,8 +154,208 @@ class Items(Resource):
                 query['any_level'] = args['any_level']
             else:
                 query['any_level'] = args['any_level'][0]
+
+        if 'children' in args:
+            if isinstance(args['children'], str):
+                query['children'] = args['children']
+            else:
+                query['children'] = args['children'][0]
+
+        if 'my_items' in args:
+            if isinstance(args['my_items'], str):
+                query['children'] = args['my_items']
+            else:
+                query['children'] = args['my_items'][0]
         
         return query
 
     def get_types(self, module, account, query, parent_item=None):
         return None
+
+    def get_template(self, module, args, path):
+        return "item.html"
+
+    def get_controls(self, module, items, tbn):
+        controls = []
+        account = module.get_account()
+        for item in items:
+            controls = controls + [Item(account.id, account.org.id, Instance(str(uuid.uuid4()), tbn[item['type']], item['name']), str(uuid.uuid4()), item['name'], item['attributes'] if 'attributes' in item else dict())]
+
+        return controls
+
+    def get_template_args(self, module, args, path):
+        account = module.get_account()
+        org = module.get_org()
+        apps = module.get_apps(module)
+        forms = []
+        
+        active_app_name = self.get_endpoint_name()
+        active_view_name = args.get('view')
+        
+        if active_view_name and not isinstance(active_view_name, str):
+            active_view_name = active_view_name[0]
+        
+        active_subview_name = args.get('subview')
+
+        if active_subview_name and not isinstance(active_subview_name, str):
+            active_subview_name = active_subview_name[0]
+
+        app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
+        
+        if apps:
+            if active_app_name:
+                app = next((a for a in apps if a.name.lower() == active_app_name), app)
+
+        path_item = app
+        target_item = app
+
+        path_segments = []
+
+        path_item_id = None
+        target_item_id = None
+
+        if path:
+            path_segments = path.split('/')
+
+        if path_segments:
+            path_item_id = path_segments[0]
+            path_item =  module.get_item(path_item_id)
+            target_item = path_item
+        
+        if 'item_id' in args:
+            target_item_id = args['item_id']
+            if isinstance(args['item_id'], str):
+                target_item_id = args['item_id']
+            else:
+                target_item_id = args['item_id'][0]
+                
+            target_item = module.get_item(target_item_id)
+
+        if path_item:
+            app = path_item
+
+
+        views = app.attributes.get('views',[])
+
+        items = []
+        query = app.attributes.get('query')
+        types = app.attributes.get('types',[])
+        
+        menu = app.attributes.get('menu',None)
+
+        form = None
+        
+
+        #     form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': ['App'], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
+        # elif args.get('delete') == 'true':
+        #    pass
+
+        if views:
+            active_view = None
+            active_subview = None
+            if not active_view_name:
+                active_view = next((v for v in views), None)
+                if active_view:
+                    active_view_name = active_view['name'].lower()
+            else:
+                active_view = next((v for v in views if v['name'].lower() == active_view_name), None)
+            
+            if active_view and 'attributes' in active_view:
+                view_query = active_view['attributes'].get('query')
+                if view_query:
+                    query = view_query
+
+                view_types = active_view['attributes'].get('types')
+                if view_types:
+                    types = view_types
+
+                subviews = [i for i in active_view.get('items',[])]
+                if not active_subview_name:
+                    active_subview = next((v for v in subviews), None)
+                    if active_subview:
+                        active_subview_name = active_subview.name
+                else:
+                    active_subview = next((v for v in subviews if v.name == active_subview_name), None)
+
+            if active_subview:
+                subview_query = active_subview.attributes.get('query')
+                if subview_query:
+                    query = subview_query
+
+                subview_types = active_subview.attributes.get('types')
+                if subview_types:
+                    types = subview_types
+
+        '''
+        
+        keys = { 'keys': ['type' for type in types ]  }
+        
+        if args.get('add') == 'true':
+            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['CreateForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f)]
+        elif args.get('edit') == 'true':
+            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
+        elif args.get('delete') == 'true':
+            forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
+        '''
+
+        items = []
+
+        tbn = {t.name:t for t in module.get_types()}
+
+        if target_item:
+            if target_item.instance.type.is_derived_from('Form'):
+                attrs = target_item.attributes
+                if 'controls' in attrs:
+                    items = self.get_controls(module, attrs['controls'], tbn)
+            else:
+                items = self.get_items(module, account, query, path_item)
+
+        root_path = '/' + self.get_endpoint_name()
+
+        if path_item_id:
+            root_path = root_path + '/' + path_item_id
+
+        if active_view_name:
+            root_path = '?view={}&'.format(active_view_name)
+        else:
+            root_path = root_path + '?'
+
+        typenames = []
+        
+
+        if types:
+            type_filter = set(types)
+            types_by_id = {t.id:t for t in tbn.values()}
+            type_ids = set([t.id for t in tbn.values() if t.name in type_filter])
+            typenames = [types_by_id[t].name for t in module.get_derived_types(type_ids)]
+
+        menu_forms = set()
+
+        if menu:
+            for mi in menu:
+                menu_forms.add(mi['form'])
+
+        # forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
+
+        forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
+
+        for form in forms:
+            if 'controls' in form.attributes:
+                ctrls = self.get_controls(module, form.attributes['controls'], tbn)
+                form.items = ctrls
+
+        return {'app': app,
+                'item': target_item,
+                'apps': apps, 
+                'org': org,
+                'account': account,
+                'items': items, 
+                'views': views, 
+                'active_view_name': active_view_name, 
+                'active_app_name': active_app_name, 
+                'active_subview_name': active_subview_name, 
+                'types': types,
+                'menu': menu,
+                'forms': forms,
+                'typenames': typenames,
+                'root_path': root_path}

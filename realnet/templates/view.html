@@ -41,36 +41,13 @@
     </div>
 {% else %}
     {% if view['type'] == 'ListView' %}
-    <div class="row  justify-content-center align-items-center mt-4 mb-4">
-        <div class="col-4">
-            <h4>{{types|join(',')}} - {{items|length}}</h4>
-        </div>
-        <div class="col-4">
-            <ul class="nav mr-auto">
-                <li>
-                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                        <div class="btn-group mr-2" role="group" aria-label="First group">
-                            <form class="form-inline" role="form">
-                                <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                                <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                            </form>
-                            <button type="button" class="btn btn-primary">Filters</button>
-                        </div>
-                        <div class="btn-group mr-2" role="group" aria-label="Second group">
-                          <button data-toggle="modal" data-target="#form_Add" class="btn btn-primary">Add</button>
-                        </div>
-                    </div>
-                    
-                </li>
-              </ul>
-        </div>
-    </div>
     <div class="row  justify-content-center align-items-center">
-        <div class="col-md-12">
-            <table class="table table-striped">
+        <div class="col-auto .text-center">
+            <table class="table table-fit table-striped w-auto table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Icon</th>
                         <th scope="col">Name</th>
                         {% if view.columns %}
                             {% for column in view.columns%}
@@ -88,6 +65,11 @@
                         <th scope="row">
                             {{loop.index}}
                         </th>
+                        <th scope="row">
+                            {% if item.attributes %}
+                            <i class="material-icons mr-1">{{item.attributes['icon']}}</i>
+                            {% endif %}
+                        </th>
                         <td>
                             <a  href="/items/{{item.id}}">{{item.name}}</a>
                         </td>
@@ -99,12 +81,13 @@
                             {% endfor %}    
                         {% endif %}
                         <td>
-                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                                <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <a href="{{root_path}}edit=true&item_id={{item.id}}" class="btn btn-warning">Edit</a>
-                                </div>
-                                <div class="btn-group mr-2" role="group" aria-label="Second group">
-                                    <a href="{{root_path}}delete=true&item_id={{item.id}}" class="btn btn-danger">Delete</a>
+                            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="material-icons mr-1">more_vert</i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                  <button data-toggle="modal" data-target="#form_Edit" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                                  <button data-toggle="modal" data-target="#form_Delete" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
                                 </div>
                             </div>
                         </td>
@@ -115,30 +98,6 @@
         </div>
     </div>
     {% elif view['type'] == 'AttributesView' %}
-    <div class="row  justify-content-center align-items-center mt-4 mb-4">
-        <div class="col-4">
-            <h4>Attributes - {{item.attributes.values() | length}}</h4>
-        </div>
-        <div class="col-4">
-            <ul class="nav mr-auto">
-                <li>
-                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                        <div class="btn-group mr-2" role="group" aria-label="First group">
-                            <form class="form-inline"  role="form">
-                                <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                                <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                            </form>
-                            
-                            <button type="button" class="btn btn-primary">Filters</button>
-                        </div>
-                        <div class="btn-group mr-2" role="group" aria-label="Second group">
-                            <button data-toggle="modal" data-target="#form_Add" class="btn btn-primary">Add</button>
-                        </div>
-                    </div>
-                </li>
-              </ul>
-        </div>
-    </div>
     <div class="row  justify-content-center align-items-center">
         <div class="col-md-12">
             <table class="table table-striped">
