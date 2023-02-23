@@ -93,7 +93,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           {% if form.attributes['upload'] == 'true' %} 
-            <form enctype="multipart/form-data" id="create" action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+            <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
               <div class="modal-header">
                 {% if form.attributes['edit'] == 'true' %} 
                   <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
@@ -140,7 +140,7 @@
               </div>
             </form>
           {% else %} 
-            <form action="{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+            <form action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
               <div class="modal-header">
                 {% if form.attributes['edit'] == 'true' %} 
                   <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
@@ -160,14 +160,21 @@
                 </div>
                 {% endif %}
                 {% for control in form.items %}
-                  {% with item=item, control=control, form=form %}
-                    {% include "control.html" %}
-                  {% endwith %}
+                  {% if not (control.instance.type.base and control.instance.type.base.name == 'ButtonCtrl') %}
+                    {% with item=item, control=control, form=form %}
+                      {% include "control.html" %}
+                    {% endwith %}
+                  {% endif %}
                 {% endfor %}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
+                {% for control in form.items %}
+                  {% if control.instance.type.base and control.instance.type.base.name == 'ButtonCtrl' %}
+                    {% with item=item, control=control, form=form %}
+                      {% include "control.html" %}
+                    {% endwith %}
+                  {% endif %}
+                {% endfor %}
               </div>
             </form>
           {% endif %}

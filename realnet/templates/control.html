@@ -21,6 +21,8 @@
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.id}}">
         {% elif control.attributes['target'] == 'name' %}
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+        {% elif control.attributes['value'] %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes['value']}}">
         {% else %}
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
         {% endif %}
@@ -55,6 +57,12 @@
             {% endfor %}    
         {% endif %}
     </select>
+{% elif control.instance.type.base.name == 'ButtonCtrl' %}
+    {% if control.attributes['is_cancel_button'] == 'true' %}
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    {% else %}
+        <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
+    {% endif %}
 {% else %}
     {{control.instance.type.name}}
 {% endif %}

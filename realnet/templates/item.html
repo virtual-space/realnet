@@ -33,9 +33,11 @@
                 <i class="material-icons mr-1">more_vert</i>
               </button>
               <div class="dropdown-menu dropdown-menu-right">
-                {% for menu_item in menu %}
-                <button data-toggle="modal" data-target="#form_{{menu_item['form']}}" class="dropdown-item" type="button"><i class="material-icons mr-1">{{menu_item['icon']}}</i>{{menu_item['name']}}</button>
-                {% endfor %}
+                {% if menu %}
+                  {% for menu_item in menu %}
+                  <button data-toggle="modal" data-target="#form_{{menu_item['form']}}" class="dropdown-item" type="button"><i class="material-icons mr-1">{{menu_item['icon']}}</i>{{menu_item['name']}}</button>
+                  {% endfor %}
+                {% endif %}
               </div>
             </div>
         </div>

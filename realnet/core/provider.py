@@ -148,6 +148,18 @@ class RolesProvider(ABC):
     def remove_role_app(self, role_id, app_id):
         pass
 
+    @abstractmethod
+    def add_account_role(self, account_id, role_id):
+        pass
+
+    @abstractmethod
+    def remove_account_role(self, account_id, role_id):
+        pass
+
+    @abstractmethod
+    def get_account_roles(self, account_id):
+        pass
+
 class OrgProvider(ABC):
     
     @abstractmethod
@@ -401,6 +413,14 @@ class OrgsProvider(ABC):
     def get_public_item(self, id):
         pass
 
+    @abstractmethod
+    def get_account_by_username(self, org_id, username):
+        pass
+
+    @abstractmethod
+    def create_account(self, org_id, type, username, email, org_role_type, role_type):
+        pass
+
 class InitializationProvider(ABC):    
 
     @abstractmethod
@@ -622,6 +642,15 @@ class Context(Module):
 
     def remove_role_app(self, role_id, app_id):
         return self.roles.remove_role_app(role_id, app_id)
+
+    def add_account_role(self, account_id, role_id):
+        return self.roles.add_account_role(account_id, role_id)
+
+    def remove_account_role(self, account_id, role_id):
+        return self.roles.remove_account_role(account_id, role_id)
+
+    def get_account_roles(self, account_id):
+        return self.roles.get_account_roles(account_id)
         
 
 

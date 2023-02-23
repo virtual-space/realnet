@@ -4,7 +4,25 @@
             "name": "Type",
             "attributes": {
                 "icon": "extension",
-                "resource": "types"
+                "resource": "types",
+                "menu": [
+                    {
+                        "name": "Create Instance",
+                        "icon": "add",
+                        "form": "InstanceCreateForm"
+                    },
+                    {
+                        "name": "Create Attribute",
+                        "icon": "add",
+                        "form": "AttributeCreateForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm",
+                        "import": "true"
+                    }
+                ]
             }
         },
         {
@@ -81,7 +99,7 @@
             "name": "Func",
             "base": "Item",
             "attributes": {
-                "icon": "function",
+                "icon": "functions",
                 "views": [
                     {
                         "name": "Code",
@@ -207,18 +225,6 @@
                     {
                         "name": "Attributes",
                         "type": "AttributesView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add Item",
-                        "icon": "add",
-                        "form": "ItemCreateForm"
-                    },
-                    {
-                        "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm"
                     }
                 ]
             }

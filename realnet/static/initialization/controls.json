@@ -331,7 +331,8 @@
             "name": "CancelButton",
             "base": "ButtonCtrl",
             "attributes": {
-                "close": "true"
+                "close": "true",
+                "is_cancel_button": "true"
             }
         },
         {

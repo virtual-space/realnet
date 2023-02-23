@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Apply for a RealNet Organization</title>
+    {{ bootstrap.load_css() }}
+</head>
+<body>
+    <div class="container h-100">
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+            <div class="row">
+                {% if not registered %}
+                    <div class="col-md-12">
+                        <h3>Register on RealNet</h3>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                            <a class="nav-link" href="/register">Individual</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link  active" href="/register_org">Organization</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom:30px;">
+                        <form action="" method="post">
+                            <label for="orgname" class="form-label">organization:</label><br>
+                            <input type="text" id="orgname" name="orgname" class="form-control"><br>
+                            <label for="username" class="form-label">username:</label><br>
+                            <input type="text" id="username" name="username" class="form-control"><br>
+                            <label for="email" class="form-label">email:</label><br>
+                            <input type="email" id="email" name="email" value="John@example.com"  class="form-control"><br>
+                            <label for="password" class="form-label">password:</label><br>
+                            <input type="password" id="password" name="password" class="form-control"><br>
+                            <label for="repeat_password" class="form-label">repeat password:</label><br>
+                            <input type="password" id="repeat_password" name="repeat_password"  class="form-control"><br>
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                        </form>
+                    </div>
+                    <div class="col-md-12">
+
+                            {% for auth in authenticators %}
+                                <a href="{{auth.url}}" class="btn btn-secondary btn-sm">{{auth.name}}</a>
+                            {% endfor %}
+                    </div>
+                {% else %}
+                <div class="col-md-12">
+                    Please check your email to complete the registration
+                </div>
+                {% endif %}
+                {% if error %}
+                <div class="col-md-12">
+                    <div class="alert alert-danger" role="alert">
+                        {{msg}}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+       </div>
+  
+    <a href="/login">Login</a>
+    {{ bootstrap.load_js() }}
+</body>
+</html>

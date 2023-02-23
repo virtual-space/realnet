@@ -1,6 +1,8 @@
+import uuid
+
 from realnet.core.provider import OrgsProvider
 from realnet.core.type import Org, Account, Authenticator, Client
-from .models import Org as OrgModel, Account as AccountModel, Authenticator as AuthenticatorModel, Client as ClientModel, Item as ItemModel, Type as TypeModel, Acl,  AclType, session as db
+from .models import AccountType, Org as OrgModel, Account as AccountModel, Authenticator as AuthenticatorModel, Client as ClientModel, Item as ItemModel, OrgRoleType, Type as TypeModel, Acl,  AclType, session as db
 from .utility import item_model_to_item, get_types_by_name, type_model_to_type, get_derived_types
 from sqlalchemy import or_
 
@@ -80,3 +82,21 @@ class SqlOrgsProvider(OrgsProvider):
             tbn = get_types_by_name(item.org_id)
             return item_model_to_item(item.org_id, item, tbn)
         return None
+
+    def get_account_by_username(self, org_id, username):
+        account = db.query(AccountModel).filter(AccountModel.org_id == org_id, AccountModel.username == username).first()
+        if account:
+            return Account(account.id, account.username, Org(account.org.id, account.org.name), account.org_role_type)
+        return None
+
+    def create_account(self, org_id, type, username, email, password, org_role_type):
+        account = Account(  id=str( uuid.uuid4()), 
+                                    type=AccountType[type.lower()],
+                                    username=username, 
+                                    email=email, 
+                                    org_id=org_id,
+                                    org_role_type=OrgRoleType[org_role_type.lower()])
+        account.set_password(password)
+        db.add(account)
+        db.commit()
+        return account

@@ -47,7 +47,20 @@
             "attributes": {
                 "icon": "apps",
                 "types": ["App"],
-                "query": {"types": ["App"]}
+                "query": {"types": ["App"]},
+                "menu": [
+                    {
+                        "name": "Create App",
+                        "icon": "add",
+                        "form": "AppCreateForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm",
+                        "import": "true"
+                    }
+                ]
             },
             "instances": [
                 {
@@ -80,6 +93,13 @@
                     {
                         "name": "All",
                         "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Create Endpoint",
+                        "icon": "add",
+                        "form": "EndpointCreateForm"
                     }
                 ]
             },
@@ -114,6 +134,19 @@
                     {
                         "name": "All",
                         "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Create Form",
+                        "icon": "add",
+                        "form": "FormCreateForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm",
+                        "import": "true"
                     }
                 ]
             },
@@ -199,7 +232,20 @@
             "attributes": {
                 "icon": "extension",
                 "types": ["Type"],
-                "query": {"types": ["Type"]}
+                "query": {"types": ["Type"]},
+                "menu": [
+                    {
+                        "name": "Create Type",
+                        "icon": "add",
+                        "form": "TypeCreateForm"
+                    },
+                    {
+                        "name": "Import",
+                        "icon": "file_upload",
+                        "form": "UploadForm",
+                        "import": "true"
+                    }
+                ]
             },
             "instances": [
                 {

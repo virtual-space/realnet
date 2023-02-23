@@ -80,6 +80,12 @@ class StandardContextProvider(ContextProvider):
     def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
         return SqlInitProvider().initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)
 
+    def get_account_by_username(self, org_id, username):
+        return SqlOrgsProvider().get_account_by_username(org_id, username)
+
+    def create_account(self, org_id, type, username, email, org_role_type, role_type):
+        return SqlOrgsProvider().create_account(org_id, type, username, email, org_role_type, role_type)
+
 class Start(ProtoCmd):
     
     def __init__(self):

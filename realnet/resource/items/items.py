@@ -32,11 +32,19 @@ class Items(Resource):
         return self.render_item(module, args, path, content_type)
 
     def post(self, module, args, path=None, content_type='text/html'):
-        item = module.create_item(**args)
+        attrs = dict()
+        for k,v in args.items():
+            if k not in set(['name', 'type']):
+                if not 'attributes' in attrs:
+                    attrs['attributes'] = dict()
+                attrs['attributes'][k] = v
+            else:
+                attrs[k] = v
+            
+        item = module.create_item(**attrs)
         if content_type == 'application/json':
             return jsonify(item.to_dict())
         else:
-            del args['add']
             return self.render_item(module, args, path, content_type)
 
     def put(self, module, args, path=None, content_type='text/html'):
@@ -47,12 +55,6 @@ class Items(Resource):
             params['attributes'] = args['attributes']
         if path:
             module.update_item(path, **params)
-        if 'id' in args:
-            del args['id']
-        if 'edit' in args:
-            del args['edit']
-        if 'item_id' in args:
-            del args['item_id']
         return self.render_item(module, args, path, content_type)
 
     def delete(self, module, args, path=None, content_type='text/html'):
@@ -219,7 +221,7 @@ class Items(Resource):
 
         if path_segments:
             path_item_id = path_segments[0]
-            path_item =  module.get_item(path_item_id)
+            path_item =  self.get_item(module, account, args, path_item_id)
             target_item = path_item
         
         if 'item_id' in args:
@@ -229,7 +231,7 @@ class Items(Resource):
             else:
                 target_item_id = args['item_id'][0]
                 
-            target_item = module.get_item(target_item_id)
+            target_item = self.get_item(module, account, args, target_item_id)
 
         if path_item:
             app = path_item
@@ -303,7 +305,7 @@ class Items(Resource):
         tbn = {t.name:t for t in module.get_types()}
 
         if target_item:
-            if target_item.instance.type.is_derived_from('Form'):
+            if target_item.instance and target_item.instance.type.is_derived_from('Form'):
                 attrs = target_item.attributes
                 if 'controls' in attrs:
                     items = self.get_controls(module, attrs['controls'], tbn)
@@ -327,7 +329,7 @@ class Items(Resource):
             type_filter = set(types)
             types_by_id = {t.id:t for t in tbn.values()}
             type_ids = set([t.id for t in tbn.values() if t.name in type_filter])
-            typenames = [types_by_id[t].name for t in module.get_derived_types(type_ids)]
+            typenames = types + [types_by_id[t].name for t in module.get_derived_types(type_ids)]
 
         menu_forms = set()
 

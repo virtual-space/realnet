@@ -1,6 +1,7 @@
+from sqlalchemy import or_
 from realnet.core.provider import RolesProvider
 from realnet.core.type import Role, Org, Instance, Item
-from .models import Role as RoleModel, Org as OrgModel, Item as ItemModel, RoleApp as RoleAppModel, session as db
+from .models import Role as RoleModel, Org as OrgModel, Item as ItemModel, RoleApp as RoleAppModel, Account as AccountModel, AccountRole as AccountRoleModel, session as db
 from .utility import item_model_to_item, get_types_by_name
 import uuid
 
@@ -42,7 +43,7 @@ class SqlRolesProvider(RolesProvider):
 
     def get_role(self, id):
         tbn = get_types_by_name(self.org_id)
-        role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, RoleModel.id == id).first()
+        role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, or_(RoleModel.id == id, RoleModel.name == id)).first()
         if role:
             role_apps = [role_app for role_app in role.apps]
             link_type = tbn['Link']
@@ -78,3 +79,17 @@ class SqlRolesProvider(RolesProvider):
             if role_app:
                 db.delete(role_app)
                 db.commit()
+
+    def add_account_role(self, account_id, role_id):
+        role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, or_(RoleModel.id == role_id, RoleModel.name == role_id)).first()
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        if role and account:
+            ar = AccountRoleModel(id=str(uuid.uuid4()), org_id=self.org_id, account_id=account.id, role_id=role_id)
+            db.add(ar)
+            db.commit()
+
+    def remove_account_role(self, account_id, role_id):
+        pass
+
+    def get_account_roles(self, account_id):
+        pass

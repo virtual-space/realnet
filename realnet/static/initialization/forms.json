@@ -124,10 +124,10 @@
                         }
                     },
                     {
-                        "name": "Id",
-                        "type": "HiddenCtrl",
+                        "name": "Target",
+                        "type": "EditCtrl",
                         "attributes": {
-                            "target": "parent_id"
+                            "target": "target"
                         }
                     },
                     {
@@ -167,36 +167,32 @@
                         }
                     },
                     {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
                         "name": "Type",
                         "type": "TypeSelectCtrl",
                         "attributes": {
                             "target": "type",
                             "typenames": ["CreateForm", "EditForm", "DeleteForm"]
                         }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "EndpointCreateForm",
-            "base": "CreateForm",
-            "attributes": {
-                "type": "Endpoint",
-                "controls": [
+                    },
                     {
-                        "name": "Name",
-                        "type": "EditCtrl",
+                        "name": "Cancel",
+                        "type": "CancelButton",
                         "attributes": {
-                            "target": "name"
+                            "close": "true",
+                            "order": "8"
                         }
                     },
                     {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "source": "form"
-                        }
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
                     }
                 ]
             }
@@ -279,7 +275,6 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Item",
-                "path": "items",
                 "controls": [
                     {
                         "name": "Name",
@@ -350,18 +345,11 @@
                         }
                     },
                     {
-                        "name": "Types",
-                        "type": "TypeSelectCtrl",
+                        "name": "Type",
+                        "type": "HiddenCtrl",
                         "attributes": {
-                            "target": "types",
-                            "multiple": "true"
-                        }
-                    },
-                    {
-                        "name": "Query",
-                        "type": "QueryCtrl",
-                        "attributes": {
-                            "target": "query"
+                            "target": "type",
+                            "value": "App"
                         }
                     },
                     {
@@ -433,6 +421,144 @@
             }
         },
         {
+            "name": "TypeCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
+                        "name": "Resource",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "resource"
+                        }
+                    },
+                    {
+                        "name": "Base",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "EndpointCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Endpoint",
+                "path": "endpoints",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "value": "Endpoint"
+                        }
+                    },
+                    {
+                        "name": "resource",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "resource"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Form",
+                "path": "items",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
             "name": "RoleCreateForm",
             "base": "CreateForm",
             "attributes": {
@@ -487,6 +613,100 @@
                                 "types": ["App"],
                                 "any_level": "true"
                             }
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "InstanceCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Instance",
+                "path": "types",
+                "title_prefix": "Add Instance", 
+                "controls": [
+                    {
+                        "name": "ParentTypeId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "TargetTypeId",
+                        "type": "ItemSelectCtrl",
+                        "attributes": {
+                            "target": "type_id",
+                            "query": {
+                                "types": ["Type"],
+                                "any_level": "true"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "CancelButton",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "SaveButton",
+                        "order": "9"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AttributeCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Attribute",
+                "path": "types",
+                "title_prefix": "Add Attribute", 
+                "controls": [
+                    {
+                        "name": "ParentTypeId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Value",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "value"
                         }
                     },
                     {
@@ -861,6 +1081,18 @@
         {
             "name": "DeleteForm",
             "type": "DeleteForm"
+        },
+        {
+            "name": "TypeCreateForm",
+            "type": "TypeCreateForm"
+        },
+        {
+            "name": "InstanceCreateForm",
+            "type": "InstanceCreateForm"
+        },
+        {
+            "name": "AttributeCreateForm",
+            "type": "AttributeCreateForm"
         },
         {
             "name": "RoleCreateForm",

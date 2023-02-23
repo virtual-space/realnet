@@ -384,9 +384,8 @@ def get_or_create_delegated_account(org,
     
     return account
 
-def initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
-    Model.metadata.create_all(engine)
-
+def create_tenant(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
+    
     org = Org(id=str(uuid.uuid4()), name=org_name, public=True)
     session.add(org)
     session.commit()
@@ -438,3 +437,8 @@ def initialize(org_name, admin_username, admin_email, admin_password, uri, redir
                             auth_method='client_secret_basic',
                             org_id=org.id)
     return root_account
+
+def initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
+    Model.metadata.create_all(engine)
+
+    return create_tenant(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)

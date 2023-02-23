@@ -1,10 +1,12 @@
+import os
+
 from flask import Response, redirect, render_template, render_template_string, request, jsonify, Blueprint, send_file, session, current_app, url_for
 from authlib.integrations.flask_oauth2 import current_token
 from authlib.integrations.flask_client import OAuth
 from authlib.integrations.requests_client import OAuth2Session
 from authlib.common.encoding import to_unicode, to_bytes
 from .auth import require_oauth, authorization
-from realnet.provider.sql.models import get_or_create_delegated_account
+from realnet.provider.sql.models import get_or_create_delegated_account, create_tenant
 
 try:
     import urlparse
@@ -139,29 +141,76 @@ def add_params_to_uri(uri, params, fragment=False):
     return urlparse.urlunparse((sch, net, path, par, query, fra))
 
 
-@router_bp.route('/register', methods=('GET', 'POST'))
-def tenant_register():
-    if request.method == 'POST':
+@router_bp.route('/register', methods=['GET', 'POST'])
+@router_bp.route('/<name>/register', methods=['GET', 'POST'])
+def register(name=None):
+    if request.method == 'GET':
+        return render_template('register.html', registered=False)
+    else:
+        contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
+        org = contextProvider.get_org_by_name(name)
+        if not org:
+            # is there a public org?
+            org = contextProvider.get_org_by_name('public')
+
+        if org:
+            # is there already an account with that username in this org?
+            username = request.form.get('username')
+            account = contextProvider.get_account_by_username(org.id, username)
+            if account:
+                return render_template('register.html', error=True, msg='Username already exists')
+            else:
+                # is there already an account user with that email?
+                email = request.form.get('email')
+                password = request.form.get('password')
+                repeat_password = request.form.get('repeat_password')
+                if password and (password == repeat_password):
+                    account = contextProvider.create_account(   
+                                        type='person',
+                                        username=username,
+                                        password=password,
+                                        email=email, 
+                                        org_id=org.id,
+                                        org_role_type='visitor')
+                    if account:
+                        session['id'] = account.id
+
+                        r = contextProvider.get_role('Visitor')
+                        if r:
+                            ar = contextProvider.add_account_role(account.id, r.id)
+                        # print(request.form)
+                        # todo email validation
+                        # return render_template('register.html', registered=True)
+                        return redirect('/')
+                    else:
+                        return render_template('register.html', error=True, msg='There was a problem with account creation')
+                else:
+                    return render_template('register.html', error=True, msg='Password and repeat password do not match')
+        else:
+            return render_template('register.html', error=True, msg='Signup not allowed')
+
+@router_bp.route('/register_org', methods=['GET', 'POST'])
+def register_org():
+    if request.method == 'GET':
+        return render_template('register_org.html', registered=False)
+    else:
+        contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
+        orgname = request.form.get('orgname')
+        # is there already an org with that orgname?
+        org = contextProvider.get_org_by_name(orgname)
+        if org:
+            return render_template('register_org.html', error=True, msg='Organization already registered')
+
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        #todo complete registration
-        account1 = None #Account.query.filter_by(username=username).first()
-        account2 = None #Account.query.filter_by( email=email).first()
-        if account1 or account2:
-            return render_template('register.html')
-        else:
-            # account = Account(id=str(uuid.uuid4()), username=username, email=email)
-            # account.set_password(password)
-            # db.session.add(account)
-            # db.session.commit()
-            # if user is not just to log in, but need to head back to the auth page, then go for it
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
-            return redirect('/')
-    else:
-        return render_template('register.html')
+        repeat_password = request.form.get('repeat_password')
+        if password and (password != repeat_password):
+            return render_template('register_org.html', error=True, msg='Password and repeat password do not match')
+
+
+        tenant_info = create_tenant(orgname, username, email, password, os.getenv('REALNET_URI'), os.getenv('REALNET_REDIRECT_URI'), os.getenv('REALNET_MOBILE_REDIRECT_URI'))
+        return redirect('/' + orgname + '/login')
 
 @router_bp.route('/<id>/authorize/<name>', defaults={'client_id': None})
 @router_bp.route('/<id>/<client_id>/authorize/<name>')

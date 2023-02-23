@@ -71,7 +71,11 @@
                             {% endif %}
                         </th>
                         <td>
-                            <a  href="/items/{{item.id}}">{{item.name}}</a>
+                            {% if item.attributes['resource'] %}
+                                <a  href="/{{item.attributes['resource']}}/{{item.id}}">{{item.name}}</a>
+                            {% else %}
+                                <a  href="/items/{{item.id}}">{{item.name}}</a>
+                            {% endif %}
                         </td>
                         {% if view.columns %}
                             {% for column in view.columns%}

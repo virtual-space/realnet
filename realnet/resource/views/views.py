@@ -31,14 +31,6 @@ class Views(Items):
                     if 'item_id' in args:
                         del args['item_id']
                     return self.render_item(module, args, path, content_type)
-
-        if account.is_superuser() or account.is_admin():
-            if 'type' in args and args['type'] == 'RoleApp':
-                app_id = args['app_id']
-                role_id = args['parent_id']
-                module.add_role_app(role_id, app_id)
-            else:
-                role = module.create_role(**args)
             
         return self.render_item(module, args, path, content_type)
 
