@@ -58,6 +58,8 @@
     <link rel="stylesheet" href="{{url_for('static', filename='/font-awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
     {{ bootstrap.load_js() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
 </head>
 <body>  
 
@@ -90,7 +92,7 @@
     <input type="hidden" id="parent_id" name="parent_id" value="{{item.id}}">
     {% for form in forms %}
     <div class="modal fade itemform" id="form_{{form.name}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           {% if form.attributes['upload'] == 'true' %} 
             <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
@@ -160,7 +162,7 @@
                 </div>
                 {% endif %}
                 {% for control in form.items %}
-                  {% if not (control.instance.type.base and control.instance.type.base.name == 'ButtonCtrl') %}
+                  {% if not (control.instance.type and control.instance.type.name == 'ButtonCtrl') %}
                     {% with item=item, control=control, form=form %}
                       {% include "control.html" %}
                     {% endwith %}
@@ -169,7 +171,7 @@
               </div>
               <div class="modal-footer">
                 {% for control in form.items %}
-                  {% if control.instance.type.base and control.instance.type.base.name == 'ButtonCtrl' %}
+                  {% if control.instance.type and control.instance.type.name == 'ButtonCtrl' %}
                     {% with item=item, control=control, form=form %}
                       {% include "control.html" %}
                     {% endwith %}
@@ -231,6 +233,17 @@
     {% else %}
     {% endif %}
     <script>
+      var stepper = new Stepper($('.bs-stepper')[0]);
+      $(document).ready(function () {
+        $(".previous_button").on("click", function() {
+          stepper.previous();
+        });
+        $(".next_button").on("click", function() {
+          stepper.next();
+        });
+        
+        
+      });
       $(document).on('change', '#file', function(e) {
         //console.log(e);
         var nextSibling = e.target.nextElementSibling;

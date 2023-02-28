@@ -1,4 +1,10 @@
-{% if control.instance.type.name == 'EditCtrl' %}
+{% set control_type = None %}
+{% if control.__class__.__name__ == 'dict' %}
+    {% set control_type = control['type'] %}
+{% else %}
+    {% set control_type = control.instance.type.name %}
+{% endif %}
+{% if control_type == 'EditCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     {% if item %}
         {% if control.attributes['target'] == 'name' %}
@@ -9,7 +15,7 @@
     {% else %}
         <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
     {% endif %}
-{% elif control.instance.type.name == 'HiddenCtrl' %}
+{% elif control_type == 'HiddenCtrl' %}
     {% if control.attributes['source'] == 'control' %}
         <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
     {% elif control.attributes['source'] == 'form' %}
@@ -27,7 +33,7 @@
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
         {% endif %}
     {% endif %}
-{% elif control.instance.type.name == 'MultiSelectCtrl' %}
+{% elif control_type == 'MultiSelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
         {% if control.attributes['typenames'] %}
@@ -40,13 +46,28 @@
             {% endfor %}    
         {% endif %}
     </select>
-{% elif control.instance.type.name == 'TypeSelectCtrl' %}
+{% elif control_type == 'TypeSelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
         {% if control.attributes['typenames'] %}
             {% for typename in control.attributes['typenames'] %}
                 <option value="{{typename}}">{{typename}}</option>
             {% endfor %}
+        {% elif all_types %}
+            {% if control.attributes['types'] %}
+                {% for typename in control.attributes['types'] %}
+                {{typename}}
+                    {% for type in all_types %}
+                        {% if type.is_derived_from(typename) %}
+                            <option value="{{type.name}}">{{type.name}}</option>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                {% for type in all_types %}
+                    <option value="{{type.name}}">{{type.name}}</option>
+                {% endfor %}
+            {% endif %}
         {% elif typenames %}
             {% for typename in typenames %}
                 <option value="{{typename}}">{{typename}}</option>
@@ -57,12 +78,72 @@
             {% endfor %}    
         {% endif %}
     </select>
-{% elif control.instance.type.base.name == 'ButtonCtrl' %}
+{% elif control_type == 'ButtonCtrl' %}
     {% if control.attributes['is_cancel_button'] == 'true' %}
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     {% else %}
         <button type="submit" class="btn btn-primary">{{form.attributes['submit_text']}}</button>
     {% endif %}
+{% elif control_type == 'StepsCtrl' %}
+    <div class="form-group">
+    {% for step_control in control.attributes['controls'] %}
+        {% if step_control.type != 'StepCtrl' %}
+            {% with item=item, control=step_control %}
+                {% include "control.html" %}
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+    </div>
+    <div class="bs-stepper vertical">
+        <div class="bs-stepper-header" role="tablist">
+            {% set target_controls = [] %}
+            {% for step_control in control.attributes['controls'] %}
+                {% if step_control.type == 'StepCtrl' %}
+                    {% set target_controls = target_controls + [step_control] %}
+                    <div class="step" data-target="#step_{{step_control.name}}">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="step_{{step_control.name}}" id="trigger_{{step_control.name}}">
+                            <span class="bs-stepper-circle">{{loop.index}}</span>
+                            <span class="bs-stepper-label">{{step_control.name}}</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% for step_control in target_controls %}
+                {% if step_control.type == 'StepCtrl' %}
+                    {% set target_controls = target_controls + [step_control] %}
+                    <div class="step" data-target="#step_{{step_control.name}}">
+                        <button type="button" class="step-trigger" role="tab" aria-controls="step_{{step_control.name}}" id="trigger_{{step_control.name}}">
+                            <span class="bs-stepper-circle">{{loop.index}}</span>
+                            <span class="bs-stepper-label">{{step_control.name}}</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="bs-stepper-content w-100">
+            {% for step_control in control.attributes['controls'] %}
+                {% if step_control.type == 'StepCtrl' %}
+                    <div id="step_{{step_control.name}}" class="content w-100" role="tabpanel" aria-labelledby="trigger_{{step_control.name}}">
+                        {% with item=item, control=step_control %}
+                            {% include "control.html" %}
+                        {% endwith %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary previous_button" type="button">Previous</button>
+        <button class="btn btn-primary next_button" type="button">Next</button>
+    </div>
+{% elif control_type == 'StepCtrl' %}
+    {% for control in control.attributes['controls'] %}
+        <div class="form-group">
+        {% with item=item, control=control %}
+            {% include "control.html" %}
+        {% endwith %}
+        </div>
+    {% endfor %}
 {% else %}
-    {{control.instance.type.name}}
+    {{control.type}}
 {% endif %}

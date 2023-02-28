@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect
 from realnet.resource.items.items import Items
 
 class Views(Items):
@@ -24,13 +24,8 @@ class Views(Items):
                     views = item.attributes.get('views', []) + [view]
                     params = {'attributes': {'views': views} }
                     module.update_item(item_id, **params)
-                    if 'id' in args:
-                        del args['id']
-                    if 'edit' in args:
-                        del args['edit']
-                    if 'item_id' in args:
-                        del args['item_id']
-                    return self.render_item(module, args, path, content_type)
+                    return redirect('/items/{}'.format(item_id))
+                    # return self.render_item(module, args, item_id, content_type)
             
         return self.render_item(module, args, path, content_type)
 

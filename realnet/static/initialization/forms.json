@@ -139,16 +139,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -158,6 +165,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Form",
+                "path": "forms",
                 "controls": [
                     {
                         "name": "Name",
@@ -174,6 +182,13 @@
                         }
                     },
                     {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
                         "name": "Type",
                         "type": "TypeSelectCtrl",
                         "attributes": {
@@ -183,16 +198,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -217,6 +239,26 @@
                             "target": "type",
                             "source": "form"
                         }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -248,6 +290,26 @@
                         "attributes": {
                             "target": "parent_id"
                         }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -266,6 +328,26 @@
                         "attributes": {
                             "target": "parent_id"
                         }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -275,6 +357,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Item",
+                "path": "items",
                 "controls": [
                     {
                         "name": "Name",
@@ -292,16 +375,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -354,16 +444,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -406,16 +503,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
-                        "name": "Save",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -424,6 +528,7 @@
             "name": "TypeCreateForm",
             "base": "CreateForm",
             "attributes": {
+                "path": "types",
                 "controls": [
                     {
                         "name": "Name",
@@ -450,21 +555,29 @@
                         "name": "Base",
                         "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "type"
+                            "target": "base",
+                            "types": ["Type"]
                         }
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -507,16 +620,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -544,16 +664,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -575,16 +702,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -617,16 +751,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -647,6 +788,14 @@
                         }
                     },
                     {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "value": "Instance"
+                        }
+                    },
+                    {
                         "name": "Name",
                         "type": "EditCtrl",
                         "attributes": {
@@ -654,28 +803,32 @@
                         }
                     },
                     {
-                        "name": "TargetTypeId",
-                        "type": "ItemSelectCtrl",
+                        "name": "TargetType",
+                        "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "type_id",
-                            "query": {
-                                "types": ["Type"],
-                                "any_level": "true"
-                            }
+                            "target": "type",
+                            "types": ["Type"]
                         }
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -696,6 +849,14 @@
                         }
                     },
                     {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "value": "Attribute"
+                        }
+                    },
+                    {
                         "name": "Name",
                         "type": "EditCtrl",
                         "attributes": {
@@ -711,16 +872,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -756,16 +924,23 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Create",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -774,7 +949,7 @@
             "name": "ViewEditForm",
             "base": "EditForm",
             "attributes": {
-                "type": "View",
+                "path": "views",
                 "controls": [
                     {
                         "name": "Name",
@@ -799,17 +974,32 @@
                         }
                     },
                     {
+                        "name": "View",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "view",
+                            "source": "view"
+                        }
+                    },
+                    {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Save",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -836,178 +1026,182 @@
                     },
                     {
                         "name": "Cancel",
-                        "type": "CancelButton",
+                        "type": "ButtonCtrl",
                         "attributes": {
                             "close": "true",
-                            "order": "8"
+                            "order": "8",
+                            "is_cancel_button": "true"
                         }
                     },
                     {
                         "name": "Save",
-                        "type": "SaveButton",
-                        "order": "9"
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
         },
         {
-            "name": "QueryGeneralStepCtrl",
-            "base": "StepCtrl",
-            "instances": [
-                {
-                    "name": "Name",
-                    "type": "EditCtrl",
-                    "attributes": {
-                        "target": "name"
-                    }
-                },
-                {
-                    "name": "Types",
-                    "type": "TypeSelectCtrl",
-                    "attributes": {
-                        "target": "types",
-                        "multiple": "true"
-                    }
-                },
-                {
-                    "name": "Tags",
-                    "type": "TagsCtrl",
-                    "attributes": {
-                        "target": "tags",
-                        "multiple": "true"
-                    }
-                },
-                {
-                    "name": "Children",
-                    "type": "CheckboxCtrl",
-                    "attributes": {
-                        "target": "children"
-                    }
-                },
-                {
-                    "name": "Any level",
-                    "type": "CheckboxCtrl",
-                    "attributes": {
-                        "target": "any_level"
-                    }
-                }
-
-            ]
-        },
-        {
-            "name": "QueryLocationStepCtrl",
-            "base": "StepCtrl",
-            "instances": [
-                {
-                    "name": "Location",
-                    "type": "LocationCtrl",
-                    "attributes": {
-                        "target": "location"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "QueryTimeStepCtrl",
-            "base": "StepCtrl",
-            "instances": [
-                {
-                    "name": "Start",
-                    "type": "DateCtrl",
-                    "attributes": {
-                        "target": "valid_from",
-                        "field_name": "valid_from",
-                        "order": "1"
-                    }
-                },
-                {
-                    "name": "End",
-                    "type": "DateCtrl",
-                    "attributes": {
-                        "target": "valid_to",
-                        "field_name": "valid_to",
-                        "order": "2"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "QueryStepsCtrl",
-            "base": "StepsCtrl",
-            "instances": [
-                {
-                    "name": "General",
-                    "type": "QueryGeneralStepCtrl"
-                },
-                {
-                    "name": "Time",
-                    "type": "QueryTimeStepCtrl"
-                },
-                {
-                    "name": "Location",
-                    "type": "QueryLocationStepCtrl"
-                }
-            ]
-        },
-        {
             "name": "QueryForm",
             "base": "EditForm",
             "attributes": {
-                "path": "queries"
-            },
-            "instances": [
-                {
-                    "name": "Query",
-                    "type": "QueryStepsCtrl"
-                },
-                {
-                    "name": "Cancel",
-                    "type": "CancelButton",
-                    "attributes": {
-                        "close": "true",
-                        "order": "8"
+                "path": "queries",
+                "controls": [
+                    {
+                        "name": "Query",
+                        "type": "StepsCtrl",
+                        "attributes": {
+                            "controls": [
+                                {
+                                    "name": "View",
+                                    "type": "HiddenCtrl",
+                                    "attributes": {
+                                        "target": "view",
+                                        "source": "view"
+                                    }
+                                },
+                                {
+                                    "name": "General",
+                                    "type": "StepCtrl",
+                                    "attributes": {
+                                        "controls": [
+                                            {
+                                                "name": "Name",
+                                                "type": "EditCtrl",
+                                                "attributes": {
+                                                    "target": "name"
+                                                }
+                                            },
+                                            {
+                                                "name": "Id",
+                                                "type": "HiddenCtrl",
+                                                "attributes": {
+                                                    "target": "parent_id"
+                                                }
+                                            },
+                                            {
+                                                "name": "Types",
+                                                "type": "TypeSelectCtrl",
+                                                "attributes": {
+                                                    "target": "types",
+                                                    "multiple": "true"
+                                                }
+                                            },
+                                            {
+                                                "name": "Tags",
+                                                "type": "TagsCtrl",
+                                                "attributes": {
+                                                    "target": "tags",
+                                                    "multiple": "true"
+                                                }
+                                            },
+                                            {
+                                                "name": "Children",
+                                                "type": "CheckboxCtrl",
+                                                "attributes": {
+                                                    "target": "children"
+                                                }
+                                            },
+                                            {
+                                                "name": "Any level",
+                                                "type": "CheckboxCtrl",
+                                                "attributes": {
+                                                    "target": "any_level"
+                                                }
+                                            }
+                            
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "Time",
+                                    "type": "StepCtrl",
+                                    "attributes": {
+                                        "controls": [
+                                            {
+                                                "name": "Start",
+                                                "type": "DateCtrl",
+                                                "attributes": {
+                                                    "target": "valid_from",
+                                                    "field_name": "valid_from",
+                                                    "order": "1"
+                                                }
+                                            },
+                                            {
+                                                "name": "End",
+                                                "type": "DateCtrl",
+                                                "attributes": {
+                                                    "target": "valid_to",
+                                                    "field_name": "valid_to",
+                                                    "order": "2"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "Location",
+                                    "type": "StepCtrl",
+                                    "attributes": {
+                                        "controls": [
+                                            {
+                                                "name": "Location",
+                                                "type": "LocationCtrl",
+                                                "attributes": {
+                                                    "target": "location"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
-                },
-                {
-                    "name": "Save",
-                    "type": "SaveButton",
-                    "order": "9"
-                }
-            ]
+                ]
+            }
         },
         {
-            "name": "ViewQueryForm",
-            "base": "EditForm",
+            "name": "ViewDeleteForm",
+            "base": "DeleteForm",
             "attributes": {
-                "path": "queries"
-            },
-            "instances": [
-                {
-                    "name": "Query",
-                    "type": "QueryStepsCtrl"
-                },
-                {
-                    "name": "View",
-                    "type": "HiddenCtrl",
-                    "attributes": {
-                        "target": "view",
-                        "source": "view"
+                "path": "views",
+                "controls": [
+                    {
+                        "name": "View",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "view",
+                            "source": "view"
+                        }
                     }
-                },
-                {
-                    "name": "Cancel",
-                    "type": "CancelButton",
-                    "attributes": {
-                        "close": "true",
-                        "order": "8"
-                    }
-                },
-                {
-                    "name": "Save",
-                    "type": "SaveButton",
-                    "order": "9"
-                }
-            ]
+                ]
+            }
         },
         {
             "name": "SharingForm",
@@ -1077,6 +1271,10 @@
         {
             "name": "ViewEditForm",
             "type": "ViewEditForm"
+        },
+        {
+            "name": "ViewDeleteForm",
+            "type": "ViewDeleteForm"
         },
         {
             "name": "DeleteForm",

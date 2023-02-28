@@ -99,7 +99,7 @@ class Items(Resource):
                     for typename in query['types']:
                         type = tbn.get(typename, None)
                         if type:
-                            if type.attributes and 'resource' in type.attributes:
+                            if type.attributes and 'resource' in type.attributes and type.attributes['resource'] != 'items':
                                 external_types.append(type)
                             else:
                                 internal_types.append(type)
@@ -243,7 +243,7 @@ class Items(Resource):
         query = app.attributes.get('query')
         types = app.attributes.get('types',[])
         
-        menu = app.attributes.get('menu',None)
+        menu = app.attributes.get('menu',[])
 
         form = None
         
@@ -266,6 +266,10 @@ class Items(Resource):
                 view_query = active_view['attributes'].get('query')
                 if view_query:
                     query = view_query
+
+                view_menu = active_view['attributes'].get('menu')
+                if view_menu:
+                    menu = view_menu
 
                 view_types = active_view['attributes'].get('types')
                 if view_types:
@@ -323,7 +327,7 @@ class Items(Resource):
             root_path = root_path + '?'
 
         typenames = []
-        
+        all_types = [t for t in tbn.values()]
 
         if types:
             type_filter = set(types)
@@ -337,6 +341,10 @@ class Items(Resource):
             for mi in menu:
                 menu_forms.add(mi['form'])
 
+        menu_forms.add('ViewEditForm')
+        menu_forms.add('ViewQueryForm')
+        menu_forms.add('ViewDeleteForm')
+
         # forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
 
         forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
@@ -344,7 +352,12 @@ class Items(Resource):
         for form in forms:
             if 'controls' in form.attributes:
                 ctrls = self.get_controls(module, form.attributes['controls'], tbn)
+                # for ctrl in ctrls:
+                #    if ctrl.attributes and 'controls' in ctrl.attributes:
+                #        sub_ctrls = self.get_controls(module, ctrl.attributes['controls'], tbn)
+                #        ctrl.attributes['cotnrols'] = sub_ctrls
                 form.items = ctrls
+                
 
         return {'app': app,
                 'item': target_item,
@@ -360,4 +373,5 @@ class Items(Resource):
                 'menu': menu,
                 'forms': forms,
                 'typenames': typenames,
-                'root_path': root_path}
+                'root_path': root_path,
+                'all_types': all_types}

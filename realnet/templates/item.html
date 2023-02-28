@@ -7,7 +7,17 @@
     {% for view in views %}
       {% if active_view_name and (view.name | lower) == active_view_name %}
       <li class="nav-item active">
-        <a class="nav-link active" href="?view={{view['name'] | lower}}">{{view.name}}</a>
+        <a class="nav-link active d-inline" href="?view={{view['name'] | lower}}">{{view.name}}</a>
+        <div class="dropdown d-inline">
+          <button type="button" class="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="material-icons mr-1">more_vert</i>
+          </button>
+          <div class="dropdown-menu">
+            <button data-toggle="modal" data-target="#form_ViewEditForm" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+            <button data-toggle="modal" data-target="#form_ViewQueryForm" class="dropdown-item" type="button"><i class="material-icons mr-1">search</i>Query</button>
+            <button data-toggle="modal" data-target="#form_ViewDeleteForm" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+          </div>
+        </div>
       </li>
       {% else %}
       <li class="nav-item">

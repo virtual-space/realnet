@@ -88,6 +88,8 @@ class Type:
     )
 
     def is_derived_from(self, type_name):
+        if not type_name or not self.name:
+            return False
         if type_name.lower() == self.name.lower():
             return True
         elif self.base:
@@ -121,7 +123,7 @@ class Instance(Type):
         self._attributes = attributes
 
     def _get_attributes(self):
-        return  self.type.attributes | self._attributes
+        return  self.type.attributes | self._attributes if self._attributes else self.type.attributes
 
     def _del_attributes(self):
         self._attributes = dict()
