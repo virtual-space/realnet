@@ -6,20 +6,36 @@
 {% endif %}
 {% if control_type == 'EditCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    {% if item %}
+    {% if control.attributes['source'] == 'view' %}
         {% if control.attributes['target'] == 'name' %}
-            <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+            <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{view['name']}}">
         {% else %}
-            <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
-        {% endif %} 
+            {{control}}
+        {% endif %}
     {% else %}
-        <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
+        {% if item %}
+            {% if control.attributes['target'] == 'name' %}
+                <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+            {% else %}
+                <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
+            {% endif %} 
+        {% else %}
+            <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
+        {% endif %}
     {% endif %}
 {% elif control_type == 'HiddenCtrl' %}
     {% if control.attributes['source'] == 'control' %}
         <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
     {% elif control.attributes['source'] == 'form' %}
         <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{form.attributes[control.attributes['target']]}}">
+    {% elif control.attributes['source'] == 'view' %}
+        {% if control.attributes['target'] == 'name' %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{view['name']}}">
+        {% elif control.attributes['target'] == 'type' %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{view['type']}}">
+        {% else %}
+            {{control}}
+        {% endif %}
     {% else %}
         {% if control.attributes['target'] == 'id' %}
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.id}}">
@@ -54,18 +70,27 @@
                 <option value="{{typename}}">{{typename}}</option>
             {% endfor %}
         {% elif all_types %}
+        all types
             {% if control.attributes['types'] %}
                 {% for typename in control.attributes['types'] %}
                 {{typename}}
                     {% for type in all_types %}
                         {% if type.is_derived_from(typename) %}
-                            <option value="{{type.name}}">{{type.name}}</option>
+                            {% if control.attributes['source'] == 'view' and type.name == view['type'] %}
+                                <option value="{{type.name}}" selected>{{type.name}}</option>
+                            {% else %}
+                                <option value="{{type.name}}">{{type.name}}</option>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
             {% else %}
                 {% for type in all_types %}
-                    <option value="{{type.name}}">{{type.name}}</option>
+                    {% if control.attributes['source'] == 'view' and type.name == view['type'] %}
+                        <option value="{{type.name}}" selected>{{type.name}}</option>
+                    {% else %}
+                        <option value="{{type.name}}">{{type.name}}</option>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         {% elif typenames %}

@@ -59,9 +59,6 @@ class Items(Resource):
 
     def delete(self, module, args, path=None, content_type='text/html'):
         module.delete_item(args['id'])
-        del args['id']
-        del args['delete']
-        del args['item_id']
         return self.render_item(module, args, path, content_type)
 
     def message(self, module, args, path=None, content_type='text/html'):
@@ -247,13 +244,13 @@ class Items(Resource):
 
         form = None
         
+        active_view = None
 
         #     form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': ['App'], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
         # elif args.get('delete') == 'true':
         #    pass
 
         if views:
-            active_view = None
             active_subview = None
             if not active_view_name:
                 active_view = next((v for v in views), None)
@@ -341,13 +338,17 @@ class Items(Resource):
             for mi in menu:
                 menu_forms.add(mi['form'])
 
-        menu_forms.add('ViewEditForm')
-        menu_forms.add('ViewQueryForm')
-        menu_forms.add('ViewDeleteForm')
+        # menu_forms.add('ViewEditForm')
+        # menu_forms.add('ViewQueryForm')
+        # menu_forms.add('ViewDeleteForm')
+        # menu_forms.add('TypeViewEditForm')
+        # menu_forms.add('TypeViewQueryForm')
+        # menu_forms.add('TypeViewDeleteForm')
 
         # forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
 
-        forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
+        # forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
+        forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]
 
         for form in forms:
             if 'controls' in form.attributes:
@@ -357,7 +358,8 @@ class Items(Resource):
                 #        sub_ctrls = self.get_controls(module, ctrl.attributes['controls'], tbn)
                 #        ctrl.attributes['cotnrols'] = sub_ctrls
                 form.items = ctrls
-                
+        
+        all_forms = {form.name:form for form in forms}
 
         return {'app': app,
                 'item': target_item,
@@ -374,4 +376,7 @@ class Items(Resource):
                 'forms': forms,
                 'typenames': typenames,
                 'root_path': root_path,
-                'all_types': all_types}
+                'all_types': all_types,
+                'all_forms': all_forms,
+                'endpoint': self.get_endpoint_name(),
+                'view': active_view}

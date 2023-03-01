@@ -8,6 +8,10 @@
                 "types": ["Instance"],
                 "views": [
                     {
+                        "name": "Empty",
+                        "type": "View"
+                    },
+                    {
                         "name": "Instances",
                         "type": "ListView",
                         "attributes": {
@@ -22,7 +26,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 },
                                 {
                                     "name": "Delete",
@@ -46,7 +50,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 },
                                 {
                                     "name": "Delete",
@@ -58,9 +62,8 @@
                     },
                     {
                         "name": "Forms",
-                        "type": "ListView",
+                        "type": "FormsView",
                         "attributes": {
-                            "types": ["Form"],
                             "hidden": "true",
                             "menu": [
                                 {
@@ -71,7 +74,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 },
                                 {
                                     "name": "Delete",
@@ -83,12 +86,9 @@
                     },
                     {
                         "name": "Menu",
-                        "type": "ListView",
+                        "type": "MenuView",
                         "attributes": {
                             "hidden": "true",
-                            "children": "true",
-                            "internal": "true",
-                            "types": ["MenuItem"],
                             "menu": [
                                 {
                                     "name": "Add Menu Item",
@@ -98,7 +98,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 },
                                 {
                                     "name": "Delete",
@@ -125,11 +125,38 @@
                         }
                     },
                     {
+                        "name": "Types",
+                        "type": "ListView",
+                        "attributes": {
+                            "types": ["Type"],
+                            "hidden": "true",
+                            "children": "true",
+                            "menu": [
+                                {
+                                    "name": "Add Type",
+                                    "icon": "add",
+                                    "form": "TypeCreateForm"
+                                },
+                                {
+                                    "name": "Add View",
+                                    "icon": "add_box",
+                                    "form": "TypeViewCreateForm"
+                                },
+                                {
+                                    "name": "Delete",
+                                    "icon": "delete",
+                                    "form": "DeleteForm"
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "Files",
                         "type": "ListView",
                         "attributes": {
                             "types": ["Media"],
                             "hidden": "true",
+                            "children": "true",
                             "menu": [
                                 {
                                     "name": "Import",
@@ -140,7 +167,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 }
                             ]
                         }
@@ -161,7 +188,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 }
                             ]
                         }
@@ -182,7 +209,7 @@
                                 {
                                     "name": "Add View",
                                     "icon": "add_box",
-                                    "form": "ViewCreateForm"
+                                    "form": "TypeViewCreateForm"
                                 }
                             ]
                         }
@@ -197,7 +224,7 @@
                     {
                         "name": "Add View",
                         "icon": "add_box",
-                        "form": "ViewCreateForm"
+                        "form": "TypeViewCreateForm"
                     },
                     {
                         "name": "Delete",

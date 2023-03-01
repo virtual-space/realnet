@@ -46,12 +46,47 @@
                         }
                     },
                     {
+                        "name": "Name",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
                         "name": "Method",
                         "type": "HiddenCtrl",
                         "attributes": {
                             "target": "_method",
                             "source": "form"
                         }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -894,11 +929,11 @@
             }
         },
         {
-            "name": "ViewCreateForm",
+            "name": "TypeViewCreateForm",
             "base": "CreateForm",
             "attributes": {
                 "type": "View",
-                "path": "views",
+                "path": "types",
                 "controls": [
                     {
                         "name": "Name",
@@ -946,16 +981,96 @@
             }
         },
         {
+            "name": "ViewCreateForm",
+            "base": "TypeViewCreateForm",
+            "attributes": {
+                "type": "View",
+                "path": "views"
+            }
+        },
+        {
+            "name": "TypeViewDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "View",
+                "path": "types",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "name",
+                            "source": "view"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ViewDeleteForm",
+            "base": "TypeViewDeleteForm",
+            "attributes": {
+                "type": "View",
+                "path": "views",
+                "source": "view"
+            }
+        },
+        {
             "name": "ViewEditForm",
             "base": "EditForm",
             "attributes": {
+                "type": "View",
                 "path": "views",
                 "controls": [
                     {
                         "name": "Name",
-                        "type": "EditCtrl",
+                        "type": "HiddenCtrl",
                         "attributes": {
-                            "target": "name"
+                            "target": "name",
+                            "source": "view"
                         }
                     },
                     {
@@ -963,7 +1078,8 @@
                         "type": "TypeSelectCtrl",
                         "attributes": {
                             "target": "type",
-                            "types": ["View"]
+                            "types": ["View"],
+                            "source": "view"
                         }
                     },
                     {
@@ -974,11 +1090,11 @@
                         }
                     },
                     {
-                        "name": "View",
+                        "name": "Method",
                         "type": "HiddenCtrl",
                         "attributes": {
-                            "target": "view",
-                            "source": "view"
+                            "target": "_method",
+                            "source": "form"
                         }
                     },
                     {
@@ -1002,6 +1118,14 @@
                         
                     }
                 ]
+            }
+        },
+        {
+            "name": "TypeViewEditForm",
+            "base": "ViewEditForm",
+            "attributes": {
+                "type": "View",
+                "path": "types"
             }
         },
         {
@@ -1187,23 +1311,6 @@
             }
         },
         {
-            "name": "ViewDeleteForm",
-            "base": "DeleteForm",
-            "attributes": {
-                "path": "views",
-                "controls": [
-                    {
-                        "name": "View",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "view",
-                            "source": "view"
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "name": "SharingForm",
             "base": "Form"
         },
@@ -1265,6 +1372,10 @@
             "type": "ItemEditForm"
         },
         {
+            "name": "TypeViewCreateForm",
+            "type": "TypeViewCreateForm"
+        },
+        {
             "name": "ViewCreateForm",
             "type": "ViewCreateForm"
         },
@@ -1273,8 +1384,16 @@
             "type": "ViewEditForm"
         },
         {
+            "name": "TypeViewEditForm",
+            "type": "TypeViewEditForm"
+        },
+        {
             "name": "ViewDeleteForm",
             "type": "ViewDeleteForm"
+        },
+        {
+            "name": "TypeViewDeleteForm",
+            "type": "TypeViewDeleteForm"
         },
         {
             "name": "DeleteForm",

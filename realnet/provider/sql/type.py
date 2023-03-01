@@ -29,7 +29,14 @@ class SqlTypeProvider(TypeProvider):
         pass
 
     def update_type(self, id, **kwargs):
-        pass
+        type_model = db.query(TypeModel).filter(TypeModel.id == id, TypeModel.org_id == self.org_id).first()
+        if type_model:
+            for key, value in kwargs.items():
+                if key == 'name':
+                    type_model.name = value
+                elif key == 'attributes':
+                    type_model.attributes = value
+            db.commit()
 
     def create_type(self, **kwargs):
         type_id=str(uuid.uuid4())

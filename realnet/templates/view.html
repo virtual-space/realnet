@@ -103,8 +103,8 @@
     </div>
     {% elif view['type'] == 'AttributesView' %}
     <div class="row  justify-content-center align-items-center">
-        <div class="col-md-12">
-            <table class="table table-striped">
+        <div class="col-8 .text-center">
+            <table class="table table-fit table-striped w-auto table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -126,12 +126,13 @@
                             {{value}}
                         </td>
                         <td>
-                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                                <div class="btn-group mr-2" role="group" aria-label="First group">
-                                    <a href="{{root_path}}edit=true&item_id={{item.id}}" class="btn btn-warning">Edit</a>
-                                </div>
-                                <div class="btn-group mr-2" role="group" aria-label="Second group">
-                                    <a href="{{root_path}}delete=true&item_id={{item.id}}" class="btn btn-danger">Delete</a>
+                            <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  <i class="material-icons mr-1">more_vert</i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                  <button data-toggle="modal" data-target="#form_Attr{{key}}Edit" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                                  <button data-toggle="modal" data-target="#form_Attr{{key}}Delete" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
                                 </div>
                             </div>
                         </td>
@@ -139,6 +140,98 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+    {% elif view['type'] == 'FormView' %}
+    <div class="row  justify-content-center align-items-center">
+        <div class="col-8 .text-center">
+            {% set form=all_forms[view.attributes['form']] %}
+            {% if form.attributes['upload'] == 'true' %} 
+                      <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+                        <div class="modal-header">
+                          {% if form.attributes['edit'] == 'true' %} 
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+                          {% elif form.attributes['type'] %} 
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+                          {% elif item %}
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                          {% endif %}
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          {% if form.attributes['text'] %}
+                          <div>
+                            {{form.attributes['text']}}
+                          </div>
+                          {% endif %}
+                          {% for control in form.items %}
+                            {% with item=item, control=control, form=form %}
+                              {% include "control.html" %}
+                            {% endwith %}
+                          {% endfor %}
+                          <div class="form-group">
+                            <div class="custom-file" id="customFile" lang="sr">
+                              <input type="file" class="custom-file-input" id="file" aria-describedby="fileHelp" name="file">
+                                <label class="custom-file-label" for="file">
+                                  File not selected...
+                                </label>
+                            </div>
+                          </div>
+                          <div class="progress" >
+                            <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:20%;">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-danger" id="create_cancel">Close</button>
+                          <button type="submit" class="btn btn-primary" id="create_submit">{{form.attributes['submit_text']}}</button>
+                          <button type="button" class="btn btn-primary" id="create_submitting" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Uploading in progress...
+                          </button>
+                        </div>
+                      </form>
+                    {% else %} 
+                      <form action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+                        <div class="modal-header">
+                          {% if form.attributes['edit'] == 'true' %} 
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+                          {% elif form.attributes['type'] %} 
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+                          {% elif item %}
+                            <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                          {% endif %}
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          {% if form.attributes['text'] %}
+                          <div>
+                            {{form.attributes['text']}}
+                          </div>
+                          {% endif %}
+                          {% for control in form.items %}
+                            {% if not (control.instance.type and control.instance.type.name == 'ButtonCtrl') %}
+                              {% with item=item, control=control, form=form %}
+                                {% include "control.html" %}
+                              {% endwith %}
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                          {% for control in form.items %}
+                            {% if control.instance.type and control.instance.type.name == 'ButtonCtrl' %}
+                              {% with item=item, control=control, form=form %}
+                                {% include "control.html" %}
+                              {% endwith %}
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      </form>
+                    {% endif %}
         </div>
     </div>
     {% elif view['type'] == 'CodeView' %}
