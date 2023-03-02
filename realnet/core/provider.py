@@ -38,6 +38,19 @@ class TypeProvider(ABC):
     def create_instance(self, **kwargs):
         pass
 
+    @abstractmethod
+    def get_instance_by_id(self, id):
+        pass
+
+    @abstractmethod
+    def delete_instance(self, id):
+        pass
+
+    @abstractmethod
+    def update_instance(self, id, **kwargs):
+        pass
+
+
 class ItemProvider(ABC):
     
     @abstractmethod
@@ -516,6 +529,15 @@ class Context(Module):
 
     def create_instance(self, **kwargs):
         return self.types.create_instance(**kwargs)
+
+    def get_instance_by_id(self, id):
+        return self.types.get_instance_by_id(id)
+
+    def delete_instance(self, id):
+        return self.types.delete_instance(id)
+
+    def update_instance(self, id, **kwargs):
+        return self.types.update_instance(id, **kwargs)
 
     def get_items(self):
         return self.items.get_items()

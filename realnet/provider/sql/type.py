@@ -1,6 +1,6 @@
 import uuid
 from realnet.core.type import Type
-from realnet.provider.sql.models import Type as TypeModel, session as db
+from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceModel, session as db
 from realnet.core.provider import TypeProvider
 from .utility import get_types_by_name, create_instance_model, create_type_model, instance_model_to_instance, get_derived_types
 
@@ -26,7 +26,10 @@ class SqlTypeProvider(TypeProvider):
         pass
 
     def delete_type(self, id):
-        pass
+        type_model = db.query(TypeModel).filter(TypeModel.id == id, TypeModel.org_id == self.org_id).first()
+        if type_model:
+            db.delete(type_model)
+            db.commit()
 
     def update_type(self, id, **kwargs):
         type_model = db.query(TypeModel).filter(TypeModel.id == id, TypeModel.org_id == self.org_id).first()
@@ -139,4 +142,27 @@ class SqlTypeProvider(TypeProvider):
         db.commit()
         
         return instance_model_to_instance(instance, types_by_name)
+
+    def get_instance_by_id(self, id):
+        instance_model = db.query(InstanceModel).filter(InstanceModel.id == id, InstanceModel.org_id == self.org_id).first()
+        if instance_model:
+            return instance_model_to_instance(instance_model, get_types_by_name(self.org_id))
+
+    def delete_instance(self, id):
+        instance_model = db.query(InstanceModel).filter(InstanceModel.id == id, InstanceModel.org_id == self.org_id).first()
+        if instance_model:
+            db.delete(instance_model)
+            db.commit()
+
+    def update_instance(self, id, **kwargs):
+        instance_model = db.query(InstanceModel).filter(InstanceModel.id == id, InstanceModel.org_id == self.org_id).first()
+        if instance_model:
+            for key, value in kwargs.items():
+                if key == 'name':
+                    instance_model.name = value
+                elif key == 'attributes':
+                    instance_model.attributes = value
+                elif key == 'type':
+                    instance_model.type_id = get_types_by_name(self.org_id)[value].id
+            db.commit()
         

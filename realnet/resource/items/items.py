@@ -81,6 +81,7 @@ class Items(Resource):
 
     def get_items(self, module, account, query, parent_item=None):
         if query:
+            results = []
             external_types = []
             internal_types = []
             if 'types' in query:
@@ -101,7 +102,6 @@ class Items(Resource):
                             else:
                                 internal_types.append(type)
                 if external_types:
-                    results = []
                     external_query = dict()
                     for k,v in query.items():
                         if k != 'types' and k != 'type_names':
@@ -117,12 +117,17 @@ class Items(Resource):
                     
                     if internal_types:
                         external_query['types'] = [t.name for t in internal_types]
+                        if parent_item and 'children' in query and query['children'] == 'true':
+                            external_query['parent_id'] = parent_item.id
                         results = results +  [i for i in module.find_items(external_query) if module.can_account_read_item(account, i)]
-                    return results
+                
+                if internal_types:
+                    if parent_item and 'children' in query and query['children'] == 'true':
+                        query['parent_id'] = parent_item.id
+                    results = results + [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
             
-            if parent_item and 'children' in query and query['children'] == 'true':
-                query['parent_id'] = parent_item.id
-            return [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
+            
+            return results
 
         return []
 

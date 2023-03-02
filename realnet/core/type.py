@@ -123,7 +123,7 @@ class Instance(Type):
         self._attributes = attributes
 
     def _get_attributes(self):
-        return  self.type.attributes | self._attributes if self._attributes else self.type.attributes
+        return  self.type.attributes | self._attributes if self._attributes else self.type.attributes if self.type else dict()
 
     def _del_attributes(self):
         self._attributes = dict()
@@ -190,6 +190,14 @@ class Item(Instance):
 
     def get_child_instances(self):
         pass
+
+    def get_attribute_items(self, source):
+        if source:
+            pass
+        else:
+            return self.attributes
+
+        return []
 
     def to_dict(self):
         result = {

@@ -7,12 +7,22 @@ class Types(Items):
     def get_endpoint_name(self):
         return 'types'
 
+    def match(self, instance, query):
+        if query:
+            # todo proper check for inheritance
+            types = set(query.get('types',[]))
+            return instance.type.name in types
+        else:
+            return True
+
     def get_items(self, module, account, query, parent_item=None):
         if parent_item and parent_item.instance.type.name != 'Types':
-            instances = [i for i in parent_item.instance.type.instances]
+            instances = [i for i in parent_item.instance.type.instances if self.match(i, query)]
             for i in instances:
                 if i.attributes:
-                    i.attributes['resource'] = 'types'
+                    attrs = dict(i.attributes)
+                    attrs['resource'] = 'types'
+                    i.attributes = attrs
                 else:
                     i.attributes = {'resource': 'types'}
             return instances
@@ -29,16 +39,15 @@ class Types(Items):
 
     def get_item(self, module, account, args, path):
         type = module.get_type_by_id(path)
-        return Item(account.id, account.org.id, Instance(type.id, type, type.name), type.id, type.name)
+        if not type:
+            instance = module.get_instance_by_id(path)
+            return Item(account.id, account.org.id, instance, instance.type.id, instance.type.name)
+        else:
+            return Item(account.id, account.org.id, Instance(type.id, type, type.name), type.id, type.name)
 
     def post(self, module, args, path=None, content_type='text/html'):
         if 'type' in args:
-            if args['type'] == 'Instance':
-                attrs = dict(args)
-                if 'parent_id' in attrs:
-                    attrs['parent_type_id'] = attrs['parent_id']
-                item = module.create_instance(**attrs)
-            elif args['type'] == 'Attribute':
+            if args['type'] == 'Attribute':
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
@@ -70,6 +79,11 @@ class Types(Items):
                             return redirect('/types/{}'.format(attrs['parent_id']))
             elif args['type'] == 'Form':
                 item = None
+            elif 'parent_id' in args:
+                attrs = dict(args)
+                attrs['parent_type_id'] = attrs['parent_id']
+                item = module.create_instance(**attrs)
+                return redirect('/types/{}'.format(attrs['parent_id']))
         else:
             attrs = dict()
             for k,v in args.items():
@@ -95,9 +109,17 @@ class Types(Items):
 
     def put(self, module, args, path=None, content_type='text/html'):
         attrs = dict(args)
-        if 'id' in attrs:
+        id = None
+        if path:
+            id = path
+        elif 'id' in attrs:
+            id = attrs['id']
+        elif 'parent_id' in attrs:
+            id = attrs['parent_id']
+
+        if id:
             account = module.get_account()
-            item = self.get_item(module, account, attrs, attrs['id']);
+            item = self.get_item(module, account, attrs, id);
             if item:
                 if module.can_account_write_item(account, item):
                     if 'type' in args:
@@ -112,20 +134,49 @@ class Types(Items):
                                         views.append({'name': view['name'], 'type': args['type'], 'attributes': args.get('attributes',{})})
                                 
                                 params = {'attributes': {'views': views} }
-                                module.update_type(attrs['id'], **params)
-                                return redirect('/types/{}'.format(attrs['id']))
+                                module.update_type(id, **params)
+                                if 'parent_id' in attrs:
+                                    return redirect('/types/{}'.format(attrs['parent_id']))
+
+                                return redirect('/types/{}'.format(id))
+
+                    if id:
+                        params = dict()
+                        if 'name' in args:
+                            params['name'] = args['name']
+                        if 'type' in args:
+                            params['type'] = args['type']
+
+                        module.update_instance(id, **params)
+                        
+                        if 'parent_id' in attrs:
+                            return redirect('/types/{}'.format(attrs['parent_id']))
+                            
+                        return redirect('/types/{}'.format(id))
+                    
         # module.delete_type(args['id'])
-        return redirect('/types/{}'.format(args['id']))
+        if 'parent_id' in attrs:
+            return redirect('/types/{}'.format(attrs['parent_id']))
+            
+        return redirect('/types/{}'.format(id))
 
     def delete(self, module, args, path=None, content_type='text/html'):
         attrs = dict(args)
-        if 'id' in attrs:
+        id = None
+        if path:
+            id = path
+        elif 'id' in attrs:
+            id = attrs['id']
+        elif 'parent_id' in attrs:
+            id = attrs['parent_id']
+
+        if id:
             account = module.get_account()
-            item = self.get_item(module, account, attrs, attrs['id']);
+            item = self.get_item(module, account, attrs, id);
             if item:
                 if module.can_account_write_item(account, item):
                     if 'type' in args:
-                        if args['type'] == 'View':
+                        if args['type'].endswith('View'):
                             if 'name' in args:
                                 name = args['name'].lower()
                                 views = [] 
@@ -136,5 +187,15 @@ class Types(Items):
                                 params = {'attributes': {'views': views} }
                                 module.update_type(attrs['id'], **params)
                                 return redirect('/types/{}'.format(attrs['id']))
+                        elif args['type'] == 'Attribute':
+                            attrs = dict(args)
+                            params = dict()
+                            params['attributes'] = {attrs['name']:attrs['value']}
+                            module.update_type(attrs['parent_id'], **params)
+                        else:
+                            module.delete_instance(id)
+                            if 'parent_id' in attrs:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+                                    
         # module.delete_type(args['id'])
-        return redirect('/types/{}'.format(args['id']))
+        return redirect('/types/{}'.format(id))

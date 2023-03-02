@@ -60,7 +60,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for item in items %}
+                {% set list_items = [] %}
+
+                {% if view['attributes'] and view['attributes']['internal'] == 'true' %}
+                  {% if view['attributes']['source'] == 'attributes' %} 
+                    {% set list_items = item.attributes.items() %}
+                  {% else %}
+                    {% set list_items = item.attributes[view['attributes']['source']] %}
+                  {% endif %}
+                {% else %}
+                  {% set list_items = items %}
+                {% endif %}
+
+                {% for item in list_items %}
                     <tr >
                         <th scope="row">
                             {{loop.index}}
@@ -71,7 +83,7 @@
                             {% endif %}
                         </th>
                         <td>
-                            {% if item.attributes['resource'] %}
+                            {% if item.attributes and item.attributes['resource'] %}
                                 <a  href="/{{item.attributes['resource']}}/{{item.id}}">{{item.name}}</a>
                             {% else %}
                                 <a  href="/items/{{item.id}}">{{item.name}}</a>
@@ -90,8 +102,18 @@
                                   <i class="material-icons mr-1">more_vert</i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                  <button data-toggle="modal" data-target="#form_Edit" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-                                  <button data-toggle="modal" data-target="#form_Delete" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                                  {% if item.attributes and item.attributes['forms'] %}
+                                    {% set type_name = None %} 
+                                    {% if item.instance %} 
+                                      {% set type_name = item.instance.type.name %}
+                                    {% elif item.type %}
+                                      {% set type_name = item.type.name %}
+                                    {% else %}
+                                      {% set type_name = item.name %}
+                                    {% endif %} 
+                                    <button data-toggle="modal" data-target="#form_{{item.attributes['forms']['edit']}}" class="dropdown-item edit-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                                    <button data-toggle="modal" data-target="#form_{{item.attributes['forms']['delete']}}" class="dropdown-item delete-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                                  {% endif %}
                                 </div>
                             </div>
                         </td>
@@ -101,6 +123,27 @@
             </table>
         </div>
     </div>
+    <script>
+      $(document).ready(function(){
+        $('.edit-button').on('click', function(event) {
+          $($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
+          $($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
+          $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
+          $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
+          $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          //todo populate edit form with item attributes
+          //console.log('edit:', $(this).attr('data-id'), $(this).attr('data-target'));
+        });
+        $('.delete-button').on('click', function(event) {
+          $($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
+          $($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
+          $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
+          $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
+          $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          //console.log('delete:', $(this).attr('data-id'), $(this).attr('data-target'));
+        });
+      });
+    </script>
     {% elif view['type'] == 'AttributesView' %}
     <div class="row  justify-content-center align-items-center">
         <div class="col-8 .text-center">

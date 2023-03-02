@@ -145,11 +145,11 @@
             <form action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
               <div class="modal-header">
                 {% if form.attributes['edit'] == 'true' %} 
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{item.name}}</span></h5>
                 {% elif form.attributes['type'] %} 
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{form.attributes['type']}}</span></h5>
                 {% elif item %}
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{item.name}}</span></h5> 
                 {% endif %}
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>

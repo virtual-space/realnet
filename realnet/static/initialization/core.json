@@ -5,7 +5,6 @@
             "attributes": {
                 "icon": "extension",
                 "resource": "types",
-                "types": ["Instance"],
                 "views": [
                     {
                         "name": "Empty",
@@ -38,9 +37,11 @@
                     },
                     {
                         "name": "Attributes",
-                        "type": "AttributesView",
+                        "type": "ListView",
                         "attributes": {
                             "hidden": "true",
+                            "source": "attributes",
+                            "internal": "true",
                             "menu": [
                                 {
                                     "name": "Add Attribute",
@@ -62,9 +63,11 @@
                     },
                     {
                         "name": "Forms",
-                        "type": "FormsView",
+                        "type": "ListView",
                         "attributes": {
                             "hidden": "true",
+                            "source": "forms",
+                            "internal": "true",
                             "menu": [
                                 {
                                     "name": "Add Form",
@@ -89,6 +92,8 @@
                         "type": "MenuView",
                         "attributes": {
                             "hidden": "true",
+                            "source": "menu",
+                            "internal": "true",
                             "menu": [
                                 {
                                     "name": "Add Menu Item",
@@ -112,7 +117,7 @@
                         "name": "Settings",
                         "type": "FormView",
                         "attributes": {
-                            "form": "SettingsForm",
+                            "form": "TypeEditForm",
                             "hidden": "true"
                         }
                     },
@@ -125,38 +130,12 @@
                         }
                     },
                     {
-                        "name": "Types",
-                        "type": "ListView",
-                        "attributes": {
-                            "types": ["Type"],
-                            "hidden": "true",
-                            "children": "true",
-                            "menu": [
-                                {
-                                    "name": "Add Type",
-                                    "icon": "add",
-                                    "form": "TypeCreateForm"
-                                },
-                                {
-                                    "name": "Add View",
-                                    "icon": "add_box",
-                                    "form": "TypeViewCreateForm"
-                                },
-                                {
-                                    "name": "Delete",
-                                    "icon": "delete",
-                                    "form": "DeleteForm"
-                                }
-                            ]
-                        }
-                    },
-                    {
                         "name": "Files",
                         "type": "ListView",
                         "attributes": {
                             "types": ["Media"],
                             "hidden": "true",
-                            "children": "true",
+                            "query": {"types": ["Media"], "children": "true"},
                             "menu": [
                                 {
                                     "name": "Import",
@@ -171,54 +150,12 @@
                                 }
                             ]
                         }
-                    },
-                    {
-                        "name": "Resources",
-                        "type": "ListView",
-                        "attributes": {
-                            "types": ["Resource"],
-                            "hidden": "true",
-                            "children": "true",
-                            "menu": [
-                                {
-                                    "name": "Add Resource",
-                                    "icon": "add",
-                                    "form": "ResourceCreateForm"
-                                },
-                                {
-                                    "name": "Add View",
-                                    "icon": "add_box",
-                                    "form": "TypeViewCreateForm"
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "name": "Endpoints",
-                        "type": "ListView",
-                        "attributes": {
-                            "types": ["Endpoint"],
-                            "hidden": "true",
-                            "children": "true",
-                            "menu": [
-                                {
-                                    "name": "Add Endpoint",
-                                    "icon": "add",
-                                    "form": "EndpointCreateForm"
-                                },
-                                {
-                                    "name": "Add View",
-                                    "icon": "add_box",
-                                    "form": "TypeViewCreateForm"
-                                }
-                            ]
-                        }
                     }
                 ],
                 "menu": [
                     {
                         "name": "Edit Type",
-                        "icon": "add",
+                        "icon": "edit",
                         "form": "TypeEditForm"
                     },
                     {
@@ -231,7 +168,12 @@
                         "icon": "delete",
                         "form": "DeleteForm"
                     }
-                ]
+                ],
+                "forms": {
+                    "create" : "TypeCreateForm",
+                    "edit" : "TypeEditForm",
+                    "delete": "DeleteForm"
+                }
             }
         },
         {
@@ -251,7 +193,12 @@
                         "icon": "delete",
                         "form": "DeleteForm"
                     }
-                ]
+                ],
+                "forms": {
+                    "create" : "InstanceCreateForm",
+                    "edit" : "InstanceEditForm",
+                    "delete": "DeleteForm"
+                }
             }
         },
         {
@@ -297,7 +244,12 @@
                         "form": "UploadForm",
                         "import": "true"
                     }
-                ]
+                ],
+                "forms": {
+                    "create" : "ItemCreateForm",
+                    "edit" : "ItemEditForm",
+                    "delete": "DeleteForm"
+                }
             }
         },
         {

@@ -46,6 +46,13 @@
                         }
                     },
                     {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
                         "name": "Name",
                         "type": "HiddenCtrl",
                         "attributes": {
@@ -444,6 +451,48 @@
                         "attributes": {
                             "target": "name"
                         }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
                     }
                 ]
             }
@@ -605,6 +654,79 @@
                     },
                     {
                         "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "TypeEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "path": "types",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
+                        "name": "Resource",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "resource"
+                        }
+                    },
+                    {
+                        "name": "Base",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "base",
+                            "types": ["Type"]
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
                         "type": "ButtonCtrl",
                         "attributes": {
                             "default": "true",
@@ -823,14 +945,6 @@
                         }
                     },
                     {
-                        "name": "Type",
-                        "type": "HiddenCtrl",
-                        "attributes": {
-                            "target": "type",
-                            "value": "Instance"
-                        }
-                    },
-                    {
                         "name": "Name",
                         "type": "EditCtrl",
                         "attributes": {
@@ -838,7 +952,7 @@
                         }
                     },
                     {
-                        "name": "TargetType",
+                        "name": "Type",
                         "type": "TypeSelectCtrl",
                         "attributes": {
                             "target": "type",
@@ -856,6 +970,74 @@
                     },
                     {
                         "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "InstanceEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Instance",
+                "path": "types",
+                "title_prefix": "Edit", 
+                "controls": [
+                    {
+                        "name": "ParentTypeId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "types": ["Type"]
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
                         "type": "ButtonCtrl",
                         "attributes": {
                             "default": "true",
@@ -1404,8 +1586,16 @@
             "type": "TypeCreateForm"
         },
         {
+            "name": "TypeEditForm",
+            "type": "TypeEditForm"
+        },
+        {
             "name": "InstanceCreateForm",
             "type": "InstanceCreateForm"
+        },
+        {
+            "name": "InstanceEditForm",
+            "type": "InstanceEditForm"
         },
         {
             "name": "AttributeCreateForm",
