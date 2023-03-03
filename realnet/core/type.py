@@ -199,11 +199,11 @@ class Item(Instance):
 
         return []
 
-    def to_dict(self):
+    def to_dict(self,type=False):
         result = {
             'id': self.id,
             'name': self.name,
-            'type': self.instance.type.to_dict(),
+            'type': self.instance.type.to_dict() if type else self.instance.type.name ,
             'attributes': self.attributes,
             'items': [i.to_dict() for i in self.items]
         }

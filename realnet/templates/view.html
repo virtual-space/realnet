@@ -42,17 +42,17 @@
 {% else %}
     {% if view['type'] == 'ListView' %}
     <div class="row  justify-content-center align-items-center">
-        <div class="col-auto .text-center">
+        <div class="col-auto .text-center w-80">
             <table class="table table-fit table-striped w-auto table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Icon</th>
                         <th scope="col">Name</th>
-                        {% if view.columns %}
-                            {% for column in view.columns%}
+                        {% if view['attributes'] and view['attributes']['columns'] %}
+                            {% for column in view['attributes']['columns'] %}
                                 <th>
-                                    {{column}}
+                                    {{column['name']}}
                                 </th>
                             {% endfor %}    
                         {% endif %}
@@ -64,9 +64,9 @@
 
                 {% if view['attributes'] and view['attributes']['internal'] == 'true' %}
                   {% if view['attributes']['source'] == 'attributes' %} 
-                    {% set list_items = item.attributes.items() %}
+                    {% set list_items = get_items_from_attributes(item.attributes, None) %}
                   {% else %}
-                    {% set list_items = item.attributes[view['attributes']['source']] %}
+                    {% set list_items = get_items_from_attributes(item.attributes, view['attributes']['source']) %}
                   {% endif %}
                 {% else %}
                   {% set list_items = items %}
@@ -89,10 +89,10 @@
                                 <a  href="/items/{{item.id}}">{{item.name}}</a>
                             {% endif %}
                         </td>
-                        {% if view.columns %}
-                            {% for column in view.columns%}
+                        {% if view['attributes'] and view['attributes']['columns'] %}
+                            {% for column in view['attributes']['columns'] %}
                                 <td>
-                                    {{column}}
+                                    {{item.attributes[column['attributes']['target']]}}
                                 </td>
                             {% endfor %}    
                         {% endif %}
@@ -111,8 +111,8 @@
                                     {% else %}
                                       {% set type_name = item.name %}
                                     {% endif %} 
-                                    <button data-toggle="modal" data-target="#form_{{item.attributes['forms']['edit']}}" class="dropdown-item edit-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-                                    <button data-toggle="modal" data-target="#form_{{item.attributes['forms']['delete']}}" class="dropdown-item delete-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                                    <button data-toggle="modal" data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'create')|list)[0]['type']}}" class="dropdown-item edit-button" data-item="{{item.to_dict()}}" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                                    <button data-toggle="modal" data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['type']}}" class="dropdown-item delete-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
                                   {% endif %}
                                 </div>
                             </div>
@@ -131,6 +131,7 @@
           $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
           $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
           $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          console.log($(this).attr('data-item'));
           //todo populate edit form with item attributes
           //console.log('edit:', $(this).attr('data-id'), $(this).attr('data-target'));
         });
@@ -144,47 +145,6 @@
         });
       });
     </script>
-    {% elif view['type'] == 'AttributesView' %}
-    <div class="row  justify-content-center align-items-center">
-        <div class="col-8 .text-center">
-            <table class="table table-fit table-striped w-auto table-responsive">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Value</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for key,value in item.attributes.items() %}
-                    <tr >
-                        <th scope="row">
-                            {{loop.index}}
-                        </th>
-                        <td>
-                            {{key}}
-                        </td>
-                        <td>
-                            {{value}}
-                        </td>
-                        <td>
-                            <div class="btn-group mr-2" role="group" aria-label="Second group">
-                                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <i class="material-icons mr-1">more_vert</i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                  <button data-toggle="modal" data-target="#form_Attr{{key}}Edit" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-                                  <button data-toggle="modal" data-target="#form_Attr{{key}}Delete" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
     {% elif view['type'] == 'FormView' %}
     <div class="row  justify-content-center align-items-center">
         <div class="col-8 .text-center">

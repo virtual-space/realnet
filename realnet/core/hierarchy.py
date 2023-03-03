@@ -3,7 +3,7 @@ import os
 import sys
 import uuid
 
-from .type import Type
+from .type import Type, Instance, Item
 
 def traverse_instance(instances, instance, parent_type_name):
         for inst in instance.get('instances', []):
@@ -174,3 +174,35 @@ def import_structure_from_resource(context, path):
             item_data = data.get('items')
             if item_data:
                 import_items(context, item_data)
+
+
+def make_temp_item(types_by_name, account, name, type_name, attributes=dict(), items=[]):
+        return Item(account.id, account.org.id, Instance(str(uuid.uuid4()), types_by_name[type_name], name), str(uuid.uuid4()), name, attributes, items)
+
+def items_from_attributes(types_by_name, account, attributes, key=None):
+    items = []
+    if key and attributes and key in attributes:
+        raw_items = attributes[key]
+        if isinstance(raw_items, dict):
+            raw_items = [ {'name': k, 'value': v} for k,v in raw_items.items() ]
+        
+        for raw_item in raw_items:
+            name = ''
+            if 'value' in raw_item:
+                name = raw_item['name']
+                raw_item = raw_item['value']
+
+            type_name = 'Item'
+            attributes = dict()
+            if 'name' in raw_item:
+                name = raw_item['name']
+            if 'type' in raw_item:
+                type_name = raw_item['type']
+            if 'attributes' in raw_item:
+                attributes = raw_item['attributes']
+            items.append(make_temp_item(types_by_name, account, name, type_name, attributes))
+        
+    elif attributes:
+        items = [make_temp_item(types_by_name, account, k, 'Attribute', {'value': v, 'resource': 'types'}) for k,v in attributes.items()]
+    
+    return items

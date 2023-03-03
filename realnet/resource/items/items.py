@@ -1,6 +1,7 @@
 import uuid
 from flask import render_template, jsonify
 from realnet.core.type import Resource, Item, Instance
+from realnet.core.hierarchy import items_from_attributes
 
 class Items(Resource):
 
@@ -78,6 +79,9 @@ class Items(Resource):
 
     def get_endpoint_name(self):
         return 'items'
+
+    def get_items_from_attributes(self, module, types_by_name, account, attributes, key=None):
+        return items_from_attributes(types_by_name, account, attributes, key)
 
     def get_items(self, module, account, query, parent_item=None):
         if query:
@@ -341,7 +345,7 @@ class Items(Resource):
 
         if menu:
             for mi in menu:
-                menu_forms.add(mi['form'])
+                menu_forms.add(mi['attributes']['form'])
 
         # menu_forms.add('ViewEditForm')
         # menu_forms.add('ViewQueryForm')
@@ -384,4 +388,5 @@ class Items(Resource):
                 'all_types': all_types,
                 'all_forms': all_forms,
                 'endpoint': self.get_endpoint_name(),
-                'view': active_view}
+                'view': active_view,
+                'get_items_from_attributes': lambda attrs, key: self.get_items_from_attributes(module, tbn, account, attrs, key)}

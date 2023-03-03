@@ -51,14 +51,20 @@
                 "menu": [
                     {
                         "name": "Create App",
-                        "icon": "add",
-                        "form": "AppCreateForm"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "AppCreateForm"
+                        }
                     },
                     {
                         "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm",
-                        "import": "true"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "file_upload",
+                            "form": "UploadForm",
+                            "import": "true"
+                        }
                     }
                 ]
             },
@@ -98,8 +104,11 @@
                 "menu": [
                     {
                         "name": "Create Endpoint",
-                        "icon": "add",
-                        "form": "EndpointCreateForm"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "EndpointCreateForm"
+                        }
                     }
                 ]
             },
@@ -139,8 +148,11 @@
                 "menu": [
                     {
                         "name": "Create Form",
-                        "icon": "add",
-                        "form": "FormCreateForm"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "FormCreateForm"
+                        }
                     },
                     {
                         "name": "Import",
@@ -236,14 +248,20 @@
                 "menu": [
                     {
                         "name": "Create Type",
-                        "icon": "add",
-                        "form": "TypeCreateForm"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
                     },
                     {
                         "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm",
-                        "import": "true"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "file_upload",
+                            "form": "UploadForm",
+                            "import": "true"
+                        }
                     }
                 ]
             },
@@ -305,8 +323,11 @@
                 "menu": [
                     {
                         "name": "Add Role",
-                        "icon": "add",
-                        "form": "RoleCreateForm"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "RoleCreateForm"
+                        }
                     }
                 ]
             },

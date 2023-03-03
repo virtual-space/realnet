@@ -139,6 +139,15 @@ class Types(Items):
                                     return redirect('/types/{}'.format(attrs['parent_id']))
 
                                 return redirect('/types/{}'.format(id))
+                        elif args['type'] == 'Attribute':
+                            if 'name' in args and 'value' in args:
+                                attrs = dict(item.attributes)
+                                attrs[args['name']] = args['value']
+                                params = dict()
+                                params['attributes'] = attrs
+                                module.update_type(id, **params)
+                                return redirect('/types/{}'.format(id))
+
 
                     if id:
                         params = dict()
@@ -188,10 +197,14 @@ class Types(Items):
                                 module.update_type(attrs['id'], **params)
                                 return redirect('/types/{}'.format(attrs['id']))
                         elif args['type'] == 'Attribute':
-                            attrs = dict(args)
-                            params = dict()
-                            params['attributes'] = {attrs['name']:attrs['value']}
-                            module.update_type(attrs['parent_id'], **params)
+                            if 'name' in args:
+                                attrs = dict(item.attributes)
+                                if args['name'] in attrs:
+                                    del attrs[args['name']]
+                                    params = dict()
+                                    params['attributes'] = attrs
+                                    module.update_type(id, **params)
+                                    return redirect('/types/{}'.format(id))
                         else:
                             module.delete_instance(id)
                             if 'parent_id' in attrs:
