@@ -1287,9 +1287,11 @@
                     },
                     {
                         "name": "Form",
-                        "type": "EditCtrl",
+                        "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "form"
+                            "target": "form",
+                            "types": ["Form"]
+
                         }
                     },
                     {
@@ -1354,9 +1356,11 @@
                     },
                     {
                         "name": "Form",
-                        "type": "EditCtrl",
+                        "type": "TypeSelectCtrl",
                         "attributes": {
-                            "target": "form"
+                            "target": "form",
+                            "types": ["Form"]
+
                         }
                     },
                     {

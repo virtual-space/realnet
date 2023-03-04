@@ -91,9 +91,19 @@
                         </td>
                         {% if view['attributes'] and view['attributes']['columns'] %}
                             {% for column in view['attributes']['columns'] %}
+                              {% if column['attributes']['target'] == 'type' %}
                                 <td>
-                                    {{item.attributes[column['attributes']['target']]}}
+                                  {% if item.type is string %}
+                                    {{item.type}}
+                                  {% else %}
+                                    {{item.instance.type.name}}
+                                  {% endif %}
                                 </td>
+                              {% else %}
+                                <td>
+                                  {{item.attributes[column['attributes']['target']]}}
+                                </td>
+                              {% endif %}
                             {% endfor %}    
                         {% endif %}
                         <td>
@@ -124,6 +134,27 @@
         </div>
     </div>
     <script>
+      function updateForm(key, item, control) {
+        var json_item = item.replaceAll("\'","\"");
+        try {
+          json_item = JSON.parse(json_item);
+        } catch(e) {
+          console.log('*** failed parsing json item ***', e);
+        }
+        if(key === 'name' || key === 'type') {
+          control.val(json_item[key]);
+        } else if(key === 'value') {
+          var value = json_item['attributes'][key];
+          console.log(typeof(value));
+          if(value.startsWith('{') || value.startsWith('[')) {
+            control.val(JSON.stringify(json_item['attributes'][key]));
+          } else {
+            control.val(value);
+          }
+        } else {
+          control.val(json_item['attributes'][key]);
+        }
+      }
       $(document).ready(function(){
         $('.edit-button').on('click', function(event) {
           $($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
@@ -131,7 +162,8 @@
           $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
           $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
           $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
-          console.log($(this).attr('data-item'));
+          const item = $(this).attr('data-item');
+          $($(this).attr('data-target')).find('.form-control').each(function () { updateForm($(this).attr('name'), item, $(this))});
           //todo populate edit form with item attributes
           //console.log('edit:', $(this).attr('data-id'), $(this).attr('data-target'));
         });

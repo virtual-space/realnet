@@ -101,8 +101,7 @@
                                     "name": "Form",
                                     "type": "Column",
                                     "attributes": {
-                                        "target": "form",
-                                        "namespace": "attributes"
+                                        "target": "type"
                                     }
                                 }
                             ],
@@ -141,6 +140,16 @@
                             "hidden": "true",
                             "source": "menu",
                             "internal": "true",
+                            "columns": [
+                                {
+                                    "name": "Form",
+                                    "type": "Column",
+                                    "attributes": {
+                                        "target": "form",
+                                        "namespace": "attributes"
+                                    }
+                                }
+                            ],
                             "menu": [
                                 {
                                     "name": "Add Menu Item",
