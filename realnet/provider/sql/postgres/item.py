@@ -10,7 +10,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from realnet.core.provider import ItemProvider
 from realnet.core.acl import Acl, AclType
 from ..utility import get_types_by_name, item_model_to_item, create_item_model, get_derived_types
-from ..models import session as db, Item as ItemModel, Type as TypeModel, VisibilityType
+from ..models import session as db, Item as ItemModel, Type as TypeModel, AccountGroup as AccountGroupModel, VisibilityType
 
 
 class PostgresItemProvider(ItemProvider):
@@ -277,7 +277,26 @@ class PostgresItemProvider(ItemProvider):
             if not conditions:
                 return []
             else:
+                conditions.append(ItemModel.org_id == self.org_id)
                 result_item_models = db.query(ItemModel).filter(*conditions).all()
+                if result_item_models:
+                    account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == self.account_id).all()
+                    group_ids = []
+                    for account_group in account_groups:
+                        group_ids.append(account_group.group_id)
+                    results = []
+                    for item_model in result_item_models:
+                        if [acl for acl in item_model.acls if acl.type == AclType.public]:
+                            results.append(item_model)
+                        elif [acl for acl in item_model.acls if acl.type == AclType.user and acl.target_id == self.account_id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
+                            results.append(item_model)
+                        elif [acl for acl in item_model.acls if acl.type == AclType.group and acl.target_id in group_ids and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+                            results.append(item_model)
+                        elif [acl for acl in item_model.acls if acl.type == AclType.org and acl.org_id == self.org_id and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+                            results.append(item_model)
+                        elif item_model.owner_id == self.account_id:
+                            results.append(item_model)
+                    result_item_models = results
 
         tbn = get_types_by_name(self.org_id)
         items = [item_model_to_item(self.org_id, i, tbn, False) for i in result_item_models]

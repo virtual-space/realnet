@@ -123,12 +123,12 @@ class Items(Resource):
                         external_query['types'] = [t.name for t in internal_types]
                         if parent_item and 'children' in query and query['children'] == 'true':
                             external_query['parent_id'] = parent_item.id
-                        results = results +  [i for i in module.find_items(external_query) if module.can_account_read_item(account, i)]
+                        results = results +  [i for i in module.find_items(external_query)]
                 
                 if internal_types:
                     if parent_item and 'children' in query and query['children'] == 'true':
                         query['parent_id'] = parent_item.id
-                    results = results + [i for i in module.find_items(query) if module.can_account_read_item(account, i)]
+                    results = results + [i for i in module.find_items(query)]
             
             
             return results
@@ -255,10 +255,6 @@ class Items(Resource):
         
         active_view = None
 
-        #     form = next(iter([f for f in module.find_items({'keys': ['type'], 'values': ['App'], 'types': ['Form'], 'children': 'true'}) if module.can_account_read_item(account, f)]), None)
-        # elif args.get('delete') == 'true':
-        #    pass
-
         if views:
             active_subview = None
             if not active_view_name:
@@ -298,18 +294,6 @@ class Items(Resource):
                 if subview_types:
                     types = subview_types
 
-        '''
-        
-        keys = { 'keys': ['type' for type in types ]  }
-        
-        if args.get('add') == 'true':
-            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['CreateForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f)]
-        elif args.get('edit') == 'true':
-            forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ], 'types': ['EditForm'], 'any_level': 'true', 'op': 'or'}) if module.can_account_write_item(account, f)]
-        elif args.get('delete') == 'true':
-            forms = [f for f in module.find_items({'types': ['DeleteForm'], 'any_level': 'true'}) if module.can_account_write_item(account, f)]
-        '''
-
         items = []
 
         tbn = {t.name:t for t in module.get_types()}
@@ -347,17 +331,7 @@ class Items(Resource):
             for mi in menu:
                 menu_forms.add(mi['attributes']['form'])
 
-        # menu_forms.add('ViewEditForm')
-        # menu_forms.add('ViewQueryForm')
-        # menu_forms.add('ViewDeleteForm')
-        # menu_forms.add('TypeViewEditForm')
-        # menu_forms.add('TypeViewQueryForm')
-        # menu_forms.add('TypeViewDeleteForm')
-
-        # forms = [f for f in module.find_items({'keys':  ['type' for type in types ], 'values': [type for type in types ],'types': ['Form'], 'any_level': 'true', 'op': 'or'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
-
-        # forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f) and (f.name in menu_forms or f.instance.type.name in typenames)]
-        forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'}) if module.can_account_read_item(account, f)]
+        forms = [f for f in module.find_items({'types': ['Form'], 'any_level': 'true'})]
 
         for form in forms:
             if 'controls' in form.attributes:

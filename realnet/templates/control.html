@@ -17,7 +17,7 @@
             {% if control.attributes['target'] == 'name' %}
                 <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
             {% else %}
-                <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}">
+                <textarea class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}" rows="1"></textarea>
             {% endif %} 
         {% else %}
             <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">

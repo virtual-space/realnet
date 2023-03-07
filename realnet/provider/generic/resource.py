@@ -20,7 +20,7 @@ class GenericResourceProvider(ResourceProvider):
                                                     'name': resource_name, 
                                                     'any_level': 'true',
                                                     'keys': ['module'], 
-                                                    'values': ['true']}) if module.can_account_read_item(account, r)]
+                                                    'values': ['true']})]
         resource_item = next(iter(resources), None)
         if resource_item:
             # Check if there is a child function with that name and return that

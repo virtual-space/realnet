@@ -38,7 +38,8 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "delete",
-                                        "form": "DeleteForm"
+                                        "form": "DeleteForm",
+                                        "path": "types"
                                     }
                                 }
                             ]
@@ -83,7 +84,8 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "delete",
-                                        "form": "DeleteForm"
+                                        "form": "DeleteForm",
+                                        "path": "types"
                                     }
                                 }
                             ]
@@ -101,7 +103,14 @@
                                     "name": "Form",
                                     "type": "Column",
                                     "attributes": {
-                                        "target": "type"
+                                        "target": "form"
+                                    }
+                                },
+                                {
+                                    "name": "Path",
+                                    "type": "Column",
+                                    "attributes": {
+                                        "target": "path"
                                     }
                                 }
                             ],
@@ -111,7 +120,8 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "add",
-                                        "form": "FormCreateForm"
+                                        "path": "types",
+                                        "form": "FormItemCreateForm"
                                     }
                                 },
                                 {
@@ -124,10 +134,11 @@
                                 },
                                 {
                                     "name": "Delete",
-                                    "type": "MenuItem",
+                                    "type": "FormItem",
                                     "attributes": {
                                         "icon": "delete",
-                                        "form": "DeleteForm"
+                                        "form": "DeleteForm",
+                                        "path": "types"
                                     }
                                 }
                             ]
@@ -147,6 +158,13 @@
                                     "attributes": {
                                         "target": "form",
                                         "namespace": "attributes"
+                                    }
+                                },
+                                {
+                                    "name": "Path",
+                                    "type": "Column",
+                                    "attributes": {
+                                        "target": "path"
                                     }
                                 }
                             ],
@@ -172,7 +190,8 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "delete",
-                                        "form": "DeleteForm"
+                                        "form": "DeleteForm",
+                                        "path": "types"
                                     }
                                 }
                             ]
@@ -218,6 +237,15 @@
                                         "icon": "add_box",
                                         "form": "TypeViewCreateForm"
                                     }
+                                },
+                                {
+                                    "name": "Delete",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "delete",
+                                        "form": "DeleteForm",
+                                        "path": "types"
+                                    }
                                 }
                             ]
                         }
@@ -245,22 +273,36 @@
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "delete",
-                            "form": "DeleteForm"
+                            "form": "DeleteForm",
+                            "path": "types"
                         }
                     }
                 ],
                 "forms": [
                     { 
-                        "name": "create", 
-                        "type": "TypeCreateForm"
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "TypeCreateForm"
+                        } 
+                        
                     },
                     { 
                         "name" : "edit",
-                        "type" : "TypeEditForm"
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "TypeEditForm"
+                        } 
                     },
                     { 
                         "name": "delete",
-                        "type": "DeleteForm" 
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "DeleteForm"
+                        } 
                     }
                 ]
             }
@@ -291,16 +333,28 @@
                 ],
                 "forms": [
                     { 
-                        "name": "create", 
-                        "type": "InstanceCreateForm"
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "InstanceCreateForm"
+                        }
                     },
                     { 
                         "name" : "edit",
-                        "type" : "InstanceEditForm"
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "InstanceEditForm"
+                        }
                     },
                     { 
                         "name": "delete",
-                        "type": "DeleteForm" 
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "DeleteForm"
+                        } 
                     }
                 ]
             }
@@ -372,16 +426,28 @@
                 ],
                 "forms": [
                     { 
-                        "name": "create", 
-                        "type": "ItemCreateForm"
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "items",
+                            "form": "ItemCreateForm"
+                        }
                     },
                     { 
                         "name" : "edit",
-                        "type" : "ItemEditForm"
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "items",
+                            "form": "ItemEditForm"
+                        }
                     },
                     { 
                         "name": "delete",
-                        "type": "DeleteForm" 
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "items",
+                            "form": "DeleteForm"
+                        }
                     }
                 ]
             }
@@ -399,16 +465,28 @@
                 "icon": "segment",
                 "forms": [
                     { 
-                        "name": "create", 
-                        "type": "AttributeCreateForm"
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "AttributeCreateForm"
+                        }
                     },
                     { 
                         "name" : "edit",
-                        "type" : "AttributeEditForm"
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "AttributeEditForm"
+                        }
                     },
                     { 
                         "name": "delete",
-                        "type": "AttributeDeleteForm" 
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "AttributeDeleteForm"
+                        } 
                     }
                 ]
             }
@@ -419,16 +497,60 @@
                 "icon": "menu_open",
                 "forms": [
                     { 
-                        "name": "create", 
-                        "type": "MenuItemCreateForm"
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "MenuItemCreateForm"
+                        }
                     },
                     { 
                         "name" : "edit",
-                        "type" : "MenuItemEditForm"
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "MenuItemEditForm"
+                        }
                     },
                     { 
                         "name": "delete",
-                        "type": "MenuItemDeleteForm" 
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "MenuItemDeleteForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormItem",
+            "attributes": {
+                "icon": "drag_handle",
+                "forms": [
+                    { 
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "FormItemCreateForm"
+                        }
+                    },
+                    { 
+                        "name" : "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "FormItemEditForm"
+                        }
+                    },
+                    { 
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "types",
+                            "form": "FormItemDeleteForm"
+                        } 
                     }
                 ]
             }

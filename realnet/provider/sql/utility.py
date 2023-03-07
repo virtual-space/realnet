@@ -7,11 +7,34 @@ from realnet.core.acl import AclType, Acl
 
 def get_types_by_name(org_id):
     type_models = db.query(TypeModel).filter(TypeModel.org_id == org_id).all()
+    instance_models = db.query(InstanceModel).filter(InstanceModel.org_id == org_id).all()
     tmbn = {tm.name:tm for tm in type_models}
+    type_instances = dict()
+    for instance_model in instance_models:
+        if not instance_model.parent_type_id in type_instances:
+            type_instances[instance_model.parent_type_id] = [instance_model]
+        else:
+            type_instances[instance_model.parent_type_id].append(instance_model)
     tbn = dict()
     for tm in type_models:
-        type_model_to_type(org_id, tm, tmbn, tbn)
+        type_model_to_type(org_id, tm, tmbn, tbn, type_instances)
     return tbn
+
+def type_model_to_type(org_id, type_model, type_models_by_name, types_by_name, type_instances):
+    base = type_model.base
+    attributes = dict(type_model.attributes or dict())
+    if base:
+        if base.name in types_by_name:
+            base = types_by_name[base.name]
+        else:
+            base = type_model_to_type(org_id, base, type_models_by_name, types_by_name, type_instances)
+        attributes = base.attributes | attributes
+    
+    instance_models = type_instances.get(type_model.id, [])
+    instances = [instance_model_to_instance(im, types_by_name) for im in instance_models]
+    result_type = Type(type_model.id, type_model.name, base, attributes, instances, type_model.module)
+    types_by_name[type_model.name] = result_type
+    return result_type
 
 def fill_derived_types(base_types, type_ids, results):
     for type_id in type_ids:
@@ -37,22 +60,6 @@ def get_derived_types(org_id, type_ids):
     fill_derived_types(base_types, type_ids, results)
 
     return list(results)
-
-def type_model_to_type(org_id, type_model, type_models_by_name, types_by_name):
-    base = type_model.base
-    attributes = dict(type_model.attributes or dict())
-    if base:
-        if base.name in types_by_name:
-            base = types_by_name[base.name]
-        else:
-            base = type_model_to_type(org_id, base, type_models_by_name, types_by_name)
-        attributes = base.attributes | attributes
-    
-    instance_models = db.query(InstanceModel).filter(InstanceModel.parent_type_id == type_model.id, InstanceModel.org_id == org_id).all()
-    instances = [instance_model_to_instance(im, types_by_name) for im in instance_models]
-    result_type = Type(type_model.id, type_model.name, base, attributes, instances, type_model.module)
-    types_by_name[type_model.name] = result_type
-    return result_type
 
 def instance_model_to_instance(instance_model, types_by_name):
     return Instance(instance_model.id, types_by_name.get(instance_model.type.name), instance_model.name, instance_model.attributes)

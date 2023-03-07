@@ -168,6 +168,9 @@
                     {% endwith %}
                   {% endif %}
                 {% endfor %}
+                {% if view %}
+                  <input type="hidden" id="control_active_view" name="active_view" value="{{view.name | lower}}">
+                {% endif %}
               </div>
               <div class="modal-footer">
                 {% for control in form.items %}

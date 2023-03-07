@@ -121,8 +121,23 @@
                                     {% else %}
                                       {% set type_name = item.name %}
                                     {% endif %} 
-                                    <button data-toggle="modal" data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'create')|list)[0]['type']}}" class="dropdown-item edit-button" data-item="{{item.to_dict()}}" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-                                    <button data-toggle="modal" data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['type']}}" class="dropdown-item delete-button" data-id="{{item.id}}" data-type="{{type_name}}" data-name="{{item.name}}" data-resource="{{item.attributes['resource']}}" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                                    <button data-toggle="modal" 
+                                            data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
+                                            class="dropdown-item edit-button" 
+                                            data-item="{{item.to_dict()}}" 
+                                            data-id="{{item.id}}" 
+                                            data-type="{{type_name}}" 
+                                            data-name="{{item.name}}" 
+                                            data-resource="{{(item.attributes['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
+                                            type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                                    <button data-toggle="modal" 
+                                            data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
+                                            class="dropdown-item delete-button" 
+                                            data-id="{{item.id}}" 
+                                            data-type="{{type_name}}" 
+                                            data-name="{{item.name}}" 
+                                            data-resource="{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
+                                            type="button"><i class="material-icons mr-1">delete</i>Delete</button>
                                   {% endif %}
                                 </div>
                             </div>
@@ -145,11 +160,10 @@
           control.val(json_item[key]);
         } else if(key === 'value') {
           var value = json_item['attributes'][key];
-          console.log(typeof(value));
-          if(value.startsWith('{') || value.startsWith('[')) {
-            control.val(JSON.stringify(json_item['attributes'][key]));
+          if(typeof(value) === 'string' || typeof(value) === 'number') {
+            control.val(value);  
           } else {
-            control.val(value);
+            control.val(JSON.stringify(json_item['attributes'][key]));
           }
         } else {
           control.val(json_item['attributes'][key]);

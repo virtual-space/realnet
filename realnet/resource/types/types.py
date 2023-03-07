@@ -1,3 +1,4 @@
+import json
 from flask import jsonify, render_template, redirect
 from realnet.resource.items.items import Items
 from realnet.core.type import Item, Instance
@@ -22,6 +23,11 @@ class Types(Items):
                 if i.attributes:
                     attrs = dict(i.attributes)
                     attrs['resource'] = 'types'
+                    attrs['forms'] = [
+                        { 'name': 'create', 'type': 'InstanceCreateForm' },
+                        { 'name' : 'edit', 'type' : 'InstanceEditForm' },
+                        { 'name': 'delete', 'type': 'DeleteForm' }
+                    ]
                     i.attributes = attrs
                 else:
                     i.attributes = {'resource': 'types'}
@@ -55,9 +61,15 @@ class Types(Items):
                     if item:
                         if module.can_account_write_item(account, item):
                             params = dict()
-                            params['attributes'] = {attrs['name']:attrs['value']}
+                            current_attrs = dict(item.attributes)
+                            current_attrs[attrs['name']] = attrs['value']
+                            params['attributes'] = current_attrs
                             module.update_type(attrs['parent_id'], **params)
-                item = None
+                    if 'active_view' in attrs:
+                        return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                    else:
+                        return redirect('/types/{}'.format(attrs['parent_id']))
+                    
             elif args['type'].endswith('View'):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
@@ -74,16 +86,76 @@ class Types(Items):
                                 view['type'] = args.get('type')
                             
                             views = item.attributes.get('views', []) + [view]
-                            params = {'attributes': {'views': views} }
+                            current_attrs = dict(item.attributes)
+                            current_attrs['views'] = views
+                            params = {'attributes': current_attrs }
                             module.update_type(attrs['parent_id'], **params)
-                            return redirect('/types/{}'.format(attrs['parent_id']))
-            elif args['type'] == 'Form':
-                item = None
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'FormItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'FormItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            
+                            forms = item.attributes.get('forms', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['forms'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_type(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'MenuItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'MenuItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            if 'icon' in args:
+                                form['attributes']['icon'] = args['icon']
+                            
+                            forms = item.attributes.get('menu', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['menu'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_type(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
             elif 'parent_id' in args:
                 attrs = dict(args)
                 attrs['parent_type_id'] = attrs['parent_id']
                 item = module.create_instance(**attrs)
-                return redirect('/types/{}'.format(attrs['parent_id']))
+                if 'active_view' in attrs:
+                    return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                else:
+                    return redirect('/types/{}'.format(attrs['parent_id']))
         else:
             attrs = dict()
             for k,v in args.items():
@@ -132,21 +204,65 @@ class Types(Items):
                                         views.append(view)
                                     else:
                                         views.append({'name': view['name'], 'type': args['type'], 'attributes': args.get('attributes',{})})
-                                
-                                params = {'attributes': {'views': views} }
+                                current_attrs = dict(item.attributes)
+                                current_attrs['views'] = views
+                                params = {'attributes': current_attrs }
                                 module.update_type(id, **params)
                                 if 'parent_id' in attrs:
-                                    return redirect('/types/{}'.format(attrs['parent_id']))
+                                    if 'active_view' in attrs:
+                                        return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                    else:
+                                        return redirect('/types/{}'.format(attrs['parent_id']))
 
                                 return redirect('/types/{}'.format(id))
+                        elif args['type'] == 'FormItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('forms', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                    else:
+                                        forms.append({'name': form['name'], 'type': form['type'], 'attributes': {'form': args['form'], 'path': args['path']}})
+                                current_attrs = dict(item.attributes)
+                                current_attrs['forms'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_type(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(id))
+                        elif args['type'] == 'MenuItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('menu', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                    else:
+                                        forms.append({'name': form['name'], 'type': form['type'], 'attributes': {'form': args['form'], 'path': args['path'], 'icon': args['icon']}})
+                                current_attrs = dict(item.attributes)
+                                current_attrs['menu'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_type(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(id))
                         elif args['type'] == 'Attribute':
                             if 'name' in args and 'value' in args:
                                 attrs = dict(item.attributes)
-                                attrs[args['name']] = args['value']
+                                try:
+                                    attrs[args['name']] = json.loads(args['value'])
+                                except Exception as e:
+                                    attrs[args['name']] = args['value']
                                 params = dict()
                                 params['attributes'] = attrs
                                 module.update_type(id, **params)
-                                return redirect('/types/{}'.format(id))
+                                if 'active_view' in args:
+                                    return redirect('/types/{}?view={}'.format(id, args['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(id))
 
 
                     if id:
@@ -159,13 +275,19 @@ class Types(Items):
                         module.update_instance(id, **params)
                         
                         if 'parent_id' in attrs:
-                            return redirect('/types/{}'.format(attrs['parent_id']))
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
                             
                         return redirect('/types/{}'.format(id))
                     
         # module.delete_type(args['id'])
         if 'parent_id' in attrs:
-            return redirect('/types/{}'.format(attrs['parent_id']))
+            if 'active_view' in attrs:
+                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+            else:
+                return redirect('/types/{}'.format(attrs['parent_id']))
             
         return redirect('/types/{}'.format(id))
 
@@ -192,10 +314,44 @@ class Types(Items):
                                 for view in item.attributes.get('views', []):
                                     if view['name'].lower() != name:
                                         views.append(view)
-                                
-                                params = {'attributes': {'views': views} }
+                                current_attrs = dict(item.attributes)
+                                current_attrs['views'] = views
+                                params = {'attributes': current_attrs }
                                 module.update_type(attrs['id'], **params)
-                                return redirect('/types/{}'.format(attrs['id']))
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(attrs['id'], attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(attrs['id']))
+                        if args['type'] == 'FormItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('forms', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                current_attrs = dict(item.attributes)
+                                current_attrs['forms'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_type(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(id))
+                        elif args['type'] == 'MenuItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('menu', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                current_attrs = dict(item.attributes)
+                                current_attrs['menu'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_type(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(id))
                         elif args['type'] == 'Attribute':
                             if 'name' in args:
                                 attrs = dict(item.attributes)
@@ -204,11 +360,22 @@ class Types(Items):
                                     params = dict()
                                     params['attributes'] = attrs
                                     module.update_type(id, **params)
-                                    return redirect('/types/{}'.format(id))
+                                    if 'active_view' in args:
+                                        return redirect('/types/{}?view={}'.format(id, args['active_view']))
+                                    else:
+                                        return redirect('/types/{}'.format(id))
                         else:
-                            module.delete_instance(id)
+                            if id:
+                                if attrs['id'] == attrs['parent_id']:
+                                    module.delete_type(id)
+                                    return redirect('/types')
+                                else:
+                                    module.delete_instance(id)
                             if 'parent_id' in attrs:
-                                return redirect('/types/{}'.format(attrs['parent_id']))
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(attrs['parent_id']))
                                     
         # module.delete_type(args['id'])
         return redirect('/types/{}'.format(id))

@@ -1286,6 +1286,13 @@
                         }
                     },
                     {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
                         "name": "Form",
                         "type": "TypeSelectCtrl",
                         "attributes": {
@@ -1355,6 +1362,13 @@
                         }
                     },
                     {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
                         "name": "Form",
                         "type": "TypeSelectCtrl",
                         "attributes": {
@@ -1396,6 +1410,212 @@
         },
         {
             "name": "MenuItemDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "MenuItem",
+                "path": "types",
+                "controls": [
+                    {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormItemCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "MenuItem",
+                "path": "types",
+                "title_prefix": "Add MenuItem", 
+                "controls": [
+                    {
+                        "name": "ParentTypeId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "value": "FormItem"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
+                        "name": "Form",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "form",
+                            "types": ["Form"]
+
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormItemEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Attribute",
+                "path": "types",
+                "title_prefix": "Edit", 
+                "controls": [
+                    {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "value": "FormItem"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Path",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "path"
+                        }
+                    },
+                    {
+                        "name": "Form",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "form",
+                            "types": ["Form"]
+
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "FormItemDeleteForm",
             "base": "DeleteForm",
             "attributes": {
                 "type": "MenuItem",
@@ -1964,6 +2184,18 @@
         {
             "name": "MenuItemDeleteForm",
             "type": "MenuItemDeleteForm"
+        },
+        {
+            "name": "FormItemCreateForm",
+            "type": "FormItemCreateForm"
+        },
+        {
+            "name": "FormItemEditForm",
+            "type": "FormItemEditForm"
+        },
+        {
+            "name": "FormItemDeleteForm",
+            "type": "FormItemDeleteForm"
         },
         {
             "name": "RoleCreateForm",
