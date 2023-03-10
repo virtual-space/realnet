@@ -24,9 +24,9 @@ class Types(Items):
                     attrs = dict(i.attributes)
                     attrs['resource'] = 'types'
                     attrs['forms'] = [
-                        { 'name': 'create', 'type': 'InstanceCreateForm' },
-                        { 'name' : 'edit', 'type' : 'InstanceEditForm' },
-                        { 'name': 'delete', 'type': 'DeleteForm' }
+                        { 'name': 'create', 'type': 'FormItem', 'attributes': { 'form': 'InstanceCreateForm', 'path': 'types' } },
+                        { 'name' : 'edit', 'type': 'FormItem', 'attributes': { 'form': 'InstanceEditForm', 'path': 'types' }  },
+                        { 'name': 'delete', 'type': 'FormItem', 'attributes': { 'form': 'DeleteForm', 'path': 'types' }  }
                     ]
                     i.attributes = attrs
                 else:
@@ -182,12 +182,16 @@ class Types(Items):
     def put(self, module, args, path=None, content_type='text/html'):
         attrs = dict(args)
         id = None
+        is_instance = False
         if path:
             id = path
         elif 'id' in attrs:
             id = attrs['id']
         elif 'parent_id' in attrs:
             id = attrs['parent_id']
+            
+        if 'parent_id' in attrs:
+            is_instance = True
 
         if id:
             account = module.get_account()
@@ -267,20 +271,38 @@ class Types(Items):
 
                     if id:
                         params = dict()
-                        if 'name' in args:
-                            params['name'] = args['name']
-                        if 'type' in args:
-                            params['type'] = args['type']
+                        if is_instance:
+                            if 'name' in args:
+                                params['name'] = args['name']
+                            if 'type' in args:
+                                params['type'] = args['type']
 
-                        module.update_instance(id, **params)
-                        
-                        if 'parent_id' in attrs:
-                            if 'active_view' in attrs:
-                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
-                            else:
-                                return redirect('/types/{}'.format(attrs['parent_id']))
+                            module.update_instance(id, **params)
+
+                            if 'parent_id' in attrs:
+                                if 'active_view' in attrs:
+                                    return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                else:
+                                    return redirect('/types/{}'.format(attrs['parent_id']))
+                        else:
+                            current_attrs = dict(item.attributes)
                             
-                        return redirect('/types/{}'.format(id))
+                            for k,v in args.items():
+                                if k == 'name' or k == 'base':
+                                    params[k] = args[k]
+                                else:
+                                    current_attrs[k] = args[k]
+                            
+
+                            params['attributes'] = current_attrs
+                            module.update_type(id, **params)
+
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(id, attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(id))
+                                
+                    return redirect('/types/{}'.format(id))
                     
         # module.delete_type(args['id'])
         if 'parent_id' in attrs:

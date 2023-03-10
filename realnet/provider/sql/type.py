@@ -39,6 +39,14 @@ class SqlTypeProvider(TypeProvider):
                     type_model.name = value
                 elif key == 'attributes':
                     type_model.attributes = value
+                elif key == 'base':
+                    if value:
+                        base_model = db.query(TypeModel).filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
+                        if base_model:
+                            type_model.base_id = base_model.id
+                    else:
+                        type_model.base_id = None
+        
             db.commit()
 
     def create_type(self, **kwargs):

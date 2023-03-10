@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from .acl import Acl, AclType
 from .provider import *
 
+import json
+
 class Resource(ABC):
     
     @abstractmethod
@@ -137,13 +139,21 @@ class Instance(Type):
         fdel = _del_attributes
     )
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'type': self.type.name,
-            'attributes': self.attributes
-        }
+    def to_dict(self,type=False):
+        if type:
+            return {
+                'id': self.id,
+                'name': self.name,
+                'type': self.type.to_dict(),
+                'attributes': self.attributes
+            }
+        else:
+            return {
+                'id': self.id,
+                'name': self.name,
+                'type': self.type.name,
+                'attributes': self.attributes
+            }
 
 
 
@@ -200,16 +210,29 @@ class Item(Instance):
         return []
 
     def to_dict(self,type=False):
-        result = {
-            'id': self.id,
-            'name': self.name,
-            'type': self.instance.type.to_dict() if type else self.instance.type.name ,
-            'attributes': self.attributes,
-            'items': [i.to_dict() for i in self.items]
-        }
+        result = {}
+        if type:
+            result = {
+                'id': self.id,
+                'name': self.name,
+                'instance': self.instance.to_dict(type),
+                'attributes': self.attributes,
+                'items': [i.to_dict() for i in self.items]
+            }
+        else:
+            result = {
+                'id': self.id,
+                'name': self.name,
+                'type': self.instance.type.name,
+                'attributes': self.attributes,
+                'items': [i.to_dict() for i in self.items]
+            }
         if self.linked_item_id:
             result['linked_item_id'] = self.linked_item_id
         return result
+
+    def to_json_string(self, type=False):
+        return json.dumps(self.to_dict(type))
 
 
 class Data:

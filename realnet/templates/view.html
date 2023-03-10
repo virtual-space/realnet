@@ -122,21 +122,21 @@
                                       {% set type_name = item.name %}
                                     {% endif %} 
                                     <button data-toggle="modal" 
-                                            data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
+                                            data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
                                             class="dropdown-item edit-button" 
                                             data-item="{{item.to_dict()}}" 
                                             data-id="{{item.id}}" 
                                             data-type="{{type_name}}" 
                                             data-name="{{item.name}}" 
-                                            data-resource="{{(item.attributes['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
+                                            data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
                                             type="button"><i class="material-icons mr-1">edit</i>Edit</button>
                                     <button data-toggle="modal" 
-                                            data-target="#form_{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
+                                            data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
                                             class="dropdown-item delete-button" 
                                             data-id="{{item.id}}" 
                                             data-type="{{type_name}}" 
                                             data-name="{{item.name}}" 
-                                            data-resource="{{(item.attributes['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
+                                            data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
                                             type="button"><i class="material-icons mr-1">delete</i>Delete</button>
                                   {% endif %}
                                 </div>
@@ -196,7 +196,7 @@
         <div class="col-8 .text-center">
             {% set form=all_forms[view.attributes['form']] %}
             {% if form.attributes['upload'] == 'true' %} 
-                      <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+                      <form enctype="multipart/form-data" id="form-view-form" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}" data-item="{{item.to_dict()}}">
                         <div class="modal-header">
                           {% if form.attributes['edit'] == 'true' %} 
                             <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
@@ -243,7 +243,7 @@
                         </div>
                       </form>
                     {% else %} 
-                      <form action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+                      <form action="/{{form.attributes['path']}}" id="form-view-form" method="{{form.attributes['method']}}" data-item="{{item.to_json_string(True)}}">
                         <div class="modal-header">
                           {% if form.attributes['edit'] == 'true' %} 
                             <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
@@ -283,6 +283,43 @@
                     {% endif %}
         </div>
     </div>
+    <script>
+      function updateForm(key, item, control) {
+        //console.log(key);
+        //console.log(item);
+        var json_item = item;//.replaceAll("\'","\"");
+        try {
+          json_item = JSON.parse(json_item);
+        } catch(e) {
+          //console.log('*** failed parsing json item ***', e);
+        }
+        if(key === 'name' || key === 'type') {
+          control.val(json_item[key]);
+        } else if(key === 'base') {
+          console.log(json_item['instance']);
+          const base = json_item['instance']['type']['base'];
+          console.log('base', base);
+          if (base) {
+            control.val(base['name']);
+          }
+        } else if(key === 'value') {
+          var value = json_item['attributes'][key];
+          if(typeof(value) === 'string' || typeof(value) === 'number') {
+            control.val(value);  
+          } else {
+            control.val(JSON.stringify(json_item['attributes'][key]));
+          }
+        } else {
+          control.val(json_item['attributes'][key]);
+        }
+      }
+      $(document).ready(function(){
+        const item = $('#form-view-form').attr('data-item');
+        //console.log(item);
+        //$('#form-view-form').find('form').attr('action', '/' + item['attributes']['resource']);
+        $('#form-view-form').find('.form-control').each(function () { updateForm($(this).attr('name'), item, $(this))});
+      });
+    </script>
     {% elif view['type'] == 'CodeView' %}
       <div class="row justify-content-end mb-1 mt-1">
         <div class="col-10">
