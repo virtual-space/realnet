@@ -79,8 +79,14 @@
             "name": "SceneView",
             "base": "View",
             "attributes": {
-                "icon": "nature_people",
-                "creatable": "true"
+                "icon": "nature_people"
+            }
+        },
+        {
+            "name": "ARView",
+            "base": "View",
+            "attributes": {
+                "icon": "view_in_ar"
             }
         },
         {

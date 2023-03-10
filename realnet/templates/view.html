@@ -381,6 +381,140 @@
         });
         });
     </script>
+    {% elif view['type'] == 'ARView' %}
+      <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+      <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+      <style>
+        .arjs-loader {
+          height: 100%;
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: rgba(0, 0, 0, 0.8);
+          z-index: 9999;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+       
+        .arjs-loader div {
+          text-align: center;
+          font-size: 1.25em;
+          color: white;
+        }
+      </style>
+      <div class="row justify-content-end mb-1 mt-1">
+        <div class="col-10">
+            <input type="hidden" id="language" value="python">
+        </div>
+        <div class="col-2">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                  <button type="button" class="btn btn-success ml-2 mr-2">Reset</button>
+                  <button type="button" class="btn btn-warning" id="save">Load</button>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row justify-content-center align-items-center">
+        <div class="col-md-12">
+          <div class="arjs-loader">
+            <div>Loading, please wait...</div>
+          </div>
+         
+          <!-- A-Frame Scene -->
+          <a-scene
+            vr-mode-ui="enabled: false;"
+            renderer="logarithmicDepthBuffer: true;"
+            embedded
+            arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+          >
+            <!-- The NFT image used for Tracking -->
+            <a-nft
+              type="nft"
+              url="<Path to NTF Files>"
+              smooth="true"
+              smoothCount="10"
+              smoothTolerance=".01"
+              smoothThreshold="5"
+            >
+              <!-- Define the GLTF model -->
+              <a-entity
+                gltf-model="<Path to Model>"
+                scale="5 5 5"
+                position="50 150 0"
+              >
+              </a-entity>
+            </a-nft>
+            <!-- Create the Static Camera -->
+            <a-entity camera></a-entity>
+          </a-scene>
+        </div>
+      </div>
+      
+    <script>
+        $(document).ready(function(){
+        
+        });
+    </script>
+    {% elif view['type'] == 'SceneView' %}
+      <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+      <style>
+        .arjs-loader {
+          height: 100%;
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: rgba(0, 0, 0, 0.8);
+          z-index: 9999;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      
+        .arjs-loader div {
+          text-align: center;
+          font-size: 1.25em;
+          color: white;
+        }
+      </style>
+      <div class="row justify-content-end mb-1 mt-1">
+        <div class="col-10">
+            <input type="hidden" id="language" value="python">
+        </div>
+        <div class="col-2">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2" role="group" aria-label="First group">
+                  <button type="button" class="btn btn-success ml-2 mr-2">Reset</button>
+                  <button type="button" class="btn btn-warning" id="save">Load</button>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row justify-content-center align-items-center">
+        <div class="col-md-12">
+          <div class="arjs-loader">
+            <div>Loading, please wait...</div>
+          </div>
+        
+          <!-- A-Frame Scene -->
+          <a-scene>
+            <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+            <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+            <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+            <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+            <a-sky color="#ECECEC"></a-sky>
+          </a-scene>
+        </div>
+      </div>
+      
+    <script>
+        $(document).ready(function(){
+        
+        });
+    </script>
     {% else %}
     type:{{view['type']}} showing {{item.name}} with {{items | length}} items
     {% endif %}
