@@ -80,6 +80,7 @@ class Files(Items):
             item_id = args.get('item_id', None)
             filename = args.get('filename', None)
             filesize = args.get('size', None)
+            target = args.get('target', 'item')
             content_type = mimetypes.guess_type(filename.lower())[0]
 
             if not content_type:
@@ -88,7 +89,11 @@ class Files(Items):
                 else:
                     content_type = 'application/octet-stream'
             
-            item = module.get_item(item_id)
+            if target == 'type':
+                item = module.get_instance_by_id(item_id)
+            else:
+                item = module.get_item(item_id)
+
             if item:
                 # todo get from S3
                 attributes = dict(item.attributes)
@@ -101,7 +106,10 @@ class Files(Items):
                     if not key in {'filename', 'file_size', 'parent_id', 'type', 'size', 'ip_address'}:
                         attributes[key] = value
 
-                module.update_item(item.id, **{"attributes": attributes})
+                if target == 'type':
+                    module.update_instance(item.id, **{"attributes": attributes})
+                else:
+                    module.update_item(item.id, **{"attributes": attributes})
 
                 return jsonify(item.to_dict()), 200        
             # module.create_item(**args)

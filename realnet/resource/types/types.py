@@ -12,7 +12,9 @@ class Types(Items):
         if query:
             # todo proper check for inheritance
             types = set(query.get('types',[]))
-            return instance.type.name in types
+            for type in types:
+                if instance.type.is_derived_from(type):
+                    return True
         else:
             return True
 
