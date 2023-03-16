@@ -73,7 +73,7 @@ def item_model_to_item(org_id, item_model, types_by_name, children=True):
         child_items = db.query(ItemModel).filter(ItemModel.parent_id == item_model.id, InstanceModel.org_id == org_id).all()
         return Item(item_model.owner_id,
                     item_model.org_id,
-                    Instance(item_model.id, type, item_model.name),
+                    Instance(item_model.instance_id, type, item_model.name),
                     item_model.id, 
                     item_model.name, 
                     item_model.attributes, 
@@ -82,7 +82,7 @@ def item_model_to_item(org_id, item_model, types_by_name, children=True):
     else:
         return Item(item_model.owner_id,
                     item_model.org_id,
-                    Instance(item_model.id, type, item_model.name),
+                    Instance(item_model.instance_id, type, item_model.name),
                     item_model.id, 
                     item_model.name, 
                     item_model.attributes, 
@@ -132,6 +132,7 @@ def build_item( item_id,
                     tags=tags,
                     owner_id=owner_id,
                     org_id=org_id,
+                    instance_id=instance.id,
                     type_id=instance.type.id,
                     parent_id=parent_item_id,
                     linked_item_id=linked_item_id)
@@ -146,6 +147,7 @@ def build_item( item_id,
                     owner_id=owner_id,
                     org_id=org_id,
                     location=location,
+                    instance_id=instance.id,
                     type_id=instance.type.id,
                     parent_id=parent_item_id,
                     linked_item_id=linked_item_id)
@@ -187,6 +189,7 @@ def build_item( item_id,
 
 def create_item_model(  db,
                         item_id,
+                        item_instance_id,
                         item_type_name, 
                         item_name,
                         item_attributes,
@@ -203,36 +206,45 @@ def create_item_model(  db,
                         item_linked_item_id=None):
 
     item = None
-    item_type = db.query(TypeModel).filter(TypeModel.name == item_type_name, TypeModel.org_id == org_id).first()
-    if not item_type:
-        item_type = TypeModel(id=str(uuid.uuid4()),
-                         name=item_type_name,
-                         owner_id=owner_id,
-                         org_id=org_id)
-        db.add(item_type)
+    item_instance = db.query(InstanceModel).filter(InstanceModel.id == item_instance_id, InstanceModel.org_id == org_id).first()
+    if not item_instance:
+        item_type = db.query(TypeModel).filter(TypeModel.name == item_type_name, TypeModel.org_id == org_id).first()
+    
+        if not item_type:
+            item_type = TypeModel(id=str(uuid.uuid4()),
+                            name=item_type_name,
+                            owner_id=owner_id,
+                            org_id=org_id)
+            db.add(item_type)
+            db.commit()
+        
+        item_instance = InstanceModel(id=str(uuid.uuid4()),
+                                      name=item_name,
+                                      attributes=item_attributes,
+                                      owner_id=owner_id,
+                                      org_id=org_id,
+                                      type_id=item_type.id)
+        db.add(item_instance)
         db.commit()
 
     if item_type:
         # attributes = item_attributes | item_type.attributes
         attributes = get_type_attributes(item_type)
+        
         if attributes:
+            instance_attributes = item_instance.attributes
+            if instance_attributes:
+                attributes = attributes | instance_attributes
             if item_attributes:
                 attributes =  attributes | item_attributes
-        elif item_attributes:
-            attributes = item_attributes 
-
-        instance = create_instance_model(instance_id=item_id,
-                            instance_name=item_name,
-                            instance_icon=None,
-                            instance_attributes=None,
-                            instance_public=None,
-                            owner_id=owner_id,
-                            org_id=org_id,
-                            instance_type_id=item_type.id)
-
-        db.add(instance)
-        db.commit()
-
+        else:
+            attributes = item_instance.attributes
+            if attributes:
+                if item_attributes:
+                    attributes = attributes | item_attributes
+            else:
+                attributes = item_attributes 
+        
         item_data = {"item_location": item_location, 
                      "item_visibility": item_visibility,
                      "item_tags": item_tags,
@@ -242,7 +254,7 @@ def create_item_model(  db,
                      "item_status": item_status,
                      "item_linked_item_id": item_linked_item_id}
         
-        item = build_item(item_id, instance, attributes, item_data, owner_id, org_id, parent_item_id)
+        item = build_item(item_id, item_instance, attributes, item_data, owner_id, org_id, parent_item_id)
     
     return item
 

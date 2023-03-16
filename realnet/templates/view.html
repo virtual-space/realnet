@@ -425,7 +425,7 @@
          
           <a-scene>
             <!--<a-entity gltf-model="url(.)" position="-1 0.5 -3" rotation="0 45 0"></a-entity>-->
-            <a-entity gltf-model="url(.)" position="0 0 0" rotation="0 0 0"></a-entity>
+            <a-entity gltf-model="url(.)" position="0 0 0" rotation="0 0 0" id="scene_content"></a-entity>
             <a-entity position="0 0 1">
               <a-entity light="type: point; intensity: 3"></a-entity>
             </a-entity>
@@ -445,6 +445,22 @@
     </script>
     {% elif view['type'] == 'SceneView' %}
       <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js"></script>
+      <script>
+        AFRAME.registerComponent("fit", {
+          init: function() {
+            const el = document.querySelector("#scene_content");
+            var object = el.object3D;
+            console.log(object);
+            var bbox = new THREE.Box3().setFromObject(object);
+            console.log(bbox.min, bbox.max)
+            const distance = this.el.object3D.position.distanceTo(object.position)
+            var height = object.getAttribute("geometry").height
+            var newFov = 2 * Math.atan((height / 2) / distance) * (180 / Math.PI); // in degrees
+            console.log(newFov);
+            this.el.sceneEl.camera.fov = newFov
+          }
+        })
+      </script>
       <style>
         .arjs-loader {
           height: 100%;
@@ -486,11 +502,13 @@
           
           <!-- A-Frame Scene -->
           <a-scene>
-            <a-entity gltf-model="url(./{{item.id}}/data)" position="0 0 0" rotation="0 0 0"></a-entity>
+            <a-entity gltf-model="url(./{{item.id}}/data)" position="0 0 0" rotation="0 0 0" id="scene_content"></a-entity>
             <a-entity position="0 0 1">
               <a-entity light="type: point; intensity: 3"></a-entity>
             </a-entity>
-            <a-camera look-controls active position="0 0 1" target="0 0 0" near="0.1" far="10000" fov="60"></a-camera>
+            <a-camera look-controls active position="0 0 1" fit></a-camera>
+            <a-plane position="0 1.6 -2"></a-plane>
+
             <!-- 
             <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
             <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>

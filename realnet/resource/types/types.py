@@ -41,7 +41,7 @@ class Types(Items):
                 attrs['resource'] = 'types'
                 t.attributes = attrs
             return types
-
+        
     def get_template_args(self, module, args, path):
         return super().get_template_args(module, args, path)
 
@@ -49,7 +49,7 @@ class Types(Items):
         type = module.get_type_by_id(path)
         if not type:
             instance = module.get_instance_by_id(path)
-            return Item(account.id, account.org.id, instance, instance.type.id, instance.type.name)
+            return Item(account.id, account.org.id, instance, instance.id, instance.name)
         else:
             return Item(account.id, account.org.id, Instance(type.id, type, type.name), type.id, type.name)
 

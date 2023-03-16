@@ -26,8 +26,12 @@ class PostgresItemProvider(ItemProvider):
         if not isinstance(id, str):
             id = id[0]
         item_model = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
-        tbn = get_types_by_name(self.org_id)
-        return item_model_to_item(self.org_id, item_model, tbn, children)
+        
+        if item_model:
+            tbn = get_types_by_name(self.org_id)
+            return item_model_to_item(self.org_id, item_model, tbn, children)
+        
+        return None
 
     def delete_item(self, id):
         try:
@@ -52,6 +56,8 @@ class PostgresItemProvider(ItemProvider):
     def create_item(self, **kwargs):
         item_id=str(uuid.uuid4())
         item_name = None
+        item_instance_id = None
+        item_type_id = None
         item_type_name = None
         item_attributes = None
         item_parent_id = None
@@ -70,11 +76,14 @@ class PostgresItemProvider(ItemProvider):
                 item_name = value
             elif key == 'id':
                 item_id = value
+            elif key == 'instance_id':
+                item_instance_id = value
             elif key == 'type_id':
                 item_type_id = value
             elif key == 'type':
                 type = db.query(TypeModel).filter(TypeModel.name == value, TypeModel.org_id == self.org_id).first()
                 if type:
+                    item_type_id = type.id
                     item_type_name = type.name
             elif key == 'attributes':
                 item_attributes = value
@@ -109,6 +118,7 @@ class PostgresItemProvider(ItemProvider):
         item = create_item_model(
             db=db,
             item_id=item_id,
+            item_instance_id=item_instance_id,
             item_type_name=item_type_name,
             item_name=item_name,
             item_tags=item_tags,

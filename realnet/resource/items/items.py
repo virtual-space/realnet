@@ -1,5 +1,6 @@
 import uuid
-from flask import render_template, jsonify
+import base64
+from flask import render_template, jsonify, Response
 from realnet.core.type import Resource, Item, Instance
 from realnet.core.hierarchy import items_from_attributes
 
@@ -23,6 +24,36 @@ class Items(Resource):
                                **self.get_template_args(module, args, path))
 
     def render_item(self, module, args, path=None, content_type='text/html'):
+        if path and path.endswith('/data'):
+            parts = path.split('/')
+            id = parts[:1][0]
+            item = module.get_item(id, True)
+            if not item:
+                instance = module.get_instance_by_id(id)
+                if not instance:
+                    type = module.get_type_by_id(id)
+                    item = type
+                    output = module.get_data(id)
+                else:
+                    item = instance
+                    output = module.get_data(id)
+            else:
+                output = module.get_data(id)
+
+            if not output and item.instance:
+                output = module.get_data(item.instance.id)
+                if not output and item.instance.type:
+                    output = module.get_data(item.instance.type.id)
+
+            if output:
+                return Response(
+                            # base64.b64encode(output.bytes).decode('utf-8'),
+                            output.bytes,
+                            mimetype=output.mimetype,
+                            headers={"Content-Disposition": "attachment;filename={}".format(item.name)})
+                    
+            return None
+        
         if content_type == 'application/json':
             return self.render_items_json(module, args, path)
         else:
