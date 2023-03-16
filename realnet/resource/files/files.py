@@ -11,8 +11,8 @@ class Files(Items):
     def get(self, module, args, path=None, content_type='text/html'):
         if path == 'upload-url':
             attributes = dict()
-            attributes['filename'] = args.get('filename', 'file.tmp')
-            attributes['filesize'] = args.get('size', 0)
+            attributes['filename'] = args.get('filename', ['file.tmp'])[0]
+            attributes['filesize'] = args.get('size', 0)[0]
             content_type = mimetypes.guess_type(attributes['filename'].lower())[0]
             if not content_type:
                 if attributes['filename'].lower().endswith('heic'):
@@ -36,16 +36,26 @@ class Files(Items):
                 typename = 'File'
             elif content_type.startswith('text/csv'):
                 typename = 'File'
-            elif attributes['filename'].endswith('.glb'):
+            elif attributes['filename'].endswith('.glb') or attributes['filename'].endswith('.gltf'):
                 typename = 'Scene'
             
             attributes['content_type'] = content_type
             arguments['type'] = args.get('type', typename)
-            parent_id = args.get('parent_id', None)
+            parent_id = args.get('parent_id', [None])[0]
+            target = 'item'
             if parent_id:
-                parent_item = module.get_item(parent_id)
-                if parent_item and module.can_account_write_item(module.get_account(), parent_item):
-                    arguments['parent_id'] = parent_id
+                if 'target' in args:
+                    target = args['target'][0]
+
+                if target == 'type':
+                    parent_item = module.get_type_by_id(parent_id)
+                    if parent_item:
+                        arguments['parent_type_id'] = parent_id
+                else:
+                    parent_item = module.get_item(parent_id)    
+                
+                    if parent_item and module.can_account_write_item(module.get_account(), parent_item):
+                        arguments['parent_id'] = parent_id
             
             arguments['ip_address'] = args.get('ip_address', None)
             for key, value in args.items():
@@ -54,7 +64,12 @@ class Files(Items):
             
             arguments['name'] = attributes['filename']
             arguments['attributes'] = attributes
-            item = module.create_item(**arguments)
+            item = None
+            if target == 'type':
+                item = module.create_instance(**arguments)
+            else:
+                item = module.create_item(**arguments)
+            
             if item:
                 return module.get_data_upload_url(item.id)
 

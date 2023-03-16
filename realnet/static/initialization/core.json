@@ -226,8 +226,9 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "file_upload",
-                                        "form": "UploadForm",
-                                        "import": "true"
+                                        "form": "TypeUploadForm",
+                                        "import": "true",
+                                        "path": "types"
                                     }
                                 },
                                 {

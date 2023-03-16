@@ -23,6 +23,8 @@ class PostgresItemProvider(ItemProvider):
         pass
 
     def get_item(self, id, children=False):
+        if not isinstance(id, str):
+            id = id[0]
         item_model = db.query(ItemModel).filter(ItemModel.id == id, ItemModel.org_id == self.org_id).first()
         tbn = get_types_by_name(self.org_id)
         return item_model_to_item(self.org_id, item_model, tbn, children)

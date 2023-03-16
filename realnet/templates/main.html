@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ app.name }}</title>
-    {{ bootstrap.load_css() }}
     <style>
       .material-symbols-outlined {
         font-variation-settings:
@@ -55,11 +54,149 @@
           width: auto !important;
       }
     </style>
+    {{ bootstrap.load_js() }}
+    {{ bootstrap.load_css() }}
     <link rel="stylesheet" href="{{url_for('static', filename='/font-awesome/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
-    {{ bootstrap.load_js() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    {% if forms %}
+    <script>
+      
+      //var progress = new Stepper($('.progress')[0]);
+      $(document).ready(function () {
+        //$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+        var stepper = new Stepper($('.bs-stepper')[0]);
+
+        $(".previous_button").on("click", function() {
+          stepper.previous();
+        });
+        $(".next_button").on("click", function() {
+          stepper.next();
+        });
+
+        $('.menu-item-button').on('click', function(event) {
+          const target = $(this).attr('data-target');
+          //console.log(target);
+          if(target === '#form_UploadForm' || target === '#form_TypeUploadForm') {
+            //console.log($($(this).attr('data-target')).find('.modal-footer #create_submitting'));
+            $($(this).attr('data-target')).find('.modal-body .progress').hide();
+            $($(this).attr('data-target')).find('.modal-footer #create_submit').hide();
+            //$($(this).attr('data-target')).find('.modal-footer #create_cancel').hide();
+            $($(this).attr('data-target')).find('.modal-footer #create_submitting').hide();
+            console.log($($(this).attr('data-target')).find('.modal-body #control_target').val())
+          
+            $(document).on('change', '#file', function(e) {
+              //console.log(e);
+              //console.log(e.target.files);
+              //console.log($('#file')[0].files);
+              var nextSibling = e.target.nextElementSibling;
+              if (e.target.files && e.target.files.length > 0) {
+                  nextSibling.innerText = e.target.files[0].name;
+                  //$('#create_submit').show();
+                  //$('#create_cancel').show();
+                  //$('#update_submit').show();
+                  //$('#update_cancel').show();
+                  $('.custom-file-label').addClass('after-hide');
+                  $('#create').submit(function(){
+                      $(target).find('.modal-body #create_submit').hide();
+                      $(target).find('.modal-body #create_submitting').show();
+                      //console.log($(this).children('#file'));
+                      //console.log($(target).find('.modal-body #control_target').val())
+                      $.getJSON({ 
+                                  url: $('#create').attr('action') + '/upload-url',
+                                  data: {
+                                    filename: e.target.files[0].name,
+                                    size: e.target.files[0].size,
+                                    parent_id: $('#parent_id').val(),
+                                    target: $(target).find('.modal-body #control_target').val(),
+                                    processing: 'true',
+                                    extracted: 'false'
+                                  },
+                                  success: function(result) {
+                                    console.log('getjson', result);
+                                    const formData = new FormData();
+                                    Object.keys(result['fields']).forEach(key => {
+                                      formData.append(key, result['fields'][key]);
+                                    });
+                                    formData.append('file', e.target.files[0]);
+                                    $('.progress').show();
+                                    $.ajax({
+                                      xhr: function() {
+                                            var xhr = new window.XMLHttpRequest();
+                                            xhr.upload.addEventListener("progress", function(evt) {
+                                                console.log(evt);
+                                                if (evt.lengthComputable) {
+                                                    var percentComplete = evt.loaded / evt.total;
+                                                    percentComplete = parseInt(percentComplete * 100);
+                                                    $('.progress-bar').css('width',percentComplete+"%");
+                                                    $('.progress-bar').html(percentComplete+"%");
+                                                    if (percentComplete === 100) {
+
+                                                }
+                                              }
+                                            }, false);
+                                            return xhr;
+                                          },
+                                      url: result['url'],
+                                      type: 'POST',
+                                      data : formData,
+                                      processData: false,
+                                      contentType: false,
+                                      success: function(result2){
+                                        console.log(result2);
+                                        $.ajax({
+                                          dataType: "json",
+                                          type: 'POST',
+                                          url: $('#create').attr('action') + '/upload-confirm',
+                                          data: JSON.stringify({
+                                            item_id: result['fields']['key'], 
+                                            filename: e.target.files[0].name, 
+                                            size: e.target.files[0].size}),
+                                          contentType: "application/json; charset=utf-8",
+                                          success: function(result3) {
+                                            window.location.href = '/items/'  + result['fields']['key'];
+                                          }
+                                        });
+                                      }
+                                    });
+                                  }
+                                });
+                      
+                      return false;
+                  });
+                  $('#create').submit();
+                } else {
+                  nextSibling.innerText = '';
+                  e.target.value = '';
+                }
+                
+              });  
+          
+          
+          }
+
+          //$($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
+          //$($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
+          //$($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
+          //$($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
+          //$($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          //const item = $(this).attr('data-item');
+          //$($(this).attr('data-target')).find('.form-control').each(function () { updateForm($(this).attr('name'), item, $(this))});
+          //todo populate edit form with item attributes
+          //console.log('edit:', $(this).attr('data-id'), $(this).attr('data-target'));
+        });
+
+        
+        
+      });
+      
+      $(document).ready(function(){
+        //console.log('document ready')
+        
+      }); 
+    </script>
+    {% endif %}
 </head>
 <body>  
 
@@ -95,7 +232,7 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           {% if form.attributes['upload'] == 'true' %} 
-            <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
+            <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="post">
               <div class="modal-header">
                 {% if form.attributes['edit'] == 'true' %} 
                   <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
@@ -133,7 +270,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="create_cancel">Close</button>
+                <button type="button" class="btn btn-danger" id="create_cancel">Cancel</button>
                 <button type="submit" class="btn btn-primary" id="create_submit">{{form.attributes['submit_text']}}</button>
                 <button type="button" class="btn btn-primary" id="create_submitting" disabled>
                   <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -187,154 +324,7 @@
       </div>
     </div>
     {% endfor %}
-    {% if forms | length > 1 %}
-      <div class="modal fade form" id="form_Add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-              
-              <label for="control_type_select">Select Type:</label>
-              <select class="form-control" id="control_type_select" name="control_type_select" multiple>
-                {% for form in forms %}
-                    <option value="{{form.name}}">{{form.attributes['type']}}</option>
-                {% endfor %} 
-              </select>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    {% endif %}
   {% endif %}
 </div>
-  {% if forms %}
-    {% if forms | length > 1 %}
-      <script>
-        $(document).ready(function(){
-          $('.form').on('change', (e) => {
-            if (e.target.value) {
-              form_id = 'form_' + e.target.value;
-              //console.log(e);
-              console.log(form_id);
-              $('#form_Add').modal('hide');//hide();
-              $("#" + form_id).modal('show');
-            } 
-          });
-        
-        }); 
-      </script>
-    {% else %}
-    {% endif %}
-    <script>
-      var stepper = new Stepper($('.bs-stepper')[0]);
-      $(document).ready(function () {
-        $(".previous_button").on("click", function() {
-          stepper.previous();
-        });
-        $(".next_button").on("click", function() {
-          stepper.next();
-        });
-        
-        
-      });
-      $(document).on('change', '#file', function(e) {
-        //console.log(e);
-        var nextSibling = e.target.nextElementSibling;
-        if (e.target.files && e.target.files.length > 0) {
-          nextSibling.innerText = e.target.files[0].name;
-          //$('#create_submit').show();
-          //$('#create_cancel').show();
-          //$('#update_submit').show();
-          //$('#update_cancel').show();
-          $('.custom-file-label').addClass('after-hide');
-          $('#create').submit();
-        } else {
-          nextSibling.innerText = '';
-          e.target.value = '';
-        }
-        
-      });
-      $(document).ready(function(){
-        $('.progress').hide();
-        $('#create_submit').hide();
-        $('#create_cancel').hide();
-        $('#create_submitting').hide();
-        $('#create').submit(function(){
-            //$('#create_submit').hide();
-            $('#create_submitting').show();
-            $.getJSON({ 
-                        url: $('#create').attr('action') + '/upload-url',
-                        data: {
-                          filename: $('#file')[0].files[0].name,
-                          size: $('#file')[0].files[0].size,
-                          parent_id: $('#parent_id').val(),
-                          processing: 'true',
-                          extracted: 'false'
-                        },
-                        success: function(result) {
-                          console.log('getjson', result);
-                          const formData = new FormData();
-                          Object.keys(result['fields']).forEach(key => {
-                            formData.append(key, result['fields'][key]);
-                          });
-                          formData.append('file', $('#file')[0].files[0]);
-                          $('.progress').show();
-                          $.ajax({
-                            xhr: function() {
-                                  var xhr = new window.XMLHttpRequest();
-                                  xhr.upload.addEventListener("progress", function(evt) {
-                                      console.log(evt);
-                                      if (evt.lengthComputable) {
-                                          var percentComplete = evt.loaded / evt.total;
-                                          percentComplete = parseInt(percentComplete * 100);
-                                          $('.progress-bar').css('width',percentComplete+"%");
-                                          $('.progress-bar').html(percentComplete+"%");
-                                          if (percentComplete === 100) {
-
-                                      }
-                                    }
-                                  }, false);
-                                  return xhr;
-                                },
-                            url: result['url'],
-                            type: 'POST',
-                            data : formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(result2){
-                              console.log(result2);
-                              $.ajax({
-                                dataType: "json",
-                                type: 'POST',
-                                url: $('#create').attr('action') + '/upload-confirm',
-                                data: JSON.stringify({
-                                  item_id: result['fields']['key'], 
-                                  filename: $('#file')[0].files[0].name, 
-                                  size: $('#file')[0].files[0].size}),
-                                contentType: "application/json; charset=utf-8",
-                                success: function(result3) {
-                                  window.location.href = '/items/'  + result['fields']['key'];
-                                }
-                              });
-                            }
-                          });
-                        }
-                      });
-            
-            return false;
-        });
-      }); 
-    </script>
-  {% endif %}
 </body>
 </html>

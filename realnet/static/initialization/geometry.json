@@ -1,0 +1,140 @@
+{
+    "types": [
+        {
+            "name": "Transform",
+            "base": "Item",
+            "attributes": {
+                "icon": "transform",
+                "types": ["Node", "Media", "Attribute"]
+            }
+        },
+        {
+            "name": "Node",
+            "base": "Folder",
+            "attributes": {
+                "icon": "line_start",
+                "types": ["Node", "Media", "Attribute"]
+            }
+        },
+        {
+            "name": "Part",
+            "base": "Node",
+            "attributes": {
+                "icon": "widgets"
+            }
+        },
+        {
+            "name": "Assembly",
+            "base": "Part",
+            "attributes": {
+                "icon": "share"
+            }
+        },
+        {
+            "name": "Geometry",
+            "base": "Node",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Attributes",
+            "base": "Node",
+            "attributes": {
+                "types": ["Attribute"]
+            }
+        },
+        {
+            "name": "ModelView",
+            "base": "Node",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "StepView",
+            "base": "Node",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Configuration",
+            "base": "Node",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Animation",
+            "base": "Node",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Body",
+            "base": "Geometry",
+            "attributes": {
+                "types": ["Shell"]
+            }
+        },
+        {
+            "name": "Shell",
+            "base": "Body",
+            "attributes": {
+                "types": ["Face"]
+            }
+        },
+        {
+            "name": "Face",
+            "base": "Shell",
+            "attributes": {
+                "types": ["Edge", "Vertex"]
+            }
+        },
+        {
+            "name": "Edge",
+            "base": "Face",
+            "attributes": {
+                "types": ["Vertex"]
+            }
+        },
+        {
+            "name": "Curve",
+            "base": "Edge"
+        },
+        {
+            "name": "Surface",
+            "base": "Face"
+        },
+        {
+            "name": "Vertex",
+            "base": "Edge",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Triangle",
+            "base": "Face",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Mesh",
+            "base": "Body",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        },
+        {
+            "name": "Solid",
+            "base": "Body",
+            "attributes": {
+                "icon": "fullscreen"
+            }
+        }
+    ]
+}

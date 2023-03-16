@@ -131,6 +131,7 @@ class Initialize(ProtoCmd):
                 import_structure_from_resource(context, 'static/initialization/controls.json')
                 import_structure_from_resource(context, 'static/initialization/views.json')
                 import_structure_from_resource(context, 'static/initialization/forms.json')
+                import_structure_from_resource(context, 'static/initialization/geometry.json')
                 import_structure_from_resource(context, 'static/initialization/apps.json')
         
 

@@ -211,6 +211,40 @@
             ]
         },
         {
+            "name": "ARVR",
+            "base": "App",
+            "attributes": {
+                "icon": "view_in_ar",
+                "types": ["Item"],
+                "query": {"types": ["Item"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "AR/VR",
+                        "type": "ARView"
+                    }
+                ]
+            },
+            "instances": [
+                {
+                    "name": "gltf",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.gltf.gltf",
+                        "module_class": "Gltf",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "arvr",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "arvr",
+                        "resource": "gltf"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Resources",
             "base": "App",
             "attributes": {
@@ -561,6 +595,10 @@
         }
     ],
     "items": [
+        {
+            "name": "Gltf",
+            "type": "ARVR"
+        },
         {
             "name": "Items",
             "type": "Items"

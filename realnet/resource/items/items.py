@@ -323,7 +323,8 @@ class Items(Resource):
             type_filter = set(types)
             types_by_id = {t.id:t for t in tbn.values()}
             type_ids = set([t.id for t in tbn.values() if t.name in type_filter])
-            typenames = types + [types_by_id[t].name for t in module.get_derived_types(type_ids)]
+            derived_types = module.get_derived_types(type_ids)
+            typenames = types + [types_by_id[t].name for t in derived_types if t in types_by_id]
 
         menu_forms = set()
 

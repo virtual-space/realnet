@@ -40,7 +40,12 @@ setup(
                       "authlib",
                       "flask-cors",
                       "bootstrap-flask",
-                      "requests"],
+                      "requests",
+                      "pygltflib",
+                      "trimesh",
+                      "scipy",
+                      "Pillow==9.4.0",
+                      "pillow-heif==0.7.0"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",
