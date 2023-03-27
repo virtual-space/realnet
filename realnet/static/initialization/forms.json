@@ -1097,7 +1097,7 @@
                 "title_prefix": "Add Attribute", 
                 "controls": [
                     {
-                        "name": "ParentTypeId",
+                        "name": "ParentId",
                         "type": "HiddenCtrl",
                         "attributes": {
                             "target": "parent_id"
@@ -1292,7 +1292,7 @@
                 "title_prefix": "Add MenuItem", 
                 "controls": [
                     {
-                        "name": "ParentTypeId",
+                        "name": "ParentId",
                         "type": "HiddenCtrl",
                         "attributes": {
                             "target": "parent_id"
@@ -1512,7 +1512,7 @@
                 "title_prefix": "Add MenuItem", 
                 "controls": [
                     {
-                        "name": "ParentTypeId",
+                        "name": "ParentId",
                         "type": "HiddenCtrl",
                         "attributes": {
                             "target": "parent_id"
@@ -1710,7 +1710,7 @@
             }
         },
         {
-            "name": "TypeViewCreateForm",
+            "name": "ViewCreateForm",
             "base": "CreateForm",
             "attributes": {
                 "type": "View",
@@ -1762,15 +1762,7 @@
             }
         },
         {
-            "name": "ViewCreateForm",
-            "base": "TypeViewCreateForm",
-            "attributes": {
-                "type": "View",
-                "path": "views"
-            }
-        },
-        {
-            "name": "TypeViewDeleteForm",
+            "name": "ViewDeleteForm",
             "base": "DeleteForm",
             "attributes": {
                 "type": "View",
@@ -1828,15 +1820,6 @@
                         
                     }
                 ]
-            }
-        },
-        {
-            "name": "ViewDeleteForm",
-            "base": "TypeViewDeleteForm",
-            "attributes": {
-                "type": "View",
-                "path": "views",
-                "source": "view"
             }
         },
         {
@@ -1899,14 +1882,6 @@
                         
                     }
                 ]
-            }
-        },
-        {
-            "name": "TypeViewEditForm",
-            "base": "ViewEditForm",
-            "attributes": {
-                "type": "View",
-                "path": "types"
             }
         },
         {
@@ -2209,28 +2184,64 @@
             "type": "AttributeDeleteForm"
         },
         {
-            "name": "MenuItemCreateForm",
-            "type": "MenuItemCreateForm"
+            "name": "TypeMenuItemCreateForm",
+            "type": "TypeMenuItemCreateForm"
         },
         {
-            "name": "MenuItemEditForm",
-            "type": "MenuItemEditForm"
+            "name": "TypeMenuItemEditForm",
+            "type": "TypeMenuItemEditForm"
         },
         {
-            "name": "MenuItemDeleteForm",
-            "type": "MenuItemDeleteForm"
+            "name": "TypeMenuItemDeleteForm",
+            "type": "TypeMenuItemDeleteForm"
         },
         {
-            "name": "FormItemCreateForm",
-            "type": "FormItemCreateForm"
+            "name": "TypeFormItemCreateForm",
+            "type": "TypeFormItemCreateForm"
         },
         {
-            "name": "FormItemEditForm",
-            "type": "FormItemEditForm"
+            "name": "TypeFormItemEditForm",
+            "type": "TypeFormItemEditForm"
         },
         {
-            "name": "FormItemDeleteForm",
-            "type": "FormItemDeleteForm"
+            "name": "TypeFormItemDeleteForm",
+            "type": "TypeFormItemDeleteForm"
+        },
+        {
+            "name": "ItemAttributeCreateForm",
+            "type": "ItemAttributeCreateForm"
+        },
+        {
+            "name": "ItemAttributeEditForm",
+            "type": "ItemAttributeEditForm"
+        },
+        {
+            "name": "ItemAttributeDeleteForm",
+            "type": "ItemAttributeDeleteForm"
+        },
+        {
+            "name": "ItemMenuItemCreateForm",
+            "type": "ItemMenuItemCreateForm"
+        },
+        {
+            "name": "ItemMenuItemEditForm",
+            "type": "ItemMenuItemEditForm"
+        },
+        {
+            "name": "ItemMenuItemDeleteForm",
+            "type": "ItemMenuItemDeleteForm"
+        },
+        {
+            "name": "ItemFormItemCreateForm",
+            "type": "ItemFormItemCreateForm"
+        },
+        {
+            "name": "ItemFormItemEditForm",
+            "type": "ItemFormItemEditForm"
+        },
+        {
+            "name": "ItemFormItemDeleteForm",
+            "type": "ItemFormItemDeleteForm"
         },
         {
             "name": "RoleCreateForm",
