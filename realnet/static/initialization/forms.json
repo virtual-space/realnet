@@ -2184,64 +2184,28 @@
             "type": "AttributeDeleteForm"
         },
         {
-            "name": "TypeMenuItemCreateForm",
-            "type": "TypeMenuItemCreateForm"
+            "name": "MenuItemCreateForm",
+            "type": "MenuItemCreateForm"
         },
         {
-            "name": "TypeMenuItemEditForm",
-            "type": "TypeMenuItemEditForm"
+            "name": "MenuItemEditForm",
+            "type": "MenuItemEditForm"
         },
         {
-            "name": "TypeMenuItemDeleteForm",
-            "type": "TypeMenuItemDeleteForm"
+            "name": "MenuItemDeleteForm",
+            "type": "MenuItemDeleteForm"
         },
         {
-            "name": "TypeFormItemCreateForm",
-            "type": "TypeFormItemCreateForm"
+            "name": "FormItemCreateForm",
+            "type": "FormItemCreateForm"
         },
         {
-            "name": "TypeFormItemEditForm",
-            "type": "TypeFormItemEditForm"
+            "name": "FormItemEditForm",
+            "type": "FormItemEditForm"
         },
         {
-            "name": "TypeFormItemDeleteForm",
-            "type": "TypeFormItemDeleteForm"
-        },
-        {
-            "name": "ItemAttributeCreateForm",
-            "type": "ItemAttributeCreateForm"
-        },
-        {
-            "name": "ItemAttributeEditForm",
-            "type": "ItemAttributeEditForm"
-        },
-        {
-            "name": "ItemAttributeDeleteForm",
-            "type": "ItemAttributeDeleteForm"
-        },
-        {
-            "name": "ItemMenuItemCreateForm",
-            "type": "ItemMenuItemCreateForm"
-        },
-        {
-            "name": "ItemMenuItemEditForm",
-            "type": "ItemMenuItemEditForm"
-        },
-        {
-            "name": "ItemMenuItemDeleteForm",
-            "type": "ItemMenuItemDeleteForm"
-        },
-        {
-            "name": "ItemFormItemCreateForm",
-            "type": "ItemFormItemCreateForm"
-        },
-        {
-            "name": "ItemFormItemEditForm",
-            "type": "ItemFormItemEditForm"
-        },
-        {
-            "name": "ItemFormItemDeleteForm",
-            "type": "ItemFormItemDeleteForm"
+            "name": "FormItemDeleteForm",
+            "type": "FormItemDeleteForm"
         },
         {
             "name": "RoleCreateForm",
