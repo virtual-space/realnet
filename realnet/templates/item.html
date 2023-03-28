@@ -51,8 +51,11 @@
               <div class="dropdown-menu dropdown-menu-right">
                 {% if menu %}
                   {% for menu_item in menu %}
-                  {{menu_item['attributes']}}
-                  <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="{{menu_item['attributes']['path']}}" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
+                  {% if endpoint == 'types' %}
+                    <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="types" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
+                  {% else %}
+                    <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="{{menu_item['attributes']['path']}}" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
+                  {% endif %}
                   {% endfor %}
                   <script>
                     $(document).ready(function(){
