@@ -3,10 +3,7 @@ from realnet.resource.items.items import Items
 
 class Views(Items):
     
-    def get_endpoint_name(self):
-        return 'views'
-
-    def post(self, module, args, path=None, content_type='text/html'):
+    def post(self, module, endpoint, args, path=None, content_type='text/html'):
         account = module.get_account()
         item_id = args.get('parent_id')
         if item_id:
@@ -27,9 +24,9 @@ class Views(Items):
                     return redirect('/items/{}'.format(item_id))
                     # return self.render_item(module, args, item_id, content_type)
             
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint, args, path, content_type)
 
-    def delete(self, module, args, path=None, content_type='text/html'):
+    def delete(self, module, endpoint, args, path=None, content_type='text/html'):
         parts = path.split('/')
         if len(parts) == 3 and parts[1] == 'apps':
             module.remove_role_app(parts[0], parts[2])
@@ -41,4 +38,4 @@ class Views(Items):
             del args['delete']
         if 'item_id' in args:
             del args['item_id']
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint, args, path, content_type)

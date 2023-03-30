@@ -5,9 +5,6 @@ from realnet.core.type import Item, Instance
 
 class Types(Items):
     
-    def get_endpoint_name(self):
-        return 'types'
-
     def match(self, instance, query):
         if query:
             # todo proper check for inheritance
@@ -18,7 +15,7 @@ class Types(Items):
         else:
             return True
 
-    def get_items(self, module, account, query, parent_item=None):
+    def get_items(self, module, endpoint, account, query, parent_item=None):
         if parent_item and parent_item.instance.type.name != 'Types':
             instances = [i for i in parent_item.instance.type.instances if self.match(i, query)]
             for i in instances:
@@ -42,10 +39,10 @@ class Types(Items):
                 t.attributes = attrs
             return types
         
-    def get_template_args(self, module, args, path):
-        return super().get_template_args(module, args, path)
+    def get_template_args(self, module, endpoint, args, path):
+        return super().get_template_args(module, endpoint, args, path)
 
-    def get_item(self, module, account, args, path):
+    def get_item(self, module, endpoint, account, args, path):
         type = module.get_type_by_id(path)
         if not type:
             instance = module.get_instance_by_id(path)
@@ -53,7 +50,7 @@ class Types(Items):
         else:
             return Item(account.id, account.org.id, Instance(type.id, type, type.name), type.id, type.name)
 
-    def post(self, module, args, path=None, content_type='text/html'):
+    def post(self, module, endpoint, args, path=None, content_type='text/html'):
         if 'type' in args:
             if args['type'] == 'Attribute':
                 attrs = dict(args)
@@ -179,9 +176,9 @@ class Types(Items):
         if content_type == 'application/json':
             return jsonify(item.to_dict())
         else:
-            return self.render_item(module, args, path, content_type)
+            return self.render_item(module, endpoint, args, path, content_type)
 
-    def put(self, module, args, path=None, content_type='text/html'):
+    def put(self, module, endpoint, args, path=None, content_type='text/html'):
         attrs = dict(args)
         id = None
         is_instance = False
@@ -315,7 +312,7 @@ class Types(Items):
             
         return redirect('/types/{}'.format(id))
 
-    def delete(self, module, args, path=None, content_type='text/html'):
+    def delete(self, module, endpoint, args, path=None, content_type='text/html'):
         attrs = dict(args)
         id = None
         if path:

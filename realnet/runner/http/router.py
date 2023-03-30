@@ -405,7 +405,7 @@ def router(endpoint_name, path):
         if args and '_method' in args:
             method = args['_method'].lower() 
 
-        return endpoint.invoke(context, method, args, path=path, content_type=content_type)
+        return endpoint.invoke(context, endpoint, method, args, path=path, content_type=content_type)
     else:
         return jsonify(isError=True,
                         message="Failure",

@@ -557,6 +557,20 @@
                         }
                     },
                     {
+                        "name": "Endpoint",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "endpoint"
+                        }
+                    },
+                    {
+                        "name": "Resource",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "resource"
+                        }
+                    },
+                    {
                         "name": "Type",
                         "type": "HiddenCtrl",
                         "attributes": {

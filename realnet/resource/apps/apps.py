@@ -1,15 +1,29 @@
-from flask import render_template
+from flask import render_template, jsonify
 from realnet.resource.items.items import Items
 
 class Apps(Items):
     
-    def get_endpoint_name(self):
-        return 'apps'
-
     def get_query(self, module, account, query, parent_item=None):
         return {'types':['App']}
+    
+    def post(self, module, endpoint, args, path=None, content_type='text/html'):
+        
+        app_type = module.create_type(name=args.get('name'), base='App')
+        
+        resource = module.get_resource(module, args.get('resource'))
+        if not resource:
+            resource_instance = module.create_instance(name=args.get('resource'), type='Resource', parent_type_id=app_type.id, attributes={'module':'true'})
+        
+        endpoint_instance = module.create_instance(name=args.get('endpoint'), type='Endpoint', parent_type_id=app_type.id, attributes={'path':args.get('endpoint'), 'resource':args.get('resource')})
 
-    def get_template1(self, module, args, path):
+        app_item = module.create_item(name=args.get('name'), type=app_type.name)
+                
+        if content_type == 'application/json':
+            return jsonify(app_item.to_dict())
+        else:
+            return self.render_item(module, endpoint, args, path, content_type)
+
+    def get_template1(self, endpoint, module, args, path):
         if not path:
             return "apps.html"
         else:

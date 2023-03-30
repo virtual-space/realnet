@@ -227,7 +227,11 @@ class ResourceProvider(ABC):
         pass
 
     @abstractmethod
-    def get_resource_method(self, module, resource_name, method_name):
+    def get_resource(self, module, name):
+        pass
+
+    @abstractmethod
+    def get_resource_method(self, module, endpoint, resource_name, method_name):
         pass
 
 
@@ -631,9 +635,12 @@ class Context(Module):
 
     def get_resources(self, module):
         return self.resources.get_resources(module)
+    
+    def get_resource(self, module, name):
+        return self.resources.get_resource(module, name)
 
-    def get_resource_method(self, module, resource_name, method_name):
-        return self.resources.get_resource_method(module, resource_name, method_name)
+    def get_resource_method(self, module, endpoint, resource_name, method_name):
+        return self.resources.get_resource_method(module, endpoint, resource_name, method_name)
 
     def import_structure(self, module, path):
         return self.importer.import_structure(module, path)

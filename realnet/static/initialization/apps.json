@@ -156,9 +156,12 @@
                     },
                     {
                         "name": "Import",
-                        "icon": "file_upload",
-                        "form": "UploadForm",
-                        "import": "true"
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "file_upload",
+                            "form": "UploadForm",
+                            "import": "true"
+                        }
                     }
                 ]
             },
@@ -226,7 +229,7 @@
             },
             "instances": [
                 {
-                    "name": "gltf",
+                    "name": "arvr",
                     "type": "Resource",
                     "attributes": {
                         "module_path": "realnet.resource.gltf.gltf",
@@ -239,7 +242,7 @@
                     "type": "Endpoint",
                     "attributes": {
                         "path": "arvr",
-                        "resource": "gltf"
+                        "resource": "arvr"
                     }
                 }
             ]
@@ -596,7 +599,7 @@
     ],
     "items": [
         {
-            "name": "Gltf",
+            "name": "ARVR",
             "type": "ARVR"
         },
         {

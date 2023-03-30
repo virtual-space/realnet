@@ -6,24 +6,24 @@ from realnet.core.hierarchy import items_from_attributes
 
 class Items(Resource):
 
-    def render_items_json(self, module, args, path):
+    def render_items_json(self, module, endpoint, args, path):
         account = module.get_account()
         query = self.get_query(module, args, path)
         if path:
-            item = self.get_item(module, account, args, path)
+            item = self.get_item(module, endpoint, account, args, path)
             if item:
                 return jsonify(item.to_dict())
             else:
                 return {}
         else:        
-            items = self.get_items(module, account, query)
+            items = self.get_items(module, endpoint, account, query)
             return jsonify([item.to_dict() for item in items])
 
-    def render_items_html(self, module, args, path=None):
-        return render_template(self.get_template(module, args, path), 
-                               **self.get_template_args(module, args, path))
+    def render_items_html(self, module, endpoint, args, path=None):
+        return render_template(self.get_template(module, endpoint, args, path), 
+                               **self.get_template_args(module, endpoint, args, path))
 
-    def render_item(self, module, args, path=None, content_type='text/html'):
+    def render_item(self, module, endpoint, args, path=None, content_type='text/html'):
         if path and path.endswith('/data'):
             parts = path.split('/')
             id = parts[:1][0]
@@ -55,15 +55,15 @@ class Items(Resource):
             return None
         
         if content_type == 'application/json':
-            return self.render_items_json(module, args, path)
+            return self.render_items_json(module, endpoint, args, path)
         else:
-            return self.render_items_html(module, args, path)
+            return self.render_items_html(module, endpoint, args, path)
         
 
-    def get(self, module, args, path=None, content_type='text/html'):
-        return self.render_item(module, args, path, content_type)
+    def get(self, module, endpoint, args, path=None, content_type='text/html'):
+        return self.render_item(module, endpoint, args, path, content_type)
 
-    def post(self, module, args, path=None, content_type='text/html'):
+    def post(self, module, endpoint, args, path=None, content_type='text/html'):
         attrs = dict()
         for k,v in args.items():
             if k not in set(['name', 'type']):
@@ -77,9 +77,9 @@ class Items(Resource):
         if content_type == 'application/json':
             return jsonify(item.to_dict())
         else:
-            return self.render_item(module, args, path, content_type)
+            return self.render_item(module, endpoint, args, path, content_type)
 
-    def put(self, module, args, path=None, content_type='text/html'):
+    def put(self, module, endpoint, args, path=None, content_type='text/html'):
         params = dict()
         if 'name' in args:
             params['name'] = args['name']
@@ -87,34 +87,31 @@ class Items(Resource):
             params['attributes'] = args['attributes']
         if path:
             module.update_item(path, **params)
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint,args, path, content_type)
 
-    def delete(self, module, args, path=None, content_type='text/html'):
+    def delete(self, module, endpoint, args, path=None, content_type='text/html'):
         module.delete_item(args['id'])
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint, args, path, content_type)
 
-    def message(self, module, args, path=None, content_type='text/html'):
+    def message(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
 
-    def run(self, module, args, path=None, content_type='text/html'):
+    def run(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
 
-    def get_data(self, module, args, path=None, content_type='text/html'):
+    def get_data(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
 
-    def update_data(self, module, args, path=None, content_type='text/html'):
+    def update_data(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
 
-    def delete_data(self, module, args, path=None, content_type='text/html'):
+    def delete_data(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
-
-    def get_endpoint_name(self):
-        return 'items'
 
     def get_items_from_attributes(self, module, types_by_name, account, attributes, key=None):
         return items_from_attributes(types_by_name, account, attributes, key)
 
-    def get_items(self, module, account, query, parent_item=None):
+    def get_items(self, module, endpoint, account, query, parent_item=None):
         if query:
             results = []
             external_types = []
@@ -166,7 +163,7 @@ class Items(Resource):
 
         return []
 
-    def get_item(self, module, account, args, path):
+    def get_item(self, module, endpoint, account, args, path):
         item = module.get_item(path)
         if item and module.can_account_read_item(account, item):
             return item
@@ -211,7 +208,7 @@ class Items(Resource):
     def get_types(self, module, account, query, parent_item=None):
         return None
 
-    def get_template(self, module, args, path):
+    def get_template(self, module, endpoint, args, path):
         return "item.html"
 
     def get_controls(self, module, items, tbn):
@@ -222,13 +219,13 @@ class Items(Resource):
 
         return controls
 
-    def get_template_args(self, module, args, path):
+    def get_template_args(self, module, endpoint, args, path):
         account = module.get_account()
         org = module.get_org()
         apps = module.get_apps(module)
         forms = []
         
-        active_app_name = self.get_endpoint_name()
+        active_app_name = endpoint.item.name
         active_view_name = args.get('view')
         
         if active_view_name and not isinstance(active_view_name, str):
@@ -239,7 +236,7 @@ class Items(Resource):
         if active_subview_name and not isinstance(active_subview_name, str):
             active_subview_name = active_subview_name[0]
 
-        app = next((a for a in apps if a.name.lower() == self.get_endpoint_name()), None)
+        app = next((a for a in apps if a.name.lower() == endpoint.item.name), None)
         
         if apps:
             if active_app_name:
@@ -335,9 +332,9 @@ class Items(Resource):
                 if 'controls' in attrs:
                     items = self.get_controls(module, attrs['controls'], tbn)
             else:
-                items = self.get_items(module, account, query, path_item)
+                items = self.get_items(module, endpoint, account, query, path_item)
 
-        root_path = '/' + self.get_endpoint_name()
+        root_path = '/' + endpoint.item.name
 
         if path_item_id:
             root_path = root_path + '/' + path_item_id
@@ -393,6 +390,6 @@ class Items(Resource):
                 'root_path': root_path,
                 'all_types': all_types,
                 'all_forms': all_forms,
-                'endpoint': self.get_endpoint_name(),
+                'endpoint': endpoint.item.name,
                 'view': active_view,
                 'get_items_from_attributes': lambda attrs, key: self.get_items_from_attributes(module, tbn, account, attrs, key)}

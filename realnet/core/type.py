@@ -7,39 +7,39 @@ import json
 class Resource(ABC):
     
     @abstractmethod
-    def get(self, module, args, path=None, content_type='text/html'):
+    def get(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def post(self, module, args, path=None, content_type='text/html'):
+    def post(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def put(self, module, args, path=None, content_type='text/html'):
+    def put(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def delete(self, module, args, path=None, content_type='text/html'):
+    def delete(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def message(self, module, args, path=None, content_type='text/html'):
+    def message(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def run(self, module, args, path=None, content_type='text/html'):
+    def run(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def get_data(self, module, args, path=None, content_type='text/html'):
+    def get_data(self, module, args, endpoint, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def update_data(self, module, args, path=None, content_type='text/html'):
+    def update_data(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
 
     @abstractmethod
-    def delete_data(self, module, args, path=None, content_type='text/html'):
+    def delete_data(self, module, endpoint, args, path=None, content_type='text/html'):
         pass
     
 class Type:
@@ -255,9 +255,9 @@ class Func:
         self.item = item
         self.callback = callback
 
-    def invoke(self, module, args, path=None, content_type='text/html'):
+    def invoke(self, module, endpoint, args, path=None, content_type='text/html'):
         if self.callback:
-            return self.callback(module, args, path, content_type)
+            return self.callback(module, endpoint, args, path, content_type)
         elif self.item:
             code = self.item.attributes.get('code')
             if not code:
@@ -276,12 +276,12 @@ class Endpoint:
     def __init__(self, item):
         self.item = item
 
-    def invoke(self, module, method, args, path=None, content_type='text/html'):
+    def invoke(self, module, endpoint, method, args, path=None, content_type='text/html'):
         
-        func = module.get_resource_method(module, self.item.attributes['resource'], method.lower())
+        func = module.get_resource_method(module, endpoint, self.item.attributes['resource'], method.lower())
         
         if func:
-            return func.invoke(module, args, path, content_type)
+            return func.invoke(module, endpoint, args, path, content_type)
 
         return None
 

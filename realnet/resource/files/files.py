@@ -5,10 +5,7 @@ from realnet.resource.items.items import Items
 
 class Files(Items):
     
-    def get_endpoint_name(self):
-        return 'files'
-
-    def get(self, module, args, path=None, content_type='text/html'):
+    def get(self, module, endpoint, args, path=None, content_type='text/html'):
         if path == 'upload-url':
             attributes = dict()
             attributes['filename'] = args.get('filename', ['file.tmp'])[0]
@@ -73,9 +70,9 @@ class Files(Items):
             if item:
                 return module.get_data_upload_url(item.id)
 
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint, args, path, content_type)
 
-    def post(self, module, args, path=None, content_type='text/html'):
+    def post(self, module, endpoint, args, path=None, content_type='text/html'):
         if path == 'upload-confirm':
             item_id = args.get('item_id', None)
             filename = args.get('filename', None)
@@ -115,4 +112,4 @@ class Files(Items):
             # module.create_item(**args)
         if 'add' in args:
             del args['add']
-        return self.render_item(module, args, path, content_type)
+        return self.render_item(module, endpoint, args, path, content_type)
