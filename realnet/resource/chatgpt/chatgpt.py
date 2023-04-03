@@ -1,4 +1,6 @@
 import os
+import random
+import string
 import requests
 from dotenv import *
 from flask import Flask, request, jsonify
@@ -35,16 +37,23 @@ class Chatgpt(Items):
         return response.json()["choices"][0]["message"]["content"]
 
     def get_taxonomic_info(self, word):
-        taxonomy_prompt = f"give me a ### delimited four word response where each respective word corresponds to:the closest single word for the type of the term {word}, the Wikimedia link corresponding to it, a list of all the wikipedia attributes for it in ('name': 'value' pairs) embedded in [], a list of any relevant internet links for it based on its Wikipedia page embedded as []."
+        taxonomy_prompt = f"give me a ### delimited 4-tuple response where tuple elements correspond to the following specs in this order: t1. path last end of th corresponding Wikipedia url of the term {word} t2. the Wikipedia link corresponding to the term {word}, t3. list 50 most important attributes described in the wikipedia page text corresponding to term {word} in ('name': 'value') pairs embedded in [], t4. list of any relevant internet links for term {word} based on its Wikipedia page embedded as []. Write the tuple in the format t1###t2###t3###t4)"
         taxonomy_and_link_and_attributes_and_links = self.call_chatgpt_api(taxonomy_prompt)
-        taxonomy, wikimedia_link, attributes, links = taxonomy_and_link_and_attributes_and_links.strip().split('###')
+        answers = taxonomy_and_link_and_attributes_and_links.strip().split('###')
+        attributes = '[]'
+        links = '[]'
+        if len(answers) != 4:
+            print(answers)
+            taxonomy, wikimedia_link, attributes, links = '', '', '[]', '[]'
+        else:
+            taxonomy, wikimedia_link, attributes, links = answers
 
         # Process attributes and links
         attribute_list = []
 
         for string in attributes.strip('[]').split(','):  # remove the square brackets and split the string by comma
-            name = string.strip("' ")  # remove any leading/trailing single quotes and whitespace
-            if ':' in string.strip('{}'):
+            string = string.strip("' (){}")  # remove any leading/trailing single quotes and whitespace
+            if ':' in string:
                 name, value = string.split(':', 1)
                 attribute_list.append({"name": name.strip("' "), "value": value.strip("' ")})
         
@@ -77,6 +86,9 @@ class Chatgpt(Items):
                 for attribute in attributes:
                     param_attributes[attribute['name']] = attribute['value']
 
+                param_attributes['resource'] = 'chatgpt'
+                param_attributes['icon'] = 'square'
+
                 physical_object = {
                     "name": word,
                     "type": taxonomy,
@@ -89,12 +101,16 @@ class Chatgpt(Items):
         # Check if item already exists
         existing_item = module.find_items({'name': item['name']})
         if existing_item:
-            return existing_item
+            return existing_item[0]
         else:
             # Create new item
-            item_type = module.create_type(name=item['type'], base='Type', attributes=item['attributes'])
-            item_instance = module.create_instance(name=item['name'], type=item_type.name)
-            item = module.create_item(name=item['name'], type=item_type.name, instance_id=item_instance.id)
+            item_type = module.get_type_by_name(item['type'])
+            if not item_type:
+                item_type = module.create_type(name=item['type'], base='Type', attributes=item['attributes'])
+
+            random_string = '' #''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))
+            item_instance = module.create_instance(name=item['name'] + random_string, type=item_type.name)
+            item = module.create_item(name=item['name'] + random_string, type=item_type.name, instance_id=item_instance.id)
             return item
     
     def get_items(self, module, endpoint, args, path, account, query, parent_item=None):

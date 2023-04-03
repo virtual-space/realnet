@@ -255,7 +255,7 @@ class Items(Resource):
 
         if path_segments:
             path_item_id = path_segments[0]
-            path_item =  self.get_item(module, account, args, path_item_id)
+            path_item =  self.get_item(module, endpoint, account, args, path_item_id)
             target_item = path_item
         
         if 'item_id' in args:
