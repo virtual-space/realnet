@@ -16,7 +16,7 @@ class Items(Resource):
             else:
                 return {}
         else:        
-            items = self.get_items(module, endpoint, account, query)
+            items = self.get_items(module, endpoint, args, path, account, query)
             return jsonify([item.to_dict() for item in items])
 
     def render_items_html(self, module, endpoint, args, path=None):
@@ -111,7 +111,7 @@ class Items(Resource):
     def get_items_from_attributes(self, module, types_by_name, account, attributes, key=None):
         return items_from_attributes(types_by_name, account, attributes, key)
 
-    def get_items(self, module, endpoint, account, query, parent_item=None):
+    def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         if query:
             results = []
             external_types = []
@@ -332,7 +332,7 @@ class Items(Resource):
                 if 'controls' in attrs:
                     items = self.get_controls(module, attrs['controls'], tbn)
             else:
-                items = self.get_items(module, endpoint, account, query, path_item)
+                items = self.get_items(module, endpoint, args, path, account, query, path_item)
 
         root_path = '/' + endpoint.item.name
 

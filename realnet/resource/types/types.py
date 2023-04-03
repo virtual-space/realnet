@@ -15,7 +15,7 @@ class Types(Items):
         else:
             return True
 
-    def get_items(self, module, endpoint, account, query, parent_item=None):
+    def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         if parent_item and parent_item.instance.type.name != 'Types':
             instances = [i for i in parent_item.instance.type.instances if self.match(i, query)]
             for i in instances:

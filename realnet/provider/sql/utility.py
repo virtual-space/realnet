@@ -226,6 +226,8 @@ def create_item_model(  db,
                                       type_id=item_type.id)
         db.add(item_instance)
         db.commit()
+    else:
+        item_type = item_instance.type
 
     if item_type:
         # attributes = item_attributes | item_type.attributes

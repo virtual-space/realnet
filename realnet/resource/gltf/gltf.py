@@ -8,7 +8,7 @@ class Gltf(Items):
         if content_type == 'application/json' or content_type == '*/*':
             account = module.get_account()
             query = self.get_query(module, args | {'types': ['Item']}, path)
-            items = self.get_items(module, endpoint, account, query)
+            items = self.get_items(module, endpoint, args, path, account, query)
             return build_gltf_from_items(module, items).to_json()
         else:
             return self.render_items_html(module, endpoint, args, path)

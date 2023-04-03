@@ -248,6 +248,40 @@
             ]
         },
         {
+            "name": "ChatGPT",
+            "base": "App",
+            "attributes": {
+                "icon": "smart_toy",
+                "types": ["Item"],
+                "query": {"types": ["Item"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Items",
+                        "type": "ListView"
+                    }
+                ]
+            },
+            "instances": [
+                {
+                    "name": "chatgpt",
+                    "type": "Resource",
+                    "attributes": {
+                        "module_path": "realnet.resource.chatgpt.chatgpt",
+                        "module_class": "Chatgpt",
+                        "module": "true"
+                    }
+                },
+                {
+                    "name": "chatgpt",
+                    "type": "Endpoint",
+                    "attributes": {
+                        "path": "chatgpt",
+                        "resource": "chatgpt"
+                    }
+                }
+            ]
+        },
+        {
             "name": "Resources",
             "base": "App",
             "attributes": {
@@ -598,6 +632,10 @@
         }
     ],
     "items": [
+        {
+            "name": "ChatGPT",
+            "type": "ChatGPT"
+        },
         {
             "name": "ARVR",
             "type": "ARVR"

@@ -8,7 +8,7 @@ class Roles(Items):
         instance = Instance(role.id, role_type, role.name)
         return Item(role.org.id, role.org.id, instance, role.id, role.name, dict(), role.apps)
 
-    def get_items(self, module, endpoint, account, query, parent_item=None):
+    def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         tbn = {t.name:t for t in module.get_types()}
         return [self.item_from_role(r, tbn['Role']) for r in module.get_roles(module)]
 
