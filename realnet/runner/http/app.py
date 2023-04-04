@@ -2,6 +2,7 @@ from flask import Flask, Response, redirect, render_template, render_template_st
 from flask_cors import CORS
 from flask_bootstrap import Bootstrap
 
+import json
 import jinja2
 
 import logging
@@ -9,6 +10,7 @@ import logging
 from realnet.core.config import Config
 from .auth import config_oauth
 from .router import router_bp
+
 
 def create_app(contextProvider):
     logging.basicConfig(level=logging.DEBUG)
@@ -28,6 +30,8 @@ def create_app(contextProvider):
         app.jinja_loader,
         jinja2.PackageLoader('realnet') # in the same folder will search the 'templates' folder
     ])
+
+    app.jinja_env.filters['from_json'] = json.dumps
     
     bootstrap = Bootstrap(app)
 

@@ -116,47 +116,52 @@ class Items(Resource):
             results = []
             external_types = []
             internal_types = []
+            types = []
+
             if 'types' in query:
-                tbn = {t.name: t for t in module.get_types()}
-                if isinstance(query['types'], str):
-                    type = tbn.get(query['types'],None)
+                types = query['types']
+
+
+            tbn = {t.name: t for t in module.get_types()}
+            if isinstance(types, str):
+                type = tbn.get(types,None)
+                if type:
+                    if type.attributes and 'resource' in type.attributes:
+                        external_types.append(type)
+                    else:
+                        internal_types.append(type)
+            else:
+                for typename in types:
+                    type = tbn.get(typename, None)
                     if type:
-                        if type.attributes and 'resource' in type.attributes:
+                        if type.attributes and 'resource' in type.attributes and type.attributes['resource'] != 'items':
                             external_types.append(type)
                         else:
                             internal_types.append(type)
-                else:
-                    for typename in query['types']:
-                        type = tbn.get(typename, None)
-                        if type:
-                            if type.attributes and 'resource' in type.attributes and type.attributes['resource'] != 'items':
-                                external_types.append(type)
-                            else:
-                                internal_types.append(type)
-                if external_types:
-                    external_query = dict()
-                    for k,v in query.items():
-                        if k != 'types' and k != 'type_names':
-                            external_query[k] = v
+            if external_types:
+                external_query = dict()
+                for k,v in query.items():
+                    if k != 'types' and k != 'type_names':
+                        external_query[k] = v
 
-                    if parent_item and 'children' in external_query and external_query['children'] == 'true':
-                        external_query['parent_id'] = parent_item.id
-                    
-                    for external_type in external_types:
-                        func = module.get_resource_method(module, external_type.attributes['resource'], 'get_items')
-                        if func:
-                            results = results + func.invoke(module, account, external_query, parent_item)
-                    
-                    if internal_types:
-                        external_query['types'] = [t.name for t in internal_types]
-                        if parent_item and 'children' in query and query['children'] == 'true':
-                            external_query['parent_id'] = parent_item.id
-                        results = results +  [i for i in module.find_items(external_query)]
+                if parent_item and 'children' in external_query and external_query['children'] == 'true':
+                    external_query['parent_id'] = parent_item.id
+                
+                for external_type in external_types:
+                    func = module.get_resource_method(module, external_type.attributes['resource'], 'get_items')
+                    if func:
+                        results = results + func.invoke(module, account, external_query, parent_item)
                 
                 if internal_types:
+                    external_query['types'] = [t.name for t in internal_types]
                     if parent_item and 'children' in query and query['children'] == 'true':
-                        query['parent_id'] = parent_item.id
-                    results = results + [i for i in module.find_items(query)]
+                        external_query['parent_id'] = parent_item.id
+                    results = results +  [i for i in module.find_items(external_query)]
+            
+            if internal_types:
+                if parent_item and 'children' in query and query['children'] == 'true':
+                    query['parent_id'] = parent_item.id
+                results = results + [i for i in module.find_items(query)]
             
             
             return results
@@ -178,6 +183,12 @@ class Items(Resource):
                 query['types'] = [args['types']]
             else:
                 query['types'] = args['types']
+
+        if 'types[]' in args:
+            if isinstance(args['types[]'], str):
+                query['types'] = [args['types[]']]
+            else:
+                query['types'] = args['types[]']
 
         if 'parent_id' in args:
             if isinstance(args['parent_id'], str):

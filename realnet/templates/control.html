@@ -103,6 +103,32 @@
             {% endfor %}    
         {% endif %}
     </select>
+{% elif control_type == 'ItemSelectCtrl' %}
+    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+    <select class="form-control item-select-ctrl" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" data-query="{{control.attributes['query'] | from_json}}" data-path="/items">
+    </select>
+    <script>
+        $(document).ready(function() {
+            $('.item-select-ctrl').each(function() {
+                // Save a reference to the current element
+                var $element = $(this);
+                // Make an AJAX call to fetch data and populate the dropdown
+                $.getJSON({
+                    url: $element.data('path'), // Replace this with your API endpoint
+                    data: $element.data('query'),
+                    success: function(data) {
+                        // Loop through the data and create dropdown options
+                        $.each(data, function(index, item) {
+                            $element.append($('<option></option>').attr('value', item.id).text(item.name));
+                        });
+                    },
+                    error: function() {
+                        alert('Error fetching data');
+                    }
+                });
+            });
+        });
+    </script>
 {% elif control_type == 'ButtonCtrl' %}
     {% if control.attributes['is_cancel_button'] == 'true' %}
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

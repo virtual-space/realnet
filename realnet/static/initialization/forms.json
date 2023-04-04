@@ -933,7 +933,60 @@
             }
         },
         {
-            "name": "RoleAppForm",
+            "name": "RoleDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "Role",
+                "path": "roles",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "RoleAppCreateForm",
             "base": "CreateForm",
             "attributes": {
                 "type": "RoleApp",
@@ -948,7 +1001,7 @@
                         }
                     },
                     {
-                        "name": "AppId",
+                        "name": "App",
                         "type": "ItemSelectCtrl",
                         "attributes": {
                             "target": "app_id",
@@ -969,6 +1022,66 @@
                     },
                     {
                         "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "RoleAppDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "RoleApp",
+                "path": "roles",
+                "controls": [
+                    {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
                         "type": "ButtonCtrl",
                         "attributes": {
                             "default": "true",
@@ -2226,8 +2339,16 @@
             "type": "RoleCreateForm"
         },
         {
-            "name": "RoleAppForm",
-            "type": "RoleAppForm"
+            "name": "RoleDeleteForm",
+            "type": "RoleDeleteForm"
+        },
+        {
+            "name": "RoleAppCreateForm",
+            "type": "RoleAppCreateForm"
+        },
+        {
+            "name": "RoleAppDeleteForm",
+            "type": "RoleAppDeleteForm"
         },
         {
             "name": "SettingsForm",

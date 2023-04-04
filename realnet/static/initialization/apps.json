@@ -633,16 +633,16 @@
     ],
     "items": [
         {
+            "name": "Items",
+            "type": "Items"
+        },
+        {
             "name": "ChatGPT",
             "type": "ChatGPT"
         },
         {
             "name": "ARVR",
             "type": "ARVR"
-        },
-        {
-            "name": "Items",
-            "type": "Items"
         },
         {
             "name": "Apps",

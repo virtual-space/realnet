@@ -851,6 +851,40 @@
             }
         },
         {
+            "name": "RoleApp",
+            "base": "Item",
+            "attributes": {
+                "icon": "switch_account",
+                "resource": "roles",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleAppCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleAppCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleAppDeleteForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "Role",
             "base": "Item",
             "attributes": {
@@ -859,7 +893,8 @@
                 "views": [
                     {
                         "name": "Apps",
-                        "type": "ListView"
+                        "type": "ListView",
+                        "query": {"types": ["RoleApp"], "children": "true"}
                     }
                 ],
                 "menu": [
@@ -868,7 +903,33 @@
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "add",
-                            "form": "RoleAppForm"
+                            "form": "RoleAppCreateForm"
+                        }
+                    }
+                ],
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "roles",
+                            "form": "RoleDeleteForm"
                         }
                     }
                 ]
