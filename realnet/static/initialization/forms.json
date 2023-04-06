@@ -895,6 +895,97 @@
             }
         },
         {
+            "name": "GroupCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Group",
+                "path": "groups",
+                "title_prefix": "Create Group", 
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "GroupDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "Group",
+                "path": "groups",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
             "name": "RoleCreateForm",
             "base": "CreateForm",
             "attributes": {
@@ -1048,6 +1139,484 @@
                             "target": "parent_id"
                         }
                     },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Account",
+                "path": "accounts",
+                "title_prefix": "Create Account", 
+                "controls": [
+                    {
+                        "name": "Username",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "username"
+                        }
+                    },
+                    {
+                        "name": "Email",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "email"
+                        }
+                    },
+                    {
+                        "name": "Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Repeat Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "repeat_password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Account Type",
+                        "type": "SelectCtrl",
+                        "attributes": {
+                            "target": "account_type",
+                            "options": ["person", "thing"]
+                        }
+                    },
+                    {
+                        "name": "Org Role",
+                        "type": "SelectCtrl",
+                        "attributes": {
+                            "target": "org_role",
+                            "options": ["superuser", "admin", "user", "visitor"]
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "Account",
+                "path": "accounts",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountRoleCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "AccountRole",
+                "path": "accounts",
+                "title_prefix": "Add Account Role", 
+                "controls": [
+                    {
+                        "name": "AccountId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Role",
+                        "type": "ItemSelectCtrl",
+                        "attributes": {
+                            "target": "role_id",
+                            "query": {
+                                "types": ["Role"],
+                                "any_level": "true"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountRoleDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "AccountRole",
+                "path": "accounts",
+                "controls": [
+                    {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountGroupCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "AccountGroup",
+                "path": "accounts",
+                "title_prefix": "Add Account Group", 
+                "controls": [
+                    {
+                        "name": "AccountId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Group",
+                        "type": "ItemSelectCtrl",
+                        "attributes": {
+                            "target": "group_id",
+                            "query": {
+                                "types": ["Group"],
+                                "any_level": "true"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountGroupDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "AccountRole",
+                "path": "accounts",
+                "controls": [
+                    {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AuthCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Account",
+                "path": "accounts",
+                "title_prefix": "Create Account", 
+                "controls": [
+                    {
+                        "name": "Username",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "username"
+                        }
+                    },
+                    {
+                        "name": "Email",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "email"
+                        }
+                    },
+                    {
+                        "name": "Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Repeat Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "repeat_password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Account Type",
+                        "type": "SelectCtrl",
+                        "attributes": {
+                            "target": "account_type",
+                            "options": ["person", "thing"]
+                        }
+                    },
+                    {
+                        "name": "Org Role",
+                        "type": "SelectCtrl",
+                        "attributes": {
+                            "target": "org_role",
+                            "options": ["superuser", "admin", "user", "visitor"]
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AuthDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "Account",
+                "path": "accounts",
+                "controls": [
                     {
                         "name": "Id",
                         "type": "HiddenCtrl",
@@ -2341,6 +2910,54 @@
         {
             "name": "RoleDeleteForm",
             "type": "RoleDeleteForm"
+        },
+        {
+            "name": "GroupCreateForm",
+            "type": "GroupCreateForm"
+        },
+        {
+            "name": "GroupDeleteForm",
+            "type": "GroupDeleteForm"
+        },
+        {
+            "name": "AuthCreateForm",
+            "type": "AuthCreateForm"
+        },
+        {
+            "name": "AuthDeleteForm",
+            "type": "AuthDeleteForm"
+        },
+        {
+            "name": "AccountGroupCreateForm",
+            "type": "AccountGroupCreateForm"
+        },
+        {
+            "name": "AccountGroupDeleteForm",
+            "type": "AccountGroupDeleteForm"
+        },
+        {
+            "name": "AccountCreateForm",
+            "type": "AccountCreateForm"
+        },
+        {
+            "name": "AccountDeleteForm",
+            "type": "AccountDeleteForm"
+        },
+        {
+            "name": "AccountRoleCreateForm",
+            "type": "AccountRoleCreateForm"
+        },
+        {
+            "name": "AccountRoleDeleteForm",
+            "type": "AccountRoleDeleteForm"
+        },
+        {
+            "name": "AccountGroupCreateForm",
+            "type": "AccountGroupCreateForm"
+        },
+        {
+            "name": "AccountGroupDeleteForm",
+            "type": "AccountGroupDeleteForm"
         },
         {
             "name": "RoleAppCreateForm",

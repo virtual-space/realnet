@@ -1,8 +1,14 @@
+import uuid
+
+from sqlalchemy.sql import func, or_
+
+from werkzeug.security import gen_salt
+
 from realnet.core.provider import OrgProvider, GroupProvider, AclProvider,AccountProvider, AppProvider
-from realnet.core.type import Account, Authenticator, Org
+from realnet.core.type import Account, Authenticator, Org, Group, Client
 from realnet.core.acl import AclType
 from .utility import get_types_by_name, item_model_to_item, get_derived_types
-from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, AccountGroup as AccountGroupModel, session as db
+from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, Group as GroupModel, AccountGroup as AccountGroupModel, Authenticator as AuthenticatorModel, Client as ClientModel, session as db, create_client
 
 class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, AppProvider):
     
@@ -14,7 +20,94 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
         return []
 
     def get_org_groups(self, org_id):
-        return []
+        return [Group(acc.id, acc.name, Org(acc.org.id, acc.org.name)) for acc in db.query(GroupModel).filter(GroupModel.org_id == self.org_id).all()]
+    
+    def create_org_group(self, org_id, name):
+        group = GroupModel(  id=str( uuid.uuid4()), 
+                               name=name, 
+                               org_id=org_id)
+        db.add(group)
+        db.commit()
+        return Group(group.id, group.name, Org(group.org.id, group.org.name))
+
+    def remove_org_group(self, org_id, name):
+        group = db.query(GroupModel).filter(GroupModel.org_id == org_id, or_(GroupModel.name == name, GroupModel.id == name)).first()
+        if group:
+            db.delete(group)
+            db.commit()
+
+    def create_org_auth(self, 
+                        org_id, 
+                        name,
+                        api_base_url,
+                        request_token_url,
+                        access_token_url,
+                        authorize_url,
+                        client_kwargs,
+                        client_id,
+                        client_secret,
+                        userinfo_endpoint,
+                        server_metadata_url,
+                        redirect_uri,
+                        scope):
+        auth = AuthenticatorModel(  id=str( uuid.uuid4()),
+                                    name=name,
+                                    api_base_url=api_base_url,
+                                    request_token_url=request_token_url,
+                                    access_token_url=access_token_url,
+                                    authorize_url=authorize_url,
+                                    client_kwargs=client_kwargs,
+                                    client_id=client_id,
+                                    client_secret=client_secret,
+                                    userinfo_endpoint=userinfo_endpoint,
+                                    server_metadata_url=server_metadata_url,
+                                    redirect_uri=redirect_uri,
+                                    scope=scope,
+                                    org_id=org_id)
+        db.add(auth)
+        db.commit()
+
+        return Authenticator(auth.id, auth.api_base_url)
+
+    def remove_org_auth(self, org_id, name):
+        auth = db.query(AuthenticatorModel).filter(AuthenticatorModel.org_id == org_id, or_(AuthenticatorModel.name == name, AuthenticatorModel.id == name)).first()
+        if auth:
+            db.delete(auth)
+            db.commit()
+
+    def create_org_client(self, org_id, name, uri, grant_types, redirect_uris, response_types, scope, auth_method):
+        client_id = gen_salt(24)
+        client = create_client(name=name,
+                            client_id=client_id,
+                            uri=uri,
+                            grant_types=grant_types,
+                            redirect_uris=redirect_uris,
+                            response_types=response_types,
+                            scope=scope,
+                            auth_method=auth_method,
+                            org_id=org_id)
+        return Client(client_id, 
+                client.name, 
+                client.org, 
+                {   
+                    'uri': client.uri, 
+                    'grant_types': client.grant_types, 
+                    'redirect_uris': client.redirect_uris, 
+                    'response_types': client.response_types, 
+                    'scope': client.scope, 
+                    'auth_method': client.auth_method
+                }
+            )
+    
+
+    def remove_org_client(self, org_id, name):
+        client = db.query(ClientModel).filter(ClientModel.org_id == org_id, or_(ClientModel.name == name, ClientModel.id == name)).first()
+        if client:
+            db.delete(client)
+            db.commit()
+    
+    def get_org_accounts(self, org_id):
+        return [Account(acc.id, acc.username, Org(acc.org.id, acc.org.name), acc.org_role_type) for acc in db.query(AccountModel).filter(AccountModel.org_id == self.org_id).all()]
 
     # acl provider
 

@@ -847,7 +847,137 @@
             "base": "Item",
             "attributes": {
                 "icon": "person",
-                "resource": "accounts"
+                "resource": "accounts",
+                "views": [
+                    {
+                        "name": "Roles",
+                        "type": "ListView",
+                        "attributes": {
+                            "query": {"types": ["AccountRole"], "children": "true"},
+                            "menu": [
+                                {
+                                    "name": "Add",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add",
+                                        "form": "AccountRoleCreateForm"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Groups",
+                        "type": "ListView",
+                        "attributes": {
+                            "query": {"types": ["AccountGroup"], "children": "true"},
+                            "menu": [
+                                {
+                                    "name": "Add",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add",
+                                        "form": "AccountGroupCreateForm"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountDeleteForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountGroup",
+            "base": "Item",
+            "attributes": {
+                "icon": "supervised_user_circle",
+                "resource": "accounts",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountGroupCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountGroupCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountGroupDeleteForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "AccountRole",
+            "base": "Item",
+            "attributes": {
+                "icon": "switch_account",
+                "resource": "accounts",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountRoleCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountRoleCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "accounts",
+                            "form": "AccountRoleDeleteForm"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -940,7 +1070,33 @@
             "base": "Item",
             "attributes": {
                 "icon": "group",
-                "resource": "groups"
+                "resource": "groups",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "groups",
+                            "form": "GroupCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "groups",
+                            "form": "GroupCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "groups",
+                            "form": "GroupDeleteForm"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -955,7 +1111,33 @@
             "base": "Item",
             "attributes": {
                 "icon": "lock_open",
-                "resource": "auths"
+                "resource": "auths",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "auths",
+                            "form": "AuthCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "auths",
+                            "form": "AuthCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "auths",
+                            "form": "AuthDeleteForm"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -984,13 +1166,7 @@
             "name": "Endpoint",
             "base": "Item",
             "attributes": {
-                "icon": "functions",
-                "views": [
-                    {
-                        "name": "Attributes",
-                        "type": "AttributesView"
-                    }
-                ]
+                "icon": "functions"
             }
         },
         {

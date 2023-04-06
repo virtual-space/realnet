@@ -89,7 +89,18 @@ class SqlRolesProvider(RolesProvider):
             db.commit()
 
     def remove_account_role(self, account_id, role_id):
-        pass
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        account_role = db.query(AccountRoleModel).filter(AccountRoleModel.org_id == self.org_id, AccountRoleModel.account_id == account_id, AccountRoleModel.role_id == role_id).first()
+        if account and account_role:
+            db.delete(account_role)
+            db.commit()
 
     def get_account_roles(self, account_id):
-        pass
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        if account:
+            return [Role(account_role.role.id, 
+                        account_role.role.name, 
+                        Org(account_role.role.org.id, account_role.role.org.name), 
+                        account_role.role.apps) for account_role in account.roles]
+        else:
+            return []

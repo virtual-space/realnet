@@ -16,7 +16,7 @@ class Items(Resource):
             else:
                 return {}
         else:        
-            items = self.get_items(module, endpoint, args, path, account, query)
+            items = self.get_items(module, endpoint, args, path, account, query, None)
             return jsonify([item.to_dict() for item in items])
 
     def render_items_html(self, module, endpoint, args, path=None):
@@ -111,6 +111,12 @@ class Items(Resource):
     def get_items_from_attributes(self, module, types_by_name, account, attributes, key=None):
         return items_from_attributes(types_by_name, account, attributes, key)
 
+    def item_from_json(self, module, item_json, tbn):
+        account = module.get_account()
+        type = tbn.get(item_json['type'], 'Item')
+        instance = Instance(type.id, type, item_json['name'], dict())
+        return Item(account.id, account.org.id, instance, item_json.get('id', str(uuid.uuid4())), item_json.get('name', None), item_json.get('attributes', None))
+
     def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         if query:
             results = []
@@ -148,9 +154,11 @@ class Items(Resource):
                     external_query['parent_id'] = parent_item.id
                 
                 for external_type in external_types:
-                    func = module.get_resource_method(module, external_type.attributes['resource'], 'get_items')
+                    func = module.get_resource_method(module, endpoint, external_type.attributes['resource'], 'get')
                     if func:
-                        results = results + func.invoke(module, account, external_query, parent_item)
+                        external_resources = func.invoke(module, endpoint, args, path, 'application/json')
+                        external_items = [self.item_from_json(module, er, tbn) for er in external_resources.json]
+                        results = results + [er for er in external_items]
                 
                 if internal_types:
                     external_query['types'] = [t.name for t in internal_types]

@@ -83,8 +83,11 @@ class StandardContextProvider(ContextProvider):
     def get_account_by_username(self, org_id, username):
         return SqlOrgsProvider().get_account_by_username(org_id, username)
 
-    def create_account(self, org_id, type, username, email, org_role_type, role_type):
-        return SqlOrgsProvider().create_account(org_id, type, username, email, org_role_type, role_type)
+    def create_account(self, org_id, type, username, email, password, org_role_type):
+        return SqlOrgsProvider().create_account(org_id, type, username, email, password, org_role_type)
+    
+    def delete_account(self, org_id, account_id):
+        return SqlOrgsProvider().delete_account(org_id, account_id)
 
 class Start(ProtoCmd):
     

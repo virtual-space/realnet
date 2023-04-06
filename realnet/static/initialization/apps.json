@@ -362,7 +362,17 @@
             "attributes": {
                 "icon": "person",
                 "types": ["Account"],
-                "query": {"types": ["Account"]}
+                "query": {"types": ["Account"]},
+                "menu": [
+                    {
+                        "name": "Add Account",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "AccountCreateForm"
+                        }
+                    }
+                ]
             },
             "instances": [
                 {
@@ -428,7 +438,17 @@
             "attributes": {
                 "icon": "group",
                 "types": ["Group"],
-                "query": {"types": ["Group"]}
+                "query": {"types": ["Group"]},
+                "menu": [
+                    {
+                        "name": "Add Group",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "GroupCreateForm"
+                        }
+                    }
+                ]
             },
             "instances": [
                 {
@@ -456,7 +476,17 @@
             "attributes": {
                 "icon": "lock_open",
                 "types": ["Auth"],
-                "query": {"types": ["Auth"]}
+                "query": {"types": ["Auth"]},
+                "menu": [
+                    {
+                        "name": "Add Auth",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "AuthCreateForm"
+                        }
+                    }
+                ]
             },
             "instances": [
                 {

@@ -303,8 +303,10 @@ class Error:
 
 class Group:
     
-    def __init__(self):
-        pass
+    def __init__(self, id, name, org):
+        self.id = id
+        self.name = name
+        self.org = org
 
 class Org:
     

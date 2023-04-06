@@ -90,7 +90,7 @@ class SqlOrgsProvider(OrgsProvider):
         return None
 
     def create_account(self, org_id, type, username, email, password, org_role_type):
-        account = Account(  id=str( uuid.uuid4()), 
+        account = AccountModel(  id=str( uuid.uuid4()), 
                                     type=AccountType[type.lower()],
                                     username=username, 
                                     email=email, 
@@ -100,3 +100,9 @@ class SqlOrgsProvider(OrgsProvider):
         db.add(account)
         db.commit()
         return account
+    
+    def delete_account(self, org_id, account_id):
+        account = db.query(AccountModel).filter(AccountModel.org_id == org_id, AccountModel.id == account_id).first()
+        if account:
+            db.delete(account)
+            db.commit()

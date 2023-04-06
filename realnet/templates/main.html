@@ -202,6 +202,28 @@
         
       }); 
     </script>
+    <script>
+      $(document).ready(function() {
+          $('.item-select-ctrl').each(function() {
+              // Save a reference to the current element
+              var $element = $(this);
+              // Make an AJAX call to fetch data and populate the dropdown
+              $.getJSON({
+                  url: $element.data('path'), // Replace this with your API endpoint
+                  data: $element.data('query'),
+                  success: function(data) {
+                      // Loop through the data and create dropdown options
+                      $.each(data, function(index, item) {
+                          $element.append($('<option></option>').attr('value', item.id).text(item.name));
+                      });
+                  },
+                  error: function() {
+                      alert('Error fetching data');
+                  }
+              });
+          });
+      });
+  </script>
     {% endif %}
 </head>
 <body>  
