@@ -183,12 +183,62 @@ class OrgProvider(ABC):
     def get_org_groups(self, org_id):
         pass
 
+    @abstractmethod
+    def get_org_accounts(self, org_id):
+        pass
+
+    @abstractmethod
+    def create_org_group(self, org_id, name):
+        pass
+
+    @abstractmethod
+    def remove_org_group(self, org_id, name):
+        pass
+
+    @abstractmethod
+    def create_org_auth(self, 
+                        org_id, 
+                        name,
+                        api_base_url,
+                        request_token_url,
+                        access_token_url,
+                        authorize_url,
+                        client_kwargs,
+                        client_id,
+                        client_secret,
+                        userinfo_endpoint,
+                        server_metadata_url,
+                        redirect_uri,
+                        scope):
+        pass
+
+    @abstractmethod
+    def remove_org_auth(self, org_id, name):
+        pass
+
+    @abstractmethod
+    def create_org_client(self, 
+                          org_id, 
+                          name, 
+                          uri, 
+                          grant_types, 
+                          redirect_uris, 
+                          response_types, 
+                          scope, 
+                          auth_method):
+        pass
+
+    @abstractmethod
+    def remove_org_client(self, org_id, name):
+        pass
+
 
 class GroupProvider(ABC):
     
     @abstractmethod
     def get_groups(self):
         pass
+    
 
 class AccountProvider(ABC):
     
@@ -435,7 +485,11 @@ class OrgsProvider(ABC):
         pass
 
     @abstractmethod
-    def create_account(self, org_id, type, username, email, org_role_type, role_type):
+    def create_account(self, org_id, type, username, email, password, org_role_type):
+        pass
+
+    @abstractmethod
+    def delete_account(self, org_id, account_id):
         pass
 
 class InitializationProvider(ABC):    
@@ -605,6 +659,49 @@ class Context(Module):
 
     def get_org_groups(self, org_id):
         return self.orgs.get_org_groups(org_id)
+    
+    def create_org_group(self, org_id, name):
+        return self.orgs.create_org_group(org_id, name)
+
+    def remove_org_group(self, org_id, name):
+        return self.orgs.remove_org_group(org_id, name)
+    
+    def create_org_auth(self, 
+                        org_id, 
+                        name,
+                        api_base_url,
+                        request_token_url,
+                        access_token_url,
+                        authorize_url,
+                        client_kwargs,
+                        client_id,
+                        client_secret,
+                        userinfo_endpoint,
+                        server_metadata_url,
+                        redirect_uri,
+                        scope):
+        return self.
+
+    def remove_org_auth(self, org_id, name):
+        pass
+
+    def create_org_client(self, 
+                          org_id, 
+                          name, 
+                          uri, 
+                          grant_types, 
+                          redirect_uris, 
+                          response_types, 
+                          scope, 
+                          auth_method):
+        pass
+
+    def remove_org_client(self, org_id, name):
+        pass
+
+    
+    def get_org_accounts(self, org_id):
+        return self.orgs.get_org_accounts(org_id)
 
     def get_groups(self):
         return self.groups.get_groups()
