@@ -680,7 +680,7 @@ class Context(Module):
                         server_metadata_url,
                         redirect_uri,
                         scope):
-        return self.
+        pass
 
     def remove_org_auth(self, org_id, name):
         pass
