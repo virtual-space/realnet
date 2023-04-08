@@ -8,7 +8,7 @@ class Auths(Items):
 
     def item_from_auth(self, auth, auth_type):
         instance = Instance(auth.id, auth_type, auth.name, {"url":auth.url})
-        return Item(auth.org.id, auth.org.id, instance, auth.id, auth.name, dict(), [])
+        return Item(auth.id, auth.org_id, instance, auth.id, auth.name, dict(), [])
     
     def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         tbn = {t.name:t for t in module.get_types()}
@@ -21,20 +21,9 @@ class Auths(Items):
         account = module.get_account()
         if account.is_superuser() or account.is_admin():
             if 'parent_id' in args and 'account_id' in args:
-                app_id = args['app_id']
-                role_id = args['parent_id']
-                module.add_role_app(role_id, app_id)
-
-                return redirect('/groups/{}'.format(role_id))
+                pass
             else:
                 request = dict()
-                if 'id' in args:
-                    existing = module.get_org_authenticators()
-                    if existing:
-                        request = existing
-                
-                if not request:
-                    request['id'] = str(uuid.uuid4())
                 
                 request['name'] = args.get('name')
                 request['api_base_url'] = args.get('api_base_url')

@@ -43,7 +43,7 @@ class SqlOrgsProvider(OrgsProvider):
             # is there a public org?
             org = db.query(OrgModel).filter(OrgModel.public == True).first()
         if org:
-            return [Authenticator(a.name,a.get_url()) for a in db.query(AuthenticatorModel).filter(AuthenticatorModel.org_id == org.id).all()]
+            return [Authenticator(a.id, a.name, a.org_id, a.get_url()) for a in db.query(AuthenticatorModel).filter(AuthenticatorModel.org_id == org.id).all()]
         return []
 
     def get_org_clients(self, org_id):

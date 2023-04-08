@@ -1145,7 +1145,33 @@
             "base": "Item",
             "attributes": {
                 "icon": "safety_check",
-                "resource": "clients"
+                "resource": "clients",
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "clients",
+                            "form": "ClientCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "clients",
+                            "form": "ClientCreateForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "clients",
+                            "form": "ClientDeleteForm"
+                        }
+                    }
+                ]
             }
         },
         {

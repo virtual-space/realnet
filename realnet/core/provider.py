@@ -208,7 +208,7 @@ class OrgProvider(ABC):
                         client_secret,
                         userinfo_endpoint,
                         server_metadata_url,
-                        redirect_uri,
+                        redirect_url,
                         scope):
         pass
 
@@ -678,12 +678,24 @@ class Context(Module):
                         client_secret,
                         userinfo_endpoint,
                         server_metadata_url,
-                        redirect_uri,
+                        redirect_url,
                         scope):
-        pass
+        return self.orgs.create_org_auth(org_id,
+                                            name,
+                                            api_base_url,
+                                            request_token_url,
+                                            access_token_url,
+                                            authorize_url,
+                                            client_kwargs,
+                                            client_id,
+                                            client_secret,
+                                            userinfo_endpoint,
+                                            server_metadata_url,
+                                            redirect_url,
+                                            scope)
 
     def remove_org_auth(self, org_id, name):
-        pass
+        return self.orgs.remove_org_auth(org_id, name)
 
     def create_org_client(self, 
                           org_id, 
@@ -694,10 +706,17 @@ class Context(Module):
                           response_types, 
                           scope, 
                           auth_method):
-        pass
+        return self.orgs.create_org_client(org_id,
+                                            name,
+                                            uri,
+                                            grant_types,
+                                            redirect_uris,
+                                            response_types,
+                                            scope,
+                                            auth_method)
 
     def remove_org_client(self, org_id, name):
-        pass
+        return self.orgs.remove_org_client(org_id, name)
 
     
     def get_org_accounts(self, org_id):

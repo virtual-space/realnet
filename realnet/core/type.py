@@ -245,8 +245,10 @@ class Data:
 
 class Authenticator:
     
-    def __init__(self, name, url):
+    def __init__(self, id, name, org_id, url):
+        self.id = id
         self.name = name
+        self.org_id = org_id
         self.url = url
 
 class Func:

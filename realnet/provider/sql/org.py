@@ -48,7 +48,7 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
                         client_secret,
                         userinfo_endpoint,
                         server_metadata_url,
-                        redirect_uri,
+                        redirect_url,
                         scope):
         auth = AuthenticatorModel(  id=str( uuid.uuid4()),
                                     name=name,
@@ -61,13 +61,13 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
                                     client_secret=client_secret,
                                     userinfo_endpoint=userinfo_endpoint,
                                     server_metadata_url=server_metadata_url,
-                                    redirect_uri=redirect_uri,
+                                    redirect_url=redirect_url,
                                     scope=scope,
                                     org_id=org_id)
         db.add(auth)
         db.commit()
 
-        return Authenticator(auth.id, auth.api_base_url)
+        return Authenticator(auth.id, auth.name, auth.org_id, auth.api_base_url)
 
     def remove_org_auth(self, org_id, name):
         auth = db.query(AuthenticatorModel).filter(AuthenticatorModel.org_id == org_id, or_(AuthenticatorModel.name == name, AuthenticatorModel.id == name)).first()
@@ -90,12 +90,12 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
                 client.name, 
                 client.org, 
                 {   
-                    'uri': client.uri, 
+                    'uri': client.client_uri, 
                     'grant_types': client.grant_types, 
                     'redirect_uris': client.redirect_uris, 
                     'response_types': client.response_types, 
                     'scope': client.scope, 
-                    'auth_method': client.auth_method
+                    'auth_method': auth_method
                 }
             )
     

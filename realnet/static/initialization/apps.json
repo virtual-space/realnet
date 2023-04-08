@@ -542,7 +542,17 @@
             "attributes": {
                 "icon": "safety_check",
                 "types": ["Client"],
-                "query": {"types": ["Client"]}
+                "query": {"types": ["Client"]},
+                "menu": [
+                    {
+                        "name": "Add Client",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ClientCreateForm"
+                        }
+                    }
+                ]
             },
             "instances": [
                 {

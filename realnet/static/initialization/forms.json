@@ -1537,54 +1537,92 @@
             "name": "AuthCreateForm",
             "base": "CreateForm",
             "attributes": {
-                "type": "Account",
-                "path": "accounts",
-                "title_prefix": "Create Account", 
+                "type": "Auth",
+                "path": "auths",
+                "title_prefix": "Create Auth", 
                 "controls": [
                     {
-                        "name": "Username",
+                        "name": "Name",
                         "type": "EditCtrl",
                         "attributes": {
-                            "target": "username"
+                            "target": "name"
                         }
                     },
                     {
-                        "name": "Email",
+                        "name": "API base url",
                         "type": "EditCtrl",
                         "attributes": {
-                            "target": "email"
+                            "target": "api_base_url"
                         }
                     },
                     {
-                        "name": "Password",
+                        "name": "Request token url",
                         "type": "EditCtrl",
                         "attributes": {
-                            "target": "password",
-                            "password": "true"
+                            "target": "request_token_url"
                         }
                     },
                     {
-                        "name": "Repeat Password",
+                        "name": "Access token url",
                         "type": "EditCtrl",
                         "attributes": {
-                            "target": "repeat_password",
-                            "password": "true"
+                            "target": "access_token_url"
                         }
                     },
                     {
-                        "name": "Account Type",
-                        "type": "SelectCtrl",
+                        "name": "Authorize url",
+                        "type": "EditCtrl",
                         "attributes": {
-                            "target": "account_type",
-                            "options": ["person", "thing"]
+                            "target": "authorize_url"
                         }
                     },
                     {
-                        "name": "Org Role",
-                        "type": "SelectCtrl",
+                        "name": "Client kwargs",
+                        "type": "EditCtrl",
                         "attributes": {
-                            "target": "org_role",
-                            "options": ["superuser", "admin", "user", "visitor"]
+                            "target": "client_kwargs"
+                        }
+                    },
+                    {
+                        "name": "Client ID",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "client_id"
+                        }
+                    },
+                    {
+                        "name": "Client Secret",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "client_secret"
+                        }
+                    },
+                    {
+                        "name": "UserInfo Endpoint",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "userinfo_endpoint"
+                        }
+                    },
+                    {
+                        "name": "Server Metadata URL",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "server_metadata_url"
+                        }
+                    },
+                    {
+                        "name": "Redirect url",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "redirect_url"
+                        }
+                    },
+                    {
+                        "name": "Scope",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "scope"
                         }
                     },
                     {
@@ -1614,8 +1652,141 @@
             "name": "AuthDeleteForm",
             "base": "DeleteForm",
             "attributes": {
-                "type": "Account",
-                "path": "accounts",
+                "type": "Auth",
+                "path": "auths",
+                "controls": [
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "type",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Delete",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ClientCreateForm",
+            "base": "CreateForm",
+            "attributes": {
+                "type": "Client",
+                "path": "clients",
+                "title_prefix": "Create Client", 
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Uri",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "uri"
+                        }
+                    },
+                    {
+                        "name": "Scope",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "scope"
+                        }
+                    },
+                    {
+                        "name": "Authentication method",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "auth_method"
+                        }
+                    },
+                    {
+                        "name": "Grant types",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "grant_types"
+                        }
+                    },
+                    {
+                        "name": "Redirect uris",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "redirect_uris"
+                        }
+                    },
+                    {
+                        "name": "Response types",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "response_types"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ClientDeleteForm",
+            "base": "DeleteForm",
+            "attributes": {
+                "type": "Client",
+                "path": "clients",
                 "controls": [
                     {
                         "name": "Id",
@@ -2926,6 +3097,14 @@
         {
             "name": "AuthDeleteForm",
             "type": "AuthDeleteForm"
+        },
+        {
+            "name": "ClientCreateForm",
+            "type": "ClientCreateForm"
+        },
+        {
+            "name": "ClientDeleteForm",
+            "type": "ClientDeleteForm"
         },
         {
             "name": "AccountGroupCreateForm",
