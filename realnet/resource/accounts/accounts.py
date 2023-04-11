@@ -16,6 +16,10 @@ class Accounts(Items):
         instance = Instance(account_role.id, account_role_type, account_role.name)
         return Item(account_role.org.id, account_role.org.id, instance, account_role.id, account_role.name, dict(), [])
     
+    def item_from_account_group(self, account_group, account_group_type):
+        instance = Instance(account_group.id, account_group_type, account_group.name)
+        return Item(account_group.org.id, account_group.org.id, instance, account_group.id, account_group.name, dict(), [])
+    
     def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         tbn = {t.name:t for t in module.get_types()}
         if path:
@@ -66,10 +70,10 @@ class Accounts(Items):
         account = module.get_account()
         if account.is_superuser() or account.is_admin():
             if 'parent_id' in args and 'id' in args:
-                view = args.get('view', ['roles'])[0]
-                if view == 'roles':
+                active_view = args.get('active_view', 'roles')
+                if active_view == 'roles':
                     module.remove_account_role(args['parent_id'], args['id'])
-                elif view == 'groups':
+                elif active_view == 'groups':
                     module.remove_account_group(args['parent_id'], args['id'])
                 return redirect('/accounts/{}'.format(args['parent_id']))
             elif 'id' in args:

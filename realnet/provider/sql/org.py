@@ -8,7 +8,7 @@ from realnet.core.provider import OrgProvider, GroupProvider, AclProvider,Accoun
 from realnet.core.type import Account, Authenticator, Org, Group, Client
 from realnet.core.acl import AclType
 from .utility import get_types_by_name, item_model_to_item, get_derived_types
-from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, Group as GroupModel, AccountGroup as AccountGroupModel, Authenticator as AuthenticatorModel, Client as ClientModel, session as db, create_client
+from .models import Account as AccountModel, Org as OrgModel, Item as ItemModel, Group as GroupModel, GroupRoleType, AccountGroup as AccountGroupModel, Authenticator as AuthenticatorModel, Client as ClientModel, session as db, create_client
 
 class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, AppProvider):
     
@@ -17,7 +17,36 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
         self.account_id = account_id
 
     def get_account_groups(self, account_id):
-        return []
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        if account:
+            return [Group(account_group.group.id, 
+                        account_group.group.name, 
+                        Org(account_group.group.org.id, account_group.group.org.name)) for account_group in account.groups]
+        else:
+            return []
+    
+    def add_account_group(self, account_id, group_id):
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        group = db.query(GroupModel).filter(GroupModel.org_id == self.org_id, GroupModel.id == group_id).first()
+        if account and group:
+            account_group = db.query(AccountGroupModel).filter(AccountGroupModel.org_id == self.org_id, AccountGroupModel.account_id == account_id, AccountGroupModel.group_id == group_id).first()
+            if not account_group:
+                account_group = AccountGroupModel(id=str(uuid.uuid4()),account_id=account_id, group_id=group_id, org_id=self.org_id, role_type=GroupRoleType.member)
+                db.add(account_group)
+                db.commit()
+                
+            return account_group.id
+
+        return None
+    
+    def remove_account_group(self, account_id, group_id):
+        account = db.query(AccountModel).filter(AccountModel.org_id == self.org_id, AccountModel.id == account_id).first()
+        group = db.query(GroupModel).filter(GroupModel.org_id == self.org_id, GroupModel.id == group_id).first()
+        if account and group:
+            account_group = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account_id, AccountGroupModel.group_id == group_id).first()
+            if account_group:
+                db.delete(account_group)
+                db.commit()
 
     def get_org_groups(self, org_id):
         return [Group(acc.id, acc.name, Org(acc.org.id, acc.org.name)) for acc in db.query(GroupModel).filter(GroupModel.org_id == self.org_id).all()]

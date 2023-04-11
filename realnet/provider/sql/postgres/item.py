@@ -10,7 +10,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from realnet.core.provider import ItemProvider
 from realnet.core.acl import Acl, AclType
 from ..utility import get_types_by_name, item_model_to_item, create_item_model, get_derived_types
-from ..models import session as db, Item as ItemModel, Type as TypeModel, AccountGroup as AccountGroupModel, VisibilityType
+from ..models import session as db, Item as ItemModel, Type as TypeModel, AccountGroup as AccountGroupModel, VisibilityType, Acl as AclModel, AclType as AclTypeModel
 
 
 class PostgresItemProvider(ItemProvider):
@@ -69,6 +69,7 @@ class PostgresItemProvider(ItemProvider):
         item_valid_to = None
         item_status = None
         item_linked_item_id = None
+        type = None
 
         for key, value in kwargs.items():
             # print("%s == %s" % (key, value))
@@ -298,13 +299,13 @@ class PostgresItemProvider(ItemProvider):
                         group_ids.append(account_group.group_id)
                     results = []
                     for item_model in result_item_models:
-                        if [acl for acl in item_model.acls if acl.type == AclType.public]:
+                        if [acl for acl in item_model.acls if acl.type == AclTypeModel.public]:
                             results.append(item_model)
-                        elif [acl for acl in item_model.acls if acl.type == AclType.user and acl.target_id == self.account_id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
+                        elif [acl for acl in item_model.acls if acl.type == AclTypeModel.user and acl.target_id == self.account_id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
                             results.append(item_model)
-                        elif [acl for acl in item_model.acls if acl.type == AclType.group and acl.target_id in group_ids and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+                        elif [acl for acl in item_model.acls if acl.type == AclTypeModel.group and acl.target_id in group_ids and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
                             results.append(item_model)
-                        elif [acl for acl in item_model.acls if acl.type == AclType.org and acl.org_id == self.org_id and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+                        elif [acl for acl in item_model.acls if acl.type == AclTypeModel.org and acl.org_id == self.org_id and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
                             results.append(item_model)
                         elif item_model.owner_id == self.account_id:
                             results.append(item_model)

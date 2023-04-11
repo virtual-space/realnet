@@ -382,6 +382,11 @@ def router(endpoint_name, path):
     elif not endpoint_name:
         endpoints = context.get_endpoints(context)
         endpoint = next((e for e in endpoints), None)
+        if not endpoint:
+            return jsonify(isError=True,
+                        message="Failure",
+                        statusCode=404,
+                        data='No endpoints found'), 404
         endpoint_name = endpoint.item.name.lower()
         return redirect('/{}'.format(endpoint_name))
     

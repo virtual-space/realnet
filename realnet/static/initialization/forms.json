@@ -2956,223 +2956,278 @@
     "items": [
         {
             "name": "CtrlCreateForm",
-            "type": "CtrlCreateForm"
+            "type": "CtrlCreateForm",
+            "public": "true"
         },
         {
             "name": "FormCreateForm",
-            "type": "FormCreateForm"
+            "type": "FormCreateForm",
+            "public": "true"
         },
         {
             "name": "FileCreateForm",
-            "type": "FileCreateForm"
+            "type": "FileCreateForm",
+            "public": "true"
         },
         {
             "name": "EndpointCreateForm",
-            "type": "EndpointCreateForm"
+            "type": "EndpointCreateForm",
+            "public": "true"
         },
         {
             "name": "ResourceCreateForm",
-            "type": "ResourceCreateForm"
+            "type": "ResourceCreateForm",
+            "public": "true"
         },
         {
             "name": "FuncCreateForm",
-            "type": "FuncCreateForm"
+            "type": "FuncCreateForm",
+            "public": "true"
         },
         {
             "name": "AppCreateForm",
-            "type": "AppCreateForm"
+            "type": "AppCreateForm",
+            "public": "true"
         },
         {
             "name": "AppEditForm",
-            "type": "AppEditForm"
+            "type": "AppEditForm",
+            "public": "true"
         },
         {
             "name": "ItemCreateForm",
-            "type": "ItemCreateForm"
+            "type": "ItemCreateForm",
+            "public": "true"
         },
         {
             "name": "ItemEditForm",
-            "type": "ItemEditForm"
+            "type": "ItemEditForm",
+            "public": "true"
         },
         {
             "name": "TypeViewCreateForm",
-            "type": "TypeViewCreateForm"
+            "type": "TypeViewCreateForm",
+            "public": "true"
         },
         {
             "name": "ViewCreateForm",
-            "type": "ViewCreateForm"
+            "type": "ViewCreateForm",
+            "public": "true"
         },
         {
             "name": "ViewEditForm",
-            "type": "ViewEditForm"
+            "type": "ViewEditForm",
+            "public": "true"
         },
         {
             "name": "TypeViewEditForm",
-            "type": "TypeViewEditForm"
+            "type": "TypeViewEditForm",
+            "public": "true"
         },
         {
             "name": "ViewDeleteForm",
-            "type": "ViewDeleteForm"
+            "type": "ViewDeleteForm",
+            "public": "true"
         },
         {
             "name": "TypeViewDeleteForm",
-            "type": "TypeViewDeleteForm"
+            "type": "TypeViewDeleteForm",
+            "public": "true"
         },
         {
             "name": "DeleteForm",
-            "type": "DeleteForm"
+            "type": "DeleteForm",
+            "public": "true"
         },
         {
             "name": "TypeCreateForm",
-            "type": "TypeCreateForm"
+            "type": "TypeCreateForm",
+            "public": "true"
         },
         {
             "name": "TypeEditForm",
-            "type": "TypeEditForm"
+            "type": "TypeEditForm",
+            "public": "true"
         },
         {
             "name": "InstanceCreateForm",
-            "type": "InstanceCreateForm"
+            "type": "InstanceCreateForm",
+            "public": "true"
         },
         {
             "name": "InstanceEditForm",
-            "type": "InstanceEditForm"
+            "type": "InstanceEditForm",
+            "public": "true"
         },
         {
             "name": "AttributeCreateForm",
-            "type": "AttributeCreateForm"
+            "type": "AttributeCreateForm",
+            "public": "true"
         },
         {
             "name": "AttributeEditForm",
-            "type": "AttributeEditForm"
+            "type": "AttributeEditForm",
+            "public": "true"
         },
         {
             "name": "AttributeDeleteForm",
-            "type": "AttributeDeleteForm"
+            "type": "AttributeDeleteForm",
+            "public": "true"
         },
         {
             "name": "MenuItemCreateForm",
-            "type": "MenuItemCreateForm"
+            "type": "MenuItemCreateForm",
+            "public": "true"
         },
         {
             "name": "MenuItemEditForm",
-            "type": "MenuItemEditForm"
+            "type": "MenuItemEditForm",
+            "public": "true"
         },
         {
             "name": "MenuItemDeleteForm",
-            "type": "MenuItemDeleteForm"
+            "type": "MenuItemDeleteForm",
+            "public": "true"
         },
         {
             "name": "FormItemCreateForm",
-            "type": "FormItemCreateForm"
+            "type": "FormItemCreateForm",
+            "public": "true"
         },
         {
             "name": "FormItemEditForm",
-            "type": "FormItemEditForm"
+            "type": "FormItemEditForm",
+            "public": "true"
         },
         {
             "name": "FormItemDeleteForm",
-            "type": "FormItemDeleteForm"
+            "type": "FormItemDeleteForm",
+            "public": "true"
         },
         {
             "name": "RoleCreateForm",
-            "type": "RoleCreateForm"
+            "type": "RoleCreateForm",
+            "public": "true"
         },
         {
             "name": "RoleDeleteForm",
-            "type": "RoleDeleteForm"
+            "type": "RoleDeleteForm",
+            "public": "true"
         },
         {
             "name": "GroupCreateForm",
-            "type": "GroupCreateForm"
+            "type": "GroupCreateForm",
+            "public": "true"
         },
         {
             "name": "GroupDeleteForm",
-            "type": "GroupDeleteForm"
+            "type": "GroupDeleteForm",
+            "public": "true"
         },
         {
             "name": "AuthCreateForm",
-            "type": "AuthCreateForm"
+            "type": "AuthCreateForm",
+            "public": "true"
         },
         {
             "name": "AuthDeleteForm",
-            "type": "AuthDeleteForm"
+            "type": "AuthDeleteForm",
+            "public": "true"
         },
         {
             "name": "ClientCreateForm",
-            "type": "ClientCreateForm"
+            "type": "ClientCreateForm",
+            "public": "true"
         },
         {
             "name": "ClientDeleteForm",
-            "type": "ClientDeleteForm"
+            "type": "ClientDeleteForm",
+            "public": "true"
         },
         {
             "name": "AccountGroupCreateForm",
-            "type": "AccountGroupCreateForm"
+            "type": "AccountGroupCreateForm",
+            "public": "true"
         },
         {
             "name": "AccountGroupDeleteForm",
-            "type": "AccountGroupDeleteForm"
+            "type": "AccountGroupDeleteForm",
+            "public": "true"
         },
         {
             "name": "AccountCreateForm",
-            "type": "AccountCreateForm"
+            "type": "AccountCreateForm",
+            "public": "true"
         },
         {
             "name": "AccountDeleteForm",
-            "type": "AccountDeleteForm"
+            "type": "AccountDeleteForm",
+            "public": "true"
         },
         {
             "name": "AccountRoleCreateForm",
-            "type": "AccountRoleCreateForm"
+            "type": "AccountRoleCreateForm",
+            "public": "true"
         },
         {
             "name": "AccountRoleDeleteForm",
-            "type": "AccountRoleDeleteForm"
+            "type": "AccountRoleDeleteForm",
+            "public": "true"
         },
         {
             "name": "AccountGroupCreateForm",
-            "type": "AccountGroupCreateForm"
+            "type": "AccountGroupCreateForm",
+            "public": "true"
         },
         {
             "name": "AccountGroupDeleteForm",
-            "type": "AccountGroupDeleteForm"
+            "type": "AccountGroupDeleteForm",
+            "public": "true"
         },
         {
             "name": "RoleAppCreateForm",
-            "type": "RoleAppCreateForm"
+            "type": "RoleAppCreateForm",
+            "public": "true"
         },
         {
             "name": "RoleAppDeleteForm",
-            "type": "RoleAppDeleteForm"
+            "type": "RoleAppDeleteForm",
+            "public": "true"
         },
         {
             "name": "SettingsForm",
-            "type": "SettingsForm"
+            "type": "SettingsForm",
+            "public": "true"
         },
         {
             "name": "CodeForm",
-            "type": "CodeForm"
+            "type": "CodeForm",
+            "public": "true"
         },
         {
             "name": "QueryForm",
-            "type": "QueryForm"
+            "type": "QueryForm",
+            "public": "true"
         },
         {
             "name": "ViewQueryForm",
-            "type": "ViewQueryForm"
+            "type": "ViewQueryForm",
+            "public": "true"
         },
         {
             "name": "SharingForm",
-            "type": "SharingForm"
+            "type": "SharingForm",
+            "public": "true"
         },
         {
             "name": "UploadForm",
-            "type": "UploadForm"
+            "type": "UploadForm",
+            "public": "true"
         },
         {
             "name": "TypeUploadForm",
-            "type": "TypeUploadForm"
+            "type": "TypeUploadForm",
+            "public": "true"
         }
     ]
 }

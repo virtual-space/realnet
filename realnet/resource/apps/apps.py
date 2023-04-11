@@ -12,10 +12,12 @@ class Apps(Items):
         
         resource = module.get_resource(module, args.get('resource'))
         if not resource:
-            resource_instance = module.create_instance(name=args.get('resource'), type='Resource', parent_type_id=app_type.id, attributes={'module':'true'})
-        
-        endpoint_instance = module.create_instance(name=args.get('endpoint'), type='Endpoint', parent_type_id=app_type.id, attributes={'path':args.get('endpoint'), 'resource':args.get('resource')})
+            resource_item = module.create_item(name=args.get('resource'), type='Resource', attributes={'module':'true'}, public='true')
 
+        app_endpoint = module.get_endpoint(module, args.get('endpoint'))
+        if not app_endpoint:
+            endpoint_item = module.create_item(name=args.get('endpoint'), type='Endpoint', attributes={'path':args.get('endpoint'), 'resource':args.get('resource')}, public='true')
+        
         app_item = module.create_item(name=args.get('name'), type=app_type.name)
                 
         if content_type == 'application/json':

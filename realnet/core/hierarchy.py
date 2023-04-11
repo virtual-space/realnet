@@ -133,7 +133,7 @@ def import_items(module, items):
         item_location = item.get('location')
         if item_location and not isinstance(item_location,str):
             item_location = json.dumps(item_location)
-        item_type = item.get('type')
+        item_type = item.get('type', 'Item')
         item_name = item.get('name')
         item_is_public = str(item.get('public')).lower() == 'true'
         # item_visibility = VisibilityType.visible
@@ -160,7 +160,22 @@ def import_items(module, items):
                         "tags": item_tags,
                         "parent_id": item_parent_id,
                         "public": item_is_public}
-        created_item = module.create_item(**item_data)
+        
+        type = module.get_type_by_name(item_type)
+        created = False  
+        if type and 'resource' in type.attributes:
+            resource_name = type.attributes['resource']
+            if resource_name != 'items':
+                func = module.get_resource_method(module, None, resource_name, 'post')
+                if func:
+                    tbn = {t.name:t for t in module.get_types()}
+                    external_resource = func.invoke(module, None, item_data, None, 'application/json')
+                    created = True
+                    
+                # return self.item_from_json(module, external_resource.json, tbn)
+            
+        if not created:
+            created_item = module.create_item(**item_data)
 
 def import_structure_from_resource(context, path):
     with open(os.path.join(os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir)),

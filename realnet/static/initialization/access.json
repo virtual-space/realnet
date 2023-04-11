@@ -1,0 +1,124 @@
+{
+    "types": [
+        {
+            "name": "Admin",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Items",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Apps",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Endpoints",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Forms",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Resources",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Types",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Items",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Accounts",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Roles",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Groups",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Auths",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Clients",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Items",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "Visitor",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Items",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ChatGPT",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        }
+    ],
+    "items": [
+        {
+            "name": "Admin",
+            "type": "Admin"
+        },
+        {
+            "name": "User",
+            "type": "User"
+        },
+        {
+            "name": "Visitor",
+            "type": "Visitor"
+        },
+        {
+            "name": "Admins",
+            "type": "Group"
+        },
+        {
+            "name": "Users",
+            "type": "Group"
+        },
+        {
+            "name": "Visitors",
+            "type": "Group"
+        }
+    ]
+}

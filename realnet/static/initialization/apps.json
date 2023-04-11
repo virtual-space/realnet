@@ -20,26 +20,7 @@
                 "icon": "square",
                 "types": ["Item"],
                 "query": {"types": ["Item"]}
-            },
-            "instances": [
-                {
-                    "name": "items",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.items.items",
-                        "module_class": "Items",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "items",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "items",
-                        "resource": "items"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Apps",
@@ -67,26 +48,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "apps",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.apps.apps",
-                        "module_class": "Apps",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "apps",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "apps",
-                        "resource": "apps"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Endpoints",
@@ -111,26 +73,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "endpoints",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.endpoints.endpoints",
-                        "module_class": "Endpoints",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "endpoints",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "endpoints",
-                        "resource": "endpoints"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Forms",
@@ -164,26 +107,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "forms",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.forms.forms",
-                        "module_class": "Forms",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "forms",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "forms",
-                        "resource": "forms"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Files",
@@ -192,26 +116,7 @@
                 "icon": "collections",
                 "types": ["File"],
                 "query": {"types": ["File"], "any_level": "true"}
-            },
-            "instances": [
-                {
-                    "name": "files",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.files.files",
-                        "module_class": "Files",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "files",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "files",
-                        "resource": "files"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "ARVR",
@@ -226,26 +131,7 @@
                         "type": "ARView"
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "arvr",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.gltf.gltf",
-                        "module_class": "Gltf",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "arvr",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "arvr",
-                        "resource": "arvr"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "ChatGPT",
@@ -260,26 +146,7 @@
                         "type": "ListView"
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "chatgpt",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.chatgpt.chatgpt",
-                        "module_class": "Chatgpt",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "chatgpt",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "chatgpt",
-                        "resource": "chatgpt"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Resources",
@@ -288,26 +155,7 @@
                 "icon": "border_all",
                 "types": ["Resource"],
                 "query": {"types": ["Resource"], "any_level": "true"}
-            },
-            "instances": [
-                {
-                    "name": "resources",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.resources.resources",
-                        "module_class": "Resources",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "resources",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "resources",
-                        "resource": "resources"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Types",
@@ -335,26 +183,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "types",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.types.types",
-                        "module_class": "Types",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "types",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "types",
-                        "resource": "types"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Accounts",
@@ -373,26 +202,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "accounts",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.accounts.accounts",
-                        "module_class": "Accounts",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "accounts",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "accounts",
-                        "resource": "accounts"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Roles",
@@ -411,26 +221,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "roles",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.roles.roles",
-                        "module_class": "Roles",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "roles",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "roles",
-                        "resource": "roles"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Groups",
@@ -449,26 +240,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "groups",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.groups.groups",
-                        "module_class": "Groups",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "groups",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "groups",
-                        "resource": "groups"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Auths",
@@ -487,26 +259,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "auths",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.auths.auths",
-                        "module_class": "Auths",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "auths",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "auths",
-                        "resource": "auths"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Public",
@@ -515,26 +268,7 @@
                 "icon": "public",
                 "types": ["Item"],
                 "query": {"types": ["Item"]}
-            },
-            "instances": [
-                {
-                    "name": "public",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.public.public",
-                        "module_class": "Public",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "public",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "public",
-                        "resource": "public"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Clients",
@@ -553,26 +287,7 @@
                         }
                     }
                 ]
-            },
-            "instances": [
-                {
-                    "name": "clients",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.clients.clients",
-                        "module_class": "Clients",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "clients",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "clients",
-                        "resource": "clients"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Views",
@@ -581,26 +296,7 @@
                 "icon": "fullscreen",
                 "types": ["View"],
                 "query": {"types": ["View"]}
-            },
-            "instances": [
-                {
-                    "name": "views",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.views.views",
-                        "module_class": "Views",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "views",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "views",
-                        "resource": "views"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Ctrls",
@@ -609,26 +305,7 @@
                 "icon": "widgets",
                 "types": ["Ctrl"],
                 "query": {"types": ["Ctrl"]}
-            },
-            "instances": [
-                {
-                    "name": "ctrls",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.ctrls.ctrls",
-                        "module_class": "Ctrls",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "ctrls",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "ctrls",
-                        "resource": "ctrls"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Attributes",
@@ -637,26 +314,7 @@
                 "icon": "edit_attributes",
                 "types": ["Attribute"],
                 "query": {"types": ["Attribute"]}
-            },
-            "instances": [
-                {
-                    "name": "attributes",
-                    "type": "Resource",
-                    "attributes": {
-                        "module_path": "realnet.resource.attributes.attributes",
-                        "module_class": "Attributes",
-                        "module": "true"
-                    }
-                },
-                {
-                    "name": "attributes",
-                    "type": "Endpoint",
-                    "attributes": {
-                        "path": "attributes",
-                        "resource": "attributes"
-                    }
-                }
-            ]
+            }
         },
         {
             "name": "Login",
@@ -749,6 +407,348 @@
         {
             "name": "Attributes",
             "type": "Attributes"
+        },
+        {
+            "name": "items",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.items.items",
+                "module_class": "Items",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "items",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "items",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "apps",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.apps.apps",
+                "module_class": "Apps",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "apps",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "apps",
+                "resource": "apps"
+            },
+            "public": "true" 
+        },
+        {
+            "name": "endpoints",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.endpoints.endpoints",
+                "module_class": "Endpoints",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "endpoints",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "endpoints",
+                "resource": "endpoints"
+            },
+            "public": "true"
+        },
+        {
+            "name": "forms",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.forms.forms",
+                "module_class": "Forms",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "forms",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "forms",
+                "resource": "forms"
+            },
+            "public": "true"
+        },
+        {
+            "name": "files",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.files.files",
+                "module_class": "Files",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "files",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "files",
+                "resource": "files"
+            },
+            "public": "true"
+        },
+        {
+            "name": "arvr",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.gltf.gltf",
+                "module_class": "Gltf",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "arvr",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "arvr",
+                "resource": "arvr"
+            },
+            "public": "true"
+        },
+        {
+            "name": "chatgpt",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.chatgpt.chatgpt",
+                "module_class": "Chatgpt",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "chatgpt",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "chatgpt",
+                "resource": "chatgpt"
+            },
+            "public": "true"
+        },
+        {
+            "name": "resources",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.resources.resources",
+                "module_class": "Resources",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "resources",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "resources",
+                "resource": "resources"
+            },
+            "public": "true"
+        },
+        {
+            "name": "types",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.types.types",
+                "module_class": "Types",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "types",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "types",
+                "resource": "types"
+            },
+            "public": "true"
+        },
+        {
+            "name": "accounts",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.accounts.accounts",
+                "module_class": "Accounts",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "accounts",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "accounts",
+                "resource": "accounts"
+            },
+            "public": "true"
+        },
+        {
+            "name": "roles",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.roles.roles",
+                "module_class": "Roles",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "roles",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "roles",
+                "resource": "roles"
+            },
+            "public": "true"
+        },
+        {
+            "name": "groups",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.groups.groups",
+                "module_class": "Groups",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "groups",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "groups",
+                "resource": "groups"
+            },
+            "public": "true"
+        },
+        {
+            "name": "auths",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.auths.auths",
+                "module_class": "Auths",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "auths",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "auths",
+                "resource": "auths"
+            },
+            "public": "true"
+        },
+        {
+            "name": "public",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.public.public",
+                "module_class": "Public",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "public",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "public",
+                "resource": "public"
+            },
+            "public": "true"
+        },
+        {
+            "name": "clients",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.clients.clients",
+                "module_class": "Clients",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "clients",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "clients",
+                "resource": "clients"
+            },
+            "public": "true"
+        },
+        {
+            "name": "views",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.views.views",
+                "module_class": "Views",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "views",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "views",
+                "resource": "views"
+            },
+            "public": "true"
+        },
+        {
+            "name": "ctrls",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.ctrls.ctrls",
+                "module_class": "Ctrls",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "ctrls",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "ctrls",
+                "resource": "ctrls"
+            },
+            "public": "true"
+        },
+        {
+            "name": "attributes",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.attributes.attributes",
+                "module_class": "Attributes",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "attributes",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "attributes",
+                "resource": "attributes"
+            },
+            "public": "true"
         }
     ]
 }

@@ -41,7 +41,19 @@ class Roles(Items):
 
                 return redirect('/roles/{}'.format(role_id))
             else:
+                type = module.get_type_by_name(args.get('type', 'Role'))
                 role = module.create_role(**args)
+                for instance in type.instances:
+                    params = dict(**instance.to_dict())
+                    created_instance = module.create_instance(**params)
+                    created_item = module.create_item(type_id=type.id, 
+                                                      instance_id=created_instance.id, 
+                                                      org_id=account.org.id, 
+                                                      parent_id=role.id, 
+                                                      name=created_instance.name)
+                        
+                return redirect('/roles')
+
             
         return self.render_item(module, endpoint, args, path, content_type)
 

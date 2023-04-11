@@ -180,6 +180,14 @@ class OrgProvider(ABC):
         pass
 
     @abstractmethod
+    def add_account_group(self, account_id, group_id):
+        pass
+
+    @abstractmethod
+    def remove_account_group(self, account_id, group_id):
+        pass
+
+    @abstractmethod
     def get_org_groups(self, org_id):
         pass
 
@@ -655,7 +663,13 @@ class Context(Module):
         return self.apps.get_apps(module)
 
     def get_account_groups(self, account_id):
-        return self.orgs.get_account_groups(self, account_id)
+        return self.orgs.get_account_groups(account_id)
+    
+    def add_account_group(self, account_id, group_id):
+        return self.orgs.add_account_group(account_id, group_id)
+    
+    def remove_account_group(self, account_id, group_id):
+        return self.orgs.remove_account_group(account_id, group_id)
 
     def get_org_groups(self, org_id):
         return self.orgs.get_org_groups(org_id)

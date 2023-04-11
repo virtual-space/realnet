@@ -1,5 +1,6 @@
 import uuid
 import base64
+import json
 from flask import render_template, jsonify, Response
 from realnet.core.type import Resource, Item, Instance
 from realnet.core.hierarchy import items_from_attributes
@@ -17,7 +18,7 @@ class Items(Resource):
                 return {}
         else:        
             items = self.get_items(module, endpoint, args, path, account, query, None)
-            return jsonify([item.to_dict() for item in items])
+            return json.dumps([item.to_dict() for item in items])
 
     def render_items_html(self, module, endpoint, args, path=None):
         return render_template(self.get_template(module, endpoint, args, path), 
@@ -72,10 +73,20 @@ class Items(Resource):
                 attrs['attributes'][k] = v
             else:
                 attrs[k] = v
+
+        if 'type' in attrs:
+            type = module.get_type_by_name(attrs['type'])
+            if type and 'resource' in type.attributes:
+                resource_name = type.attributes['resource']
+                func = module.get_resource_method(module, endpoint, resource_name, 'post')
+                if func and resource_name != 'items':
+                    tbn = {t.name:t for t in module.get_types()}
+                    external_resource = func.invoke(module, endpoint, args, path, 'application/json')
+                    return self.item_from_json(module, external_resource.json, tbn)
             
         item = module.create_item(**attrs)
         if content_type == 'application/json':
-            return jsonify(item.to_dict())
+            return json.dumps(item.to_dict())
         else:
             return self.render_item(module, endpoint, args, path, content_type)
 
@@ -157,7 +168,7 @@ class Items(Resource):
                     func = module.get_resource_method(module, endpoint, external_type.attributes['resource'], 'get')
                     if func:
                         external_resources = func.invoke(module, endpoint, args, path, 'application/json')
-                        external_items = [self.item_from_json(module, er, tbn) for er in external_resources.json]
+                        external_items = [self.item_from_json(module, er, tbn) for er in json.loads(external_resources)]
                         results = results + [er for er in external_items]
                 
                 if internal_types:
@@ -198,7 +209,7 @@ class Items(Resource):
             else:
                 query['types'] = args['types[]']
 
-        if 'parent_id' in args:
+        if 'parent_id' in args and args['parent_id']:
             if isinstance(args['parent_id'], str):
                 query['parent_id'] = args['parent_id']
             else:
