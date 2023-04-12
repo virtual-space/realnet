@@ -219,9 +219,9 @@ class Items(Resource):
                             params['attributes'] = current_attrs
                             module.update_item(attrs['parent_id'], **params)
                     if 'active_view' in attrs:
-                        return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                        return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                     else:
-                        return redirect('/types/{}'.format(attrs['parent_id']))
+                        return redirect('/items/{}'.format(attrs['parent_id']))
                     
             elif args['type'].endswith('View'):
                 attrs = dict(args)
@@ -244,9 +244,9 @@ class Items(Resource):
                             params = {'attributes': current_attrs }
                             module.update_item(attrs['parent_id'], **params)
                             if 'active_view' in attrs:
-                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                             else:
-                                return redirect('/types/{}'.format(attrs['parent_id']))
+                                return redirect('/items/{}'.format(attrs['parent_id']))
             elif args['type'] == 'FormItem':
                 attrs = dict(args)
                 if 'parent_id' in attrs:
@@ -270,9 +270,9 @@ class Items(Resource):
                             params = {'attributes': current_attrs }
                             module.update_item(attrs['parent_id'], **params)
                             if 'active_view' in attrs:
-                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                             else:
-                                return redirect('/types/{}'.format(attrs['parent_id']))
+                                return redirect('/items/{}'.format(attrs['parent_id']))
             elif args['type'] == 'MenuItem':
                 attrs = dict(args)
                 if 'parent_id' in attrs:
@@ -298,9 +298,9 @@ class Items(Resource):
                             params = {'attributes': current_attrs }
                             module.update_item(attrs['parent_id'], **params)
                             if 'active_view' in attrs:
-                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                             else:
-                                return redirect('/types/{}'.format(attrs['parent_id']))
+                                return redirect('/items/{}'.format(attrs['parent_id']))
         else:
             attrs = dict()
             for k,v in args.items():
@@ -325,8 +325,93 @@ class Items(Resource):
             return self.render_item(module, endpoint, args, path, content_type)
 
     def delete(self, module, endpoint, args, path=None, content_type='text/html'):
-        module.delete_item(args['id'])
-        return self.render_item(module, endpoint, args, path, content_type)
+        attrs = dict(args)
+        id = None
+        if path:
+            id = path
+        elif 'id' in attrs:
+            id = attrs['id']
+        elif 'parent_id' in attrs:
+            id = attrs['parent_id']
+
+        if id:
+            account = module.get_account()
+            item = self.get_item(module, endpoint, account, attrs, id);
+            if item:
+                if module.can_account_write_item(account, item):
+                    if 'type' in args:
+                        if args['type'].endswith('View'):
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                views = [] 
+                                for view in item.attributes.get('views', []):
+                                    if view['name'].lower() != name:
+                                        views.append(view)
+                                current_attrs = dict(item.attributes)
+                                current_attrs['views'] = views
+                                params = {'attributes': current_attrs }
+                                module.update_item(attrs['id'], **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/items/{}?view={}'.format(attrs['id'], attrs['active_view']))
+                                else:
+                                    return redirect('/items/{}'.format(attrs['id']))
+                        if args['type'] == 'FormItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('forms', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                current_attrs = dict(item.attributes)
+                                current_attrs['forms'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_item(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/items/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/items/{}'.format(id))
+                        elif args['type'] == 'MenuItem':
+                            if 'name' in args:
+                                name = args['name'].lower()
+                                forms = [] 
+                                for form in item.attributes.get('menu', []):
+                                    if form['name'].lower() != name:
+                                        forms.append(form)
+                                current_attrs = dict(item.attributes)
+                                current_attrs['menu'] = forms
+                                params = {'attributes': current_attrs }
+                                module.update_item(id, **params)
+                                if 'active_view' in attrs:
+                                    return redirect('/items/{}?view={}'.format(id, attrs['active_view']))
+                                else:
+                                    return redirect('/items/{}'.format(id))
+                        elif args['type'] == 'Attribute':
+                            if 'name' in args:
+                                attrs = dict(item.attributes)
+                                if args['name'] in attrs:
+                                    del attrs[args['name']]
+                                    params = dict()
+                                    params['attributes'] = attrs
+                                    module.update_item(id, **params)
+                                    if 'active_view' in args:
+                                        return redirect('/items/{}?view={}'.format(id, args['active_view']))
+                                    else:
+                                        return redirect('/items/{}'.format(id))
+                        else:
+                            if id:
+                                if attrs['id'] == attrs['parent_id']:
+                                    module.delete_type(id)
+                                    return redirect('/items')
+                                else:
+                                    module.delete_item(id)
+                            if 'parent_id' in attrs:
+                                if 'active_view' in attrs:
+                                    return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                                else:
+                                    return redirect('/items/{}'.format(attrs['parent_id']))
+                                    
+        # module.delete_type(args['id'])
+        return redirect('/items/{}'.format(id))
 
     def message(self, module, endpoint, args, path=None, content_type='text/html'):
         pass

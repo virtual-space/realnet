@@ -8,7 +8,7 @@ class Apps(Items):
     
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
         
-        app_type = module.create_type(name=args.get('name'), base='App')
+        # app_type = module.create_type(name=args.get('name'), base='App')
         
         resource = module.get_resource(module, args.get('resource'))
         if not resource:
@@ -18,7 +18,7 @@ class Apps(Items):
         if not app_endpoint:
             endpoint_item = module.create_item(name=args.get('endpoint'), type='Endpoint', attributes={'path':args.get('endpoint'), 'resource':args.get('resource')}, public='true')
         
-        app_item = module.create_item(name=args.get('name'), type=app_type.name)
+        app_item = module.create_item(name=args.get('name'), type='App', attributes={'icon':args.get('icon')})
                 
         if content_type == 'application/json':
             return jsonify(app_item.to_dict())

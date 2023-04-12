@@ -505,6 +505,13 @@
                         }
                     },
                     {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
                         "name": "Id",
                         "type": "HiddenCtrl",
                         "attributes": {

@@ -326,7 +326,13 @@
             "attributes": {
                 "icon": "square",
                 "types": ["Item"],
-                "query": {"types": ["Item"]}
+                "query": {"types": ["Item"]},
+                "views": [
+                    {
+                        "name": "Items",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {

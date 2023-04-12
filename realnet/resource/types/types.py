@@ -324,7 +324,7 @@ class Types(Items):
 
         if id:
             account = module.get_account()
-            item = self.get_item(module, account, attrs, id);
+            item = self.get_item(module, endpoint, account, attrs, id);
             if item:
                 if module.can_account_write_item(account, item):
                     if 'type' in args:

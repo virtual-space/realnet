@@ -662,7 +662,7 @@
                         "name": "Settings",
                         "type": "FormView",
                         "attributes": {
-                            "form": "TypeEditForm",
+                            "form": "ItemEditForm",
                             "hidden": "true"
                         }
                     },
