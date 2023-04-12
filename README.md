@@ -102,6 +102,17 @@ docker run -d -p 8080:8080 realnet:latest
 
 Make sure that you have the .env file present with the folder with the right values (see other sections).
 Your python version should probably be 3.10.11 or later
+
+To upgrade python on ubuntu follow steps from https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/ and then if it is still not working try the following
+```
+curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python3.10
+
+sudo apt-get install python3.10-pip python3.10-distutils python3.10-dev python3.10-venv
+curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python3.10
+```
+
+Once the pre-requisits are satisfied, you can run realnet in the following way:
+
 ```
 python3 -m venv venv
 . ./venv/bin/activate
