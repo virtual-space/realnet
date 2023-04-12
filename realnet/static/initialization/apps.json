@@ -101,7 +101,8 @@
                         "name": "Items",
                         "type": "ListView",
                         "attributes": {
-                            "types": ["Item"]
+                            "types": ["Item"],
+                            "query": {"types": ["Item"], "children": "true"}
                         }
                     },
                     {
@@ -335,6 +336,12 @@
                 "icon": "apps",
                 "types": ["App"],
                 "query": {"types": ["App"]},
+                "views": [
+                    {
+                        "name": "Apps",
+                        "type": "ListView"
+                    }
+                ],
                 "menu": [
                     {
                         "name": "Create App",

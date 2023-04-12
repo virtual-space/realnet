@@ -454,6 +454,13 @@
                         }
                     },
                     {
+                        "name": "ParentId",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "parent_id"
+                        }
+                    },
+                    {
                         "name": "Cancel",
                         "type": "ButtonCtrl",
                         "attributes": {

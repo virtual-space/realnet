@@ -166,9 +166,9 @@ class Items(Resource):
                 attrs['parent_id'] = args['parent_id']
                 item = module.create_item(**attrs)
                 if 'active_view' in attrs:
-                    return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                    return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                 else:
-                    return redirect('/types/{}'.format(attrs['parent_id']))
+                    return redirect('/items/{}'.format(attrs['parent_id']))
         else:
             attrs = dict()
             for k,v in args.items():

@@ -117,6 +117,7 @@ Once the pre-requisits are satisfied, you can run realnet in the following way:
 python3 -m venv venv
 . ./venv/bin/activate
 pip install realnet
+pip install pyopenssl --upgrade
 realnet server initialize
 realnet server start
 ```
