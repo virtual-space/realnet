@@ -97,6 +97,19 @@ docker build -t realnet:latest .
 docker run -d -p 8080:8080 realnet:latest
 ```
 
+## How to install a pip package and run it locally
+# TODO please validate and correct
+
+Make sure that you have the .env file present with the folder with the right values (see other sections).
+Your python version should probably be 3.10.11 or later
+```
+python3 -m venv venv
+. ./venv/bin/activate
+pip install realnet
+realnet server initialize
+realnet server start
+```
+
 ## How to run on kubernetes via docker
 
 deployment.yaml:
