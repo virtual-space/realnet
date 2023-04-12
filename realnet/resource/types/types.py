@@ -56,7 +56,7 @@ class Types(Items):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, path, attrs['parent_id'])
+                    item = self.get_item(module, endpoint, account, attrs, path, attrs['parent_id'])
                     if item:
                         if module.can_account_write_item(account, item):
                             params = dict()
@@ -73,7 +73,7 @@ class Types(Items):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             view = dict()
@@ -97,7 +97,7 @@ class Types(Items):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             form = dict()
@@ -123,7 +123,7 @@ class Types(Items):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             form = dict()

@@ -65,17 +65,128 @@ class Items(Resource):
         return self.render_item(module, endpoint, args, path, content_type)
 
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
-        attrs = dict()
-        for k,v in args.items():
-            if k not in set(['name', 'type']):
-                if not 'attributes' in attrs:
-                    attrs['attributes'] = dict()
-                attrs['attributes'][k] = v
-            else:
-                attrs[k] = v
+        if 'type' in args:
+            if args['type'] == 'Attribute':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id'])
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            params = dict()
+                            current_attrs = dict(item.attributes)
+                            current_attrs[attrs['name']] = attrs['value']
+                            params['attributes'] = current_attrs
+                            module.update_item(attrs['parent_id'], **params)
+                    if 'active_view' in attrs:
+                        return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                    else:
+                        return redirect('/items/{}'.format(attrs['parent_id']))
+                    
+            elif args['type'].endswith('View'):
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            view = dict()
+                            if 'name' in args:
+                                view['name'] = args['name']
+                            if 'attributes' in args:
+                                view['attributes'] = args.get('attributes',dict())
+                            if 'type' in args:
+                                view['type'] = args.get('type')
+                            
+                            views = item.attributes.get('views', []) + [view]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['views'] = views
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/items/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'FormItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'FormItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            
+                            forms = item.attributes.get('forms', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['forms'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/items/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'MenuItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'MenuItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            if 'icon' in args:
+                                form['attributes']['icon'] = args['icon']
+                            
+                            forms = item.attributes.get('menu', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['menu'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/items/{}'.format(attrs['parent_id']))
+            elif 'parent_id' in args:
+                attrs = dict(args)
+                attrs['parent_id'] = args['parent_id']
+                item = module.create_item(**attrs)
+                if 'active_view' in attrs:
+                    return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                else:
+                    return redirect('/types/{}'.format(attrs['parent_id']))
+        else:
+            attrs = dict()
+            for k,v in args.items():
+                if k not in set(['name', 'base']):
+                    if not 'attributes' in attrs:
+                        attrs['attributes'] = dict()
+                    attrs['attributes'][k] = v
+                else:
+                    attrs[k] = v
 
-        if 'type' in attrs:
-            type = module.get_type_by_name(attrs['type'])
+            if not 'attributes' in attrs:
+                attrs['attributes'] = dict()
+            
+            if not 'resource' in attrs['attributes'] or not attrs['attributes']['resource']:
+                attrs['attributes']['resource'] = 'types'
+
+            if 'type' in attrs:
+                type = module.get_type_by_name(attrs['type'])
             if type and 'resource' in type.attributes:
                 resource_name = type.attributes['resource']
                 func = module.get_resource_method(module, endpoint, resource_name, 'post')
@@ -84,11 +195,14 @@ class Items(Resource):
                     external_resource = func.invoke(module, endpoint, args, path, 'application/json')
                     return self.item_from_json(module, external_resource.json, tbn)
             
-        item = module.create_item(**attrs)
+            item = module.create_item(**attrs)
+
         if content_type == 'application/json':
             return json.dumps(item.to_dict())
         else:
             return self.render_item(module, endpoint, args, path, content_type)
+
+        
 
     def put(self, module, endpoint, args, path=None, content_type='text/html'):
         if 'type' in args:
@@ -96,7 +210,7 @@ class Items(Resource):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, path, attrs['parent_id'])
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id'])
                     if item:
                         if module.can_account_write_item(account, item):
                             params = dict()
@@ -113,7 +227,7 @@ class Items(Resource):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             view = dict()
@@ -137,7 +251,7 @@ class Items(Resource):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             form = dict()
@@ -163,7 +277,7 @@ class Items(Resource):
                 attrs = dict(args)
                 if 'parent_id' in attrs:
                     account = module.get_account()
-                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
                     if item:
                         if module.can_account_write_item(account, item):
                             form = dict()
@@ -425,7 +539,7 @@ class Items(Resource):
             else:
                 target_item_id = args['item_id'][0]
                 
-            target_item = self.get_item(module, account, args, target_item_id)
+            target_item = self.get_item(module, endpoint, account, args, target_item_id)
 
         if path_item:
             app = path_item
