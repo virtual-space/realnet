@@ -59,11 +59,11 @@ class SqlRolesProvider(RolesProvider):
 
     def add_role_app(self, role_id, app_id):
         role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, RoleModel.id == role_id).first()
-        app = db.query(ItemModel).filter(ItemModel.org_id == self.org_id, ItemModel.id == app_id).first()
+        app = db.query(ItemModel).filter(ItemModel.org_id == self.org_id, or_(ItemModel.id == app_id, ItemModel.name == app_id)).first()
         if role and app:
-            role_app = db.query(RoleAppModel).filter(RoleAppModel.org_id == self.org_id, RoleAppModel.app_id == app_id, RoleAppModel.role_id == role_id).first()
+            role_app = db.query(RoleAppModel).filter(RoleAppModel.org_id == self.org_id, RoleAppModel.app_id == app.id, RoleAppModel.role_id == role_id).first()
             if not role_app:
-                role_app = RoleAppModel(id=str(uuid.uuid4()),role_id=role_id, app_id=app_id, org_id=self.org_id)
+                role_app = RoleAppModel(id=str(uuid.uuid4()),role_id=role_id, app_id=app.id, org_id=self.org_id)
                 db.add(role_app)
                 db.commit()
                 
@@ -73,9 +73,9 @@ class SqlRolesProvider(RolesProvider):
 
     def remove_role_app(self, role_id, app_id):
         role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, RoleModel.id == role_id).first()
-        app = db.query(ItemModel).filter(ItemModel.org_id == self.org_id, ItemModel.id == app_id).first()
+        app = db.query(ItemModel).filter(ItemModel.org_id == self.org_id, or_(ItemModel.id == app_id, ItemModel.name == app_id)).first()
         if role and app:
-            role_app = db.query(RoleAppModel).filter(RoleAppModel.org_id == self.org_id, RoleAppModel.app_id == app_id, RoleAppModel.role_id == role_id).first()
+            role_app = db.query(RoleAppModel).filter(RoleAppModel.org_id == self.org_id, RoleAppModel.app_id == app.id, RoleAppModel.role_id == role_id).first()
             if role_app:
                 db.delete(role_app)
                 db.commit()

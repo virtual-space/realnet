@@ -124,11 +124,11 @@ def get_instance_types(module, instance):
     return get_base_types(module, instance.type, set())
 
 
-def import_items(module, items):
+def import_items(module, items, parent_id=None):
 
     for item in items:
         item_attributes = item.get('attributes', dict())
-        item_parent_id = item.get('parent_id')
+        item_parent_id = item.get('parent_id', parent_id)
         item_id = item.get('id', str(uuid.uuid4()))
         item_location = item.get('location')
         if item_location and not isinstance(item_location,str):
@@ -168,11 +168,8 @@ def import_items(module, items):
             if resource_name != 'items':
                 func = module.get_resource_method(module, None, resource_name, 'post')
                 if func:
-                    tbn = {t.name:t for t in module.get_types()}
                     external_resource = func.invoke(module, None, item_data, None, 'application/json')
                     created = True
-                    
-                # return self.item_from_json(module, external_resource.json, tbn)
             
         if not created:
             created_item = module.create_item(**item_data)

@@ -1,7 +1,7 @@
 import uuid
 import base64
 import json
-from flask import render_template, jsonify, Response
+from flask import render_template, jsonify, Response, redirect
 from realnet.core.type import Resource, Item, Instance
 from realnet.core.hierarchy import items_from_attributes
 
@@ -91,14 +91,124 @@ class Items(Resource):
             return self.render_item(module, endpoint, args, path, content_type)
 
     def put(self, module, endpoint, args, path=None, content_type='text/html'):
-        params = dict()
-        if 'name' in args:
-            params['name'] = args['name']
-        if 'attributes' in args:
-            params['attributes'] = args['attributes']
-        if path:
-            module.update_item(path, **params)
-        return self.render_item(module, endpoint,args, path, content_type)
+        if 'type' in args:
+            if args['type'] == 'Attribute':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, path, attrs['parent_id'])
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            params = dict()
+                            current_attrs = dict(item.attributes)
+                            current_attrs[attrs['name']] = attrs['value']
+                            params['attributes'] = current_attrs
+                            module.update_item(attrs['parent_id'], **params)
+                    if 'active_view' in attrs:
+                        return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                    else:
+                        return redirect('/types/{}'.format(attrs['parent_id']))
+                    
+            elif args['type'].endswith('View'):
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            view = dict()
+                            if 'name' in args:
+                                view['name'] = args['name']
+                            if 'attributes' in args:
+                                view['attributes'] = args.get('attributes',dict())
+                            if 'type' in args:
+                                view['type'] = args.get('type')
+                            
+                            views = item.attributes.get('views', []) + [view]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['views'] = views
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'FormItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'FormItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            
+                            forms = item.attributes.get('forms', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['forms'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'MenuItem':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            form = dict()
+                            form['type'] = 'MenuItem'
+                            form['attributes'] = dict()
+                            if 'name' in args:
+                                form['name'] = args['name']
+                            if 'path' in args:
+                                form['attributes']['path'] = args['path']
+                            if 'form' in args:
+                                form['attributes']['form'] = args['form']
+                            if 'icon' in args:
+                                form['attributes']['icon'] = args['icon']
+                            
+                            forms = item.attributes.get('menu', []) + [form]
+                            current_attrs = dict(item.attributes)
+                            current_attrs['menu'] = forms
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/types/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/types/{}'.format(attrs['parent_id']))
+        else:
+            attrs = dict()
+            for k,v in args.items():
+                if k not in set(['name', 'base']):
+                    if not 'attributes' in attrs:
+                        attrs['attributes'] = dict()
+                    attrs['attributes'][k] = v
+                else:
+                    attrs[k] = v
+
+            if not 'attributes' in attrs:
+                attrs['attributes'] = dict()
+            
+            if not 'resource' in attrs['attributes'] or not attrs['attributes']['resource']:
+                attrs['attributes']['resource'] = 'types'
+
+            item = module.create_item(**attrs)
+            
+        if content_type == 'application/json':
+            return jsonify(item.to_dict())
+        else:
+            return self.render_item(module, endpoint, args, path, content_type)
 
     def delete(self, module, endpoint, args, path=None, content_type='text/html'):
         module.delete_item(args['id'])
@@ -249,6 +359,26 @@ class Items(Resource):
 
         return controls
 
+    def create_child_items(self, module, type, item):
+        account = module.get_account()
+        for instance in type.instances:
+            params = dict(**instance.to_dict())
+            if 'id' in params:
+                existing_instance = module.get_instance_by_id(params['id'])
+                if not existing_instance:
+                    created_instance = module.create_instance(**params)
+                    created_item = module.create_item(type_id=type.id, 
+                                                    instance_id=created_instance.id, 
+                                                    org_id=account.org.id, 
+                                                    parent_id=item.id, 
+                                                    name=created_instance.name)
+                else:
+                    created_item = module.create_item(type_id=type.id, 
+                                                    instance_id=existing_instance.id, 
+                                                    org_id=account.org.id, 
+                                                    parent_id=item.id, 
+                                                    name=existing_instance.name)
+                    
     def get_template_args(self, module, endpoint, args, path):
         account = module.get_account()
         org = module.get_org()

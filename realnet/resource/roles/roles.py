@@ -41,16 +41,18 @@ class Roles(Items):
 
                 return redirect('/roles/{}'.format(role_id))
             else:
+                # tbn = {t.name:t for t in module.get_types()}
                 type = module.get_type_by_name(args.get('type', 'Role'))
-                role = module.create_role(**args)
+                role_object = module.create_role(**args)
                 for instance in type.instances:
-                    params = dict(**instance.to_dict())
-                    created_instance = module.create_instance(**params)
-                    created_item = module.create_item(type_id=type.id, 
-                                                      instance_id=created_instance.id, 
-                                                      org_id=account.org.id, 
-                                                      parent_id=role.id, 
-                                                      name=created_instance.name)
+                    if instance.type.name == 'RoleApp':
+                        module.add_role_app(role_object.id, instance.name)
+                        # role = self.item_from_role(role_object, type)
+                        # self.create_child_items(module, type, role)
+                        # break
+                
+                # role = self.item_from_role(role_object, type)
+                # self.create_child_items(module, type, role)
                         
                 return redirect('/roles')
 
