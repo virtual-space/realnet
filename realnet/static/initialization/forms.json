@@ -2809,6 +2809,51 @@
             }
         },
         {
+            "name": "LoginForm",
+            "base": "Form",
+            "attributes": {
+                "type": "Login",
+                "controls": [
+                    {
+                        "name": "Username",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "username"
+                        }
+                    },
+                    {
+                        "name": "Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "password"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Login",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ],
+                "views": [],
+                "menu": []
+            }
+        },
+        {
             "name": "QueryForm",
             "base": "EditForm",
             "attributes": {
@@ -3241,6 +3286,11 @@
         {
             "name": "TypeUploadForm",
             "type": "TypeUploadForm",
+            "public": "true"
+        },
+        {
+            "name": "LoginForm",
+            "type": "LoginForm",
             "public": "true"
         }
     ]

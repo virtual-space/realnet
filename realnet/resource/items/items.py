@@ -477,8 +477,9 @@ class Items(Resource):
                     func = module.get_resource_method(module, endpoint, external_type.attributes['resource'], 'get')
                     if func:
                         external_resources = func.invoke(module, endpoint, args, path, 'application/json')
-                        external_items = [self.item_from_json(module, er, tbn) for er in json.loads(external_resources)]
-                        results = results + [er for er in external_items]
+                        if external_resources:
+                            external_items = [self.item_from_json(module, er, tbn) for er in json.loads(external_resources)]
+                            results = results + [er for er in external_items]
                 
                 if internal_types:
                     external_query['types'] = [t.name for t in internal_types]

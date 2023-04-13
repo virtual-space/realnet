@@ -54,21 +54,24 @@ def build_type(module, type, existing_types_by_name):
 
     created_type = module.create_type(**params)
 
-    for instance in type.get('instances', []):
-        attributes = instance.get('attributes', dict())
-        is_public = instance.get('public')
-        if is_public:
-            is_public = is_public.lower() in ['true', 'True', '1']
-        type_id = existing_types_by_name[instance['type']].id
-        if type_id:
-            module.create_instance(**{  'id': str(uuid.uuid4()),
-                                        'name': instance['name'],
-                                        'attributes': attributes,
-                                        'public': is_public,
-                                        'type_id': type_id,
-                                        'parent_type_id': created_type.id})
+    if created_type:
+        for instance in type.get('instances', []):
+            attributes = instance.get('attributes', dict())
+            is_public = instance.get('public')
+            if is_public:
+                is_public = is_public.lower() in ['true', 'True', '1']
+            type_id = existing_types_by_name[instance['type']].id
+            if type_id:
+                module.create_instance(**{  'id': str(uuid.uuid4()),
+                                            'name': instance['name'],
+                                            'attributes': attributes,
+                                            'public': is_public,
+                                            'type_id': type_id,
+                                            'parent_type_id': created_type.id})
 
-    existing_types_by_name[created_type.name] = created_type
+        existing_types_by_name[created_type.name] = created_type
+    else:
+        print('Failed to create type {}'.format(type.get('name')))
 
 def build_type_tree(module, queue, built, existing_types_by_name):
     to_build = []

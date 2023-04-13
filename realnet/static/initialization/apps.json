@@ -321,15 +321,6 @@
             }
         },
         {
-            "name": "Attributes",
-            "base": "App",
-            "attributes": {
-                "icon": "edit_attributes",
-                "types": ["Attribute"],
-                "query": {"types": ["Attribute"]}
-            }
-        },
-        {
             "name": "Login",
             "base": "App",
             "attributes": {
@@ -338,7 +329,17 @@
                 "client_id": "IEmf5XYQJXIHvWcQtZ5FXbLM",
                 "authenticator_name": "password",
                 "authenticator_type": "password",
-                "tenant": "public"
+                "tenant": "public",
+                "views": [
+                    {
+                        "name": "Login",
+                        "type": "FormView",
+                        "attributes": {
+                            "form": "LoginForm"
+                        }
+                    }
+                ],
+                "menu": []
             }
         }
     ],
@@ -760,6 +761,25 @@
             "attributes": {
                 "path": "attributes",
                 "resource": "attributes"
+            },
+            "public": "true"
+        },
+        {
+            "name": "login",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.login.login",
+                "module_class": "Login",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "login",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "login",
+                "resource": "login"
             },
             "public": "true"
         }
