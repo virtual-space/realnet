@@ -4,20 +4,110 @@ from realnet.provider.sql.models import Type as TypeModel, Instance as InstanceM
 from realnet.core.type import Type, Instance, Item
 from realnet.core.acl import AclType, Acl
 
+def traverse_instance(instances, instance, parent_type_name):
+        for inst in instance.get('instances', []):
+            instances.append({ "instance": inst, "parent_type_name": parent_type_name})
+            traverse_instance(instances, inst, inst.get('type'))
+
+def collect_inheritance_hierarchy(children, td, instances):
+    name = td.get('name')
+    derived_types = children.get(name)
+    if derived_types:
+        for derived_type in derived_types:
+            for instance in td.get('instances', []):
+                instances.append({ "instance": instance, "parent_type_name": derived_type['name']})
+                # logging.getLogger().info('*** {} is derived from {} ***'.format(derived_type['name'], name))
+            collect_inheritance_hierarchy(children, derived_type, instances)
+
+
+
+def collect_type_dependencies(type_model):
+    deps = set()
+    if type_model.base:
+        deps.add(type_model.base.name)
+    for instance in type_model.instances:
+        deps.add(instance.type.name)
+    return deps
+
+def collect_type_defs(type_models, type_defs):
+    for td in type_models:
+        name = td.name
+        deps = collect_type_dependencies(td)
+        if not name in type_defs: 
+            type_defs[name] = {'type': td, 'deps': deps}
+            # child_types = td.types
+            # if child_types:
+            #     collect_type_defs(child_types, type_defs)
+
+def build_type(type, existing_types_by_name):
+    base_name = None
+    base_type = None
+
+    if type.base:
+        base_name = type.base.name
+    
+    if base_name:
+        base_type = existing_types_by_name.get(base_name)
+    
+    instances = []
+    type_instances = [i for i in type.instances]
+    for instance in type_instances:
+        attributes = instance.attributes
+        instance_type = existing_types_by_name[instance.type.name]
+        instances.append(Instance(instance.id, instance_type, instance.name, attributes))
+        
+    existing_types_by_name[type.name] = Type(type.id, type.name, base_type, type.attributes, instances)
+
+
+def build_type_tree(queue, built, existing_types_by_name):
+    to_build = []
+    on_hold = []
+
+    for element in queue:
+        if element['deps'] <= built:
+            to_build.append(element)
+        else:
+            on_hold.append(element)
+
+    for element in to_build:
+        build_type(element['type'], existing_types_by_name)
+        built.add(element['type'].name)
+
+    if on_hold:
+        build_type_tree(on_hold, built, existing_types_by_name)
 
 def get_types_by_name(org_id):
+    type_defs = dict()
+    type_models = db.query(TypeModel).filter(TypeModel.org_id == org_id).all()
+    collect_type_defs(type_models, type_defs)
+    existing_types_by_name = dict()
+
+    build_type_tree(type_defs.values(), set(existing_types_by_name.keys()), existing_types_by_name)
+    
+    return existing_types_by_name
+
+def get_types_by_name1(org_id):
     type_models = db.query(TypeModel).filter(TypeModel.org_id == org_id).all()
     instance_models = db.query(InstanceModel).filter(InstanceModel.org_id == org_id).all()
-    tmbn = {tm.name:tm for tm in type_models}
+    type_models_by_name = {tm.name:tm for tm in type_models}
+    type_names_without_instances = set([tm.name for tm in type_models])
     type_instances = dict()
     for instance_model in instance_models:
         if not instance_model.parent_type_id in type_instances:
             type_instances[instance_model.parent_type_id] = [instance_model]
         else:
             type_instances[instance_model.parent_type_id].append(instance_model)
+        if instance_model.type.name in type_names_without_instances:
+            type_names_without_instances.remove(instance_model.type.name)
+
     tbn = dict()
+    
+    # for tm in type_names_without_instances:
+    #    type_model_to_type(org_id, type_models_by_name[tm], type_models_by_name, tbn, type_instances)
+
     for tm in type_models:
-        type_model_to_type(org_id, tm, tmbn, tbn, type_instances)
+        type_model_to_type(org_id, tm, type_models_by_name, tbn, type_instances)
+
     return tbn
 
 def type_model_to_type(org_id, type_model, type_models_by_name, types_by_name, type_instances):
@@ -62,7 +152,10 @@ def get_derived_types(org_id, type_ids):
     return list(results)
 
 def instance_model_to_instance(instance_model, types_by_name):
-    return Instance(instance_model.id, types_by_name.get(instance_model.type.name), instance_model.name, instance_model.attributes)
+    type = types_by_name.get(instance_model.type.name)
+    if not type:
+        return None
+    return Instance(instance_model.id, type, instance_model.name, instance_model.attributes)
 
 def acl_model_to_acl(acl_model):
     return Acl(acl_model.type, acl_model.permission, acl_model.target_id, acl_model.org_id, acl_model.owner_id)

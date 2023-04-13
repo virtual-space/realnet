@@ -55,9 +55,9 @@ class Type:
 
     def _get_attributes(self):
         if self.base:
-            return  self.base.attributes | self._attributes
+            return  self.base.attributes | self._attributes if self._attributes else self.base.attributes if self.base else dict()
         else:
-            return self._attributes
+            return self._attributes if self._attributes else dict()
 
     def _del_attributes(self):
         self._attributes = dict()

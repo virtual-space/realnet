@@ -204,7 +204,7 @@ class Type(Model, SerializerMixin):
     base_id = db.Column(db.String(36), db.ForeignKey('type.id', ondelete='CASCADE'))
     module = db.Column(db.String(128))
     base = relationship('Type', remote_side='[Type.id]')
-    instances = relationship('Instance', foreign_keys='[Instance.parent_type_id]')
+    instances = relationship('Instance', foreign_keys='[Instance.parent_type_id]', lazy='joined')
     acls = relationship('Acl', passive_deletes=True)
 
 class VisibilityType(enum.Enum):

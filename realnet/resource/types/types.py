@@ -6,11 +6,11 @@ from realnet.core.type import Item, Instance
 class Types(Items):
     
     def match(self, instance, query):
-        if query:
+        if query and instance:
             # todo proper check for inheritance
             types = set(query.get('types',[]))
             for type in types:
-                if instance.type.is_derived_from(type):
+                if instance.type.is_derived_from(type) or type == 'Item':
                     return True
         else:
             return True
