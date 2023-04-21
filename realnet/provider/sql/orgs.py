@@ -1,7 +1,7 @@
 import uuid
 
 from realnet.core.provider import OrgsProvider
-from realnet.core.type import Org, Account, Authenticator, Client
+from realnet.core.type import Org, Account, Authenticator, Client, Endpoint
 from .models import AccountType, Org as OrgModel, Account as AccountModel, Authenticator as AuthenticatorModel, Client as ClientModel, Item as ItemModel, OrgRoleType, Type as TypeModel, Acl,  AclType, session as db
 from .utility import item_model_to_item, get_types_by_name, type_model_to_type, get_derived_types
 from sqlalchemy import or_
@@ -82,6 +82,18 @@ class SqlOrgsProvider(OrgsProvider):
             tbn = get_types_by_name(item.org_id)
             return item_model_to_item(item.org_id, item, tbn)
         return None
+    
+    def get_org_login(self, org_id):
+        tbn = get_types_by_name(org_id)
+        type_ids = [ti.id for ti in db.query(TypeModel).filter(TypeModel.name == 'Resource', TypeModel.org_id == org_id).all()]
+        derived_type_ids = get_derived_types(org_id, type_ids)
+        login = db.query(ItemModel).filter(ItemModel.name == 'login', ItemModel.acls.any(Acl.type == AclType.public), ItemModel.type_id.in_(list(set(type_ids + derived_type_ids))), ItemModel.org_id == org_id).first()
+        if login:
+            return item_model_to_item(org_id, login, tbn)
+        
+        return None
+        
+        return [item_model_to_item(org_id, login, tbn) for login in logins][0] if logins else None
 
     def get_account_by_username(self, org_id, username):
         account = db.query(AccountModel).filter(AccountModel.org_id == org_id, AccountModel.username == username).first()

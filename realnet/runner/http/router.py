@@ -1,4 +1,5 @@
 import os
+import importlib
 
 from flask import Response, redirect, render_template, render_template_string, request, jsonify, Blueprint, send_file, session, current_app, url_for
 from authlib.integrations.flask_oauth2 import current_token
@@ -7,6 +8,7 @@ from authlib.integrations.requests_client import OAuth2Session
 from authlib.common.encoding import to_unicode, to_bytes
 from .auth import require_oauth, authorization
 from realnet.provider.sql.models import get_or_create_delegated_account, create_tenant
+from realnet.core.type import Func
 
 try:
     import urlparse
@@ -67,21 +69,37 @@ def tenant_login(id, name):
     contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
     org =  org = contextProvider.get_org_by_name(id)
     if org:
-        client_id = request.args.get('client_id')
+        client_id = request.form.get('client_id')
+        if not client_id:
+            client_id = request.args.get('client_id')
+
+        if not client_id and request.is_json:
+            client_id = request.json.get('client_id')
+
         response_type = request.args.get('response_type')
         client = contextProvider.get_org_client(org.id, client_id)
+        
         if not client:
             client = [c for c in contextProvider.get_org_clients(org.id) if c.name.endswith("_realscape_web")][0]
             # client = [c for c in contextProvider.get_org_clients(org.id) if c.name.endswith("_cli")][0]
         if client:
             if request.method == 'POST':
                 username = request.form.get('username')
+                if not username:
+                    username = request.args.get('username')
+                if not username and request.is_json:
+                    username = request.json.get('username')
                 if username:
                     password = request.form.get('password')
+                    if not password:
+                        password = request.args.get('password')
+                    if not password and request.is_json:
+                        password = request.json.get('password')
                     if password:
                         account = contextProvider.check_password(org.id, username, password)
                         if account:
-                            return authorization.create_authorization_response(grant_user=account)
+                            return authorization.create_token_response()
+                            # return authorization.create_authorization_response(grant_user=account)
             else:
                 if name == None:
                     oauths = [{'name': n['name'],
@@ -212,6 +230,10 @@ def register_org():
         tenant_info = create_tenant(orgname, username, email, password, os.getenv('REALNET_URI'), os.getenv('REALNET_REDIRECT_URI'), os.getenv('REALNET_MOBILE_REDIRECT_URI'))
         return redirect('/' + orgname + '/login')
 
+@router_bp.route('/oauth/token', methods=['POST'])
+def oauth_token():
+    return authorization.create_token_response()
+    
 @router_bp.route('/<id>/authorize/<name>', defaults={'client_id': None})
 @router_bp.route('/<id>/<client_id>/authorize/<name>')
 def tenant_auth(id, client_id, name):
@@ -328,7 +350,7 @@ def router(endpoint_name, path):
     
     if not current_token:
         account = current_user(contextProvider)
-        if not account and endpoint_name != 'signin' and endpoint_name != 'public':
+        if not account and endpoint_name != 'login' and endpoint_name != 'public' and endpoint_name != 'oauth':
             if content_type == 'application/json':
                 return jsonify(isError=True,
                         message="Failure",
@@ -339,65 +361,65 @@ def router(endpoint_name, path):
     else:
         account = current_token.account
 
-    if not account and endpoint_name == 'public':
-        orgs = contextProvider.get_public_orgs()
-        if path == 'apps':
-            apps = []
-            for org in orgs:
-                apps = apps + [a for a in contextProvider.get_public_apps(org.id)]
-            return jsonify([app.to_dict() for app in apps])
-        elif path == 'types':
-            types = []
-            for org in orgs:
-                types = types + [t for t in contextProvider.get_public_types(org.id)]
-            return jsonify([type.to_dict() for type in types])
-        elif path == 'forms':
-            forms = []
-            for org in orgs:
-                forms = forms + [f for f in contextProvider.get_public_forms(org.id)]
-            return jsonify([form.to_dict() for form in forms])
-        elif path and path.startswith('items/'):
-            parts = path.split('/')
-            subpath = parts[0]
-            if subpath == 'items':
-                id = None
-                if len(parts) > 1:
-                    id = parts[1]
-                if id:
-                    item = contextProvider.get_public_item(id)
-                    if item:
-                        return jsonify(item.to_dict())
-                    else:
-                        return jsonify(isError=True,
-                                       message="Failure",
-                                       statusCode=404,
-                                       data='Item {0} not found'.format(id)), 404
+    endpoint = None
+    context = None
+
+    if not account:
+        if endpoint_name == 'public':
+            orgs = contextProvider.get_public_orgs()
+            if path == 'apps':
+                apps = []
+                for org in orgs:
+                    apps = apps + [a for a in contextProvider.get_public_apps(org.id)]
+                return jsonify([app.to_dict() for app in apps])
+            elif path == 'types':
+                types = []
+                for org in orgs:
+                    types = types + [t for t in contextProvider.get_public_types(org.id)]
+                return jsonify([type.to_dict() for type in types])
+            elif path == 'forms':
+                forms = []
+                for org in orgs:
+                    forms = forms + [f for f in contextProvider.get_public_forms(org.id)]
+                return jsonify([form.to_dict() for form in forms])
+            elif path and path.startswith('items/'):
+                parts = path.split('/')
+                subpath = parts[0]
+                if subpath == 'items':
+                    id = None
+                    if len(parts) > 1:
+                        id = parts[1]
+                    if id:
+                        item = contextProvider.get_public_item(id)
+                        if item:
+                            return jsonify(item.to_dict())
+                        else:
+                            return jsonify(isError=True,
+                                        message="Failure",
+                                        statusCode=404,
+                                        data='Item {0} not found'.format(id)), 404
             else:
                 print(path)
+    else:
+        context = contextProvider.context(account.org.id, account.id)
 
-    context = contextProvider.context(account.org.id, account.id)
-
-    if endpoint_name == 'signin':
-        return render_template('login.html')
-    elif not endpoint_name:
-        endpoints = context.get_endpoints(context)
-        endpoint = next((e for e in endpoints), None)
-        if not endpoint:
-            return jsonify(isError=True,
-                        message="Failure",
-                        statusCode=404,
-                        data='No endpoints found'), 404
-        endpoint_name = endpoint.item.name.lower()
-        return redirect('/{}'.format(endpoint_name))
-    
-    
-
-    endpoint = context.get_endpoint(context, endpoint_name)
-    method = request.method.lower()
+        if not endpoint_name:
+            endpoints = context.get_endpoints(context)
+            endpoint = next((e for e in endpoints), None)
+            if not endpoint:
+                return jsonify(isError=True,
+                            message="Failure",
+                            statusCode=404,
+                            data='No endpoints found'), 404
+            endpoint_name = endpoint.item.name.lower()
+            return redirect('/{}'.format(endpoint_name))
+        
+        endpoint = context.get_endpoint(context, endpoint_name)
 
     if endpoint:
+        method = request.method.lower()
         args = request.args.to_dict(flat=False)
-
+        
         if request.method.lower() == 'post' or request.method.lower() == 'put':
             args |= request.form.to_dict()
             if args:

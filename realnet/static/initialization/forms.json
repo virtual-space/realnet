@@ -2813,6 +2813,7 @@
             "base": "Form",
             "attributes": {
                 "type": "Login",
+                "path": "login",
                 "controls": [
                     {
                         "name": "Username",
@@ -2825,16 +2826,24 @@
                         "name": "Password",
                         "type": "EditCtrl",
                         "attributes": {
-                            "target": "password"
+                            "target": "password",
+                            "password": "true"
                         }
                     },
                     {
-                        "name": "Cancel",
-                        "type": "ButtonCtrl",
+                        "name": "Response Type",
+                        "type": "HiddenCtrl",
                         "attributes": {
-                            "close": "true",
-                            "order": "8",
-                            "is_cancel_button": "true"
+                            "target": "response_type",
+                            "value": "token"
+                        }
+                    },
+                    {
+                        "name": "Grant Type",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "grant_type",
+                            "value": "password"
                         }
                     },
                     {
@@ -2843,7 +2852,59 @@
                         "attributes": {
                             "default": "true",
                             "close": "true",
-                            "command": "Save",
+                            "command": "Login",
+                            "order": "9"
+                        }
+                        
+                    }
+                ],
+                "views": [],
+                "menu": []
+            }
+        },
+        {
+            "name": "RegisterForm",
+            "base": "Form",
+            "attributes": {
+                "path": "register",
+                "controls": [
+                    {
+                        "name": "Username",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "username"
+                        }
+                    },
+                    {
+                        "name": "Email",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "email"
+                        }
+                    },
+                    {
+                        "name": "Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Repeat Password",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "repeat_password",
+                            "password": "true"
+                        }
+                    },
+                    {
+                        "name": "Register",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Register",
                             "order": "9"
                         }
                         
@@ -3291,6 +3352,15 @@
         {
             "name": "LoginForm",
             "type": "LoginForm",
+            "public": "true",
+            "attributes": {
+                "client_id": "IEmf5XYQJXIHvWcQtZ5FXbLM",
+                "client_secret": "lDnD0E2aXlwvzuN38xLucBSB6EC4Qe4sIzOkyWywHxiDXYyf"
+            }
+        },
+        {
+            "name": "RegisterForm",
+            "type": "RegisterForm",
             "public": "true"
         }
     ]

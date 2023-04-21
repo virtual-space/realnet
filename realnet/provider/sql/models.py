@@ -51,7 +51,10 @@ class Authenticator(Model, SerializerMixin):
     org_id = db.Column(db.String(36), db.ForeignKey('org.id', ondelete='CASCADE'), nullable=False)
 
     def get_url(self):
-        return self.authorize_url + '?client_id=' + self.client_id + '&response_type=code' + '&scope=openid profile email' + '&redirect_uri=http://localhost:8080/oauth/authorize'
+        url = self.authorize_url
+        if not url:
+            url = 'http://localhost:8080'
+        return url + '?client_id=' + self.client_id + '&response_type=code' + '&scope=openid profile email' + '&redirect_uri=http://localhost:8080/oauth/authorize'
 
 
 class AccountType(enum.Enum):
@@ -416,14 +419,16 @@ def create_tenant(org_name, admin_username, admin_email, admin_password, uri, re
                         org_id=org.id)
 
     web_client_id = 'IEmf5XYQJXIHvWcQtZ5FXbLM' #gen_salt(24)
+    web_client_secret = 'lDnD0E2aXlwvzuN38xLucBSB6EC4Qe4sIzOkyWywHxiDXYyf' #gen_salt(48)
     web_client = create_client(name=org_name + '_realscape_web',
                         client_id=web_client_id,
+                        client_secret=web_client_secret,
                         uri=uri,
                         grant_types=['password'],
                         redirect_uris=[redirect_uri],
                         response_types=['token'],
                         scope='',
-                        auth_method='none',
+                        auth_method='client_secret_basic',
                         org_id=org.id)
 
     mobile_client_id = gen_salt(24)

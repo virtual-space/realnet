@@ -214,6 +214,12 @@
                             "form": "AccountCreateForm"
                         }
                     }
+                ],
+                "views": [
+                    {
+                        "name": "Accounts",
+                        "type": "ListView"
+                    }
                 ]
             }
         },
@@ -336,6 +342,24 @@
                         "type": "FormView",
                         "attributes": {
                             "form": "LoginForm"
+                        }
+                    }
+                ],
+                "menu": []
+            }
+        },
+        {
+            "name": "Register",
+            "base": "App",
+            "attributes": {
+                "icon": "key",
+                "tenant": "public",
+                "views": [
+                    {
+                        "name": "Register",
+                        "type": "FormView",
+                        "attributes": {
+                            "form": "RegisterForm"
                         }
                     }
                 ],

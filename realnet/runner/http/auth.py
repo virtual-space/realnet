@@ -14,7 +14,7 @@ from authlib.oidc.core import UserInfo
 import authlib.oidc.core.grants as oidc_grants
 from werkzeug.security import gen_salt
 
-from realnet.provider.sql.models import db, Account, Client, AuthorizationCode, Token, session 
+from realnet.provider.sql.models import db, Account, Client, AuthorizationCode, Token, session as db
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
@@ -49,30 +49,30 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
                 code_challenge=code_challenge,
                 code_challenge_method=code_challenge_method)
 
-        db.session.add(auth_code)
-        db.session.commit()
+        db.add(auth_code)
+        db.commit()
         return auth_code
 
     def query_authorization_code(self, code, client):
         print('*** authorization_code_grant:query_authorization_code ***')
-        auth_code = AuthorizationCode.query.filter_by(
+        auth_code = db.query(AuthorizationCode).filter_by(
             code=code, client_id=client.client_id).first()
         if auth_code and not auth_code.is_expired():
             return auth_code
 
     def delete_authorization_code(self, authorization_code):
         print('*** authorization_code_grant:delete_authorization_code ***')
-        db.session.delete(authorization_code)
-        db.session.commit()
+        db.delete(authorization_code)
+        db.commit()
 
     def authenticate_user(self, authorization_code):
         print('*** authorization_code_grant:authenticate_user ***')
-        return Account.query.get(authorization_code.account_id)
+        return db.query(Account).get(authorization_code.account_id)
 
 
 class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
     def authenticate_user(self, username, password):
-        account = Account.query.filter_by(username=username).first()
+        account = db.query(Account).filter_by(username=username).first()
         print(account.check_password(password))
         if account is not None and account.check_password(password):
             return account
@@ -80,17 +80,17 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
     def authenticate_refresh_token(self, refresh_token):
-        token = Token.query.filter_by(refresh_token=refresh_token).first()
+        token = db.query(Token).filter_by(refresh_token=refresh_token).first()
         if token and token.is_refresh_token_active():
             return token
 
     def authenticate_user(self, credential):
-        return Account.query.get(credential.user_id)
+        return db.query(Account).get(credential.user_id)
 
     def revoke_old_credential(self, credential):
         credential.revoked = True
-        db.session.add(credential)
-        db.session.commit()
+        db.add(credential)
+        db.commit()
 
 from realnet.core.config import Config
 
@@ -99,7 +99,7 @@ config = Config()
 class OpenIDCode(oidc_grants.OpenIDCode):
     def exists_nonce(self, nonce, request):
         print('*** openid_code_grant:exists_nonce ***')
-        exists = AuthorizationCode.query.filter_by(
+        exists = db.query(AuthorizationCode).filter_by(
             client_id=request.client_id, nonce=nonce
         ).first()
         return bool(exists)
@@ -123,7 +123,7 @@ class OpenIDCode(oidc_grants.OpenIDCode):
 class OpenIDImplicitGrant(oidc_grants.OpenIDImplicitGrant):
     def exists_nonce(self, nonce, request):
         print('*** openid_implicit_grant:exists_nonce ***')
-        exists = AuthorizationCode.query.filter_by(
+        exists = db.query(AuthorizationCode).filter_by(
             client_id=request.client_id, nonce=nonce
         ).first()
         return bool(exists)
@@ -154,8 +154,8 @@ def create_authorization_code(client, grant_user, request):
         scope=request.scope,
         user_id=request.user.id,
         nonce=nonce)
-    db.session.add(auth_code)
-    db.session.commit()
+    db.add(auth_code)
+    db.commit()
     return code
 
 class HybridGrant(oidc_grants.OpenIDHybridGrant):
@@ -166,7 +166,7 @@ class HybridGrant(oidc_grants.OpenIDHybridGrant):
 
     def exists_nonce(self, nonce, request):
         print('*** hybrid_grant:exists_nonce ***')
-        exists = AuthorizationCode.query.filter_by(
+        exists = db.query(AuthorizationCode).filter_by(
             client_id=request.client_id, nonce=nonce
         ).first()
         return bool(exists)
@@ -188,8 +188,8 @@ class HybridGrant(oidc_grants.OpenIDHybridGrant):
         return user_info
 
 
-query_client = create_query_client_func(session, Client)
-save_token = create_save_token_func(session, Token)
+query_client = create_query_client_func(db, Client)
+save_token = create_save_token_func(db, Token)
 authorization = AuthorizationServer(
     query_client=query_client,
     save_token=save_token,
@@ -212,9 +212,9 @@ def config_oauth(app):
     authorization.register_grant(RefreshTokenGrant)
 
     # support revocation
-    revocation_cls = create_revocation_endpoint(session, Token)
+    revocation_cls = create_revocation_endpoint(db, Token)
     authorization.register_endpoint(revocation_cls)
 
     # protect resource
-    bearer_cls = create_bearer_token_validator(session, Token)
+    bearer_cls = create_bearer_token_validator(db, Token)
     require_oauth.register_token_validator(bearer_cls())

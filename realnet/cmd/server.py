@@ -76,6 +76,9 @@ class StandardContextProvider(ContextProvider):
 
     def get_public_orgs(self):
         return SqlOrgsProvider().get_public_orgs()
+    
+    def get_org_login(self, org_id):
+        return SqlOrgsProvider().get_org_login(org_id)
 
     def initialize(self, org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri):
         return SqlInitProvider().initialize(org_name, admin_username, admin_email, admin_password, uri, redirect_uri, mobile_redirect_uri)

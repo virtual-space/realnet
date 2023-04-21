@@ -485,6 +485,10 @@ class OrgsProvider(ABC):
         pass
 
     @abstractmethod
+    def get_org_login(self, org_id):
+        pass
+
+    @abstractmethod
     def get_public_item(self, id):
         pass
 
