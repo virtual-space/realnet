@@ -122,7 +122,13 @@
             "attributes": {
                 "icon": "collections",
                 "types": ["File"],
-                "query": {"types": ["File"], "any_level": "true"}
+                "query": {"types": ["File"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Files",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
@@ -161,7 +167,13 @@
             "attributes": {
                 "icon": "border_all",
                 "types": ["Resource"],
-                "query": {"types": ["Resource"], "any_level": "true"}
+                "query": {"types": ["Resource"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Resources",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
@@ -239,6 +251,12 @@
                             "form": "RoleCreateForm"
                         }
                     }
+                ],
+                "views": [
+                    {
+                        "name": "Roles",
+                        "type": "ListView"
+                    }
                 ]
             }
         },
@@ -257,6 +275,12 @@
                             "icon": "add",
                             "form": "GroupCreateForm"
                         }
+                    }
+                ],
+                "views": [
+                    {
+                        "name": "Groups",
+                        "type": "ListView"
                     }
                 ]
             }
@@ -277,6 +301,12 @@
                             "form": "AuthCreateForm"
                         }
                     }
+                ],
+                "views": [
+                    {
+                        "name": "Auths",
+                        "type": "ListView"
+                    }
                 ]
             }
         },
@@ -286,7 +316,13 @@
             "attributes": {
                 "icon": "public",
                 "types": ["Item"],
-                "query": {"types": ["Item"]}
+                "query": {"types": ["Item"]},
+                "views": [
+                    {
+                        "name": "Public",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
@@ -305,6 +341,12 @@
                             "form": "ClientCreateForm"
                         }
                     }
+                ],
+                "views": [
+                    {
+                        "name": "Clients",
+                        "type": "ListView"
+                    }
                 ]
             }
         },
@@ -314,7 +356,13 @@
             "attributes": {
                 "icon": "fullscreen",
                 "types": ["View"],
-                "query": {"types": ["View"]}
+                "query": {"types": ["View"]},
+                "views": [
+                    {
+                        "name": "Views",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
@@ -323,7 +371,13 @@
             "attributes": {
                 "icon": "widgets",
                 "types": ["Ctrl"],
-                "query": {"types": ["Ctrl"]}
+                "query": {"types": ["Ctrl"]},
+                "views": [
+                    {
+                        "name": "Ctrls",
+                        "type": "ListView"
+                    }
+                ]
             }
         },
         {
