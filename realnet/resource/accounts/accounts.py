@@ -28,7 +28,7 @@ class Accounts(Items):
                 roles = module.get_account_roles(path)
                 return [self.item_from_account_role(r, tbn['AccountRole']) for r in roles]
             elif view == 'groups':
-                return [self.item_from_account_group(r, tbn['AccountGroup']) for r in module.get_account_groups(account.id)]
+                return [self.item_from_account_group(r, tbn['AccountGroup']) for r in module.get_account_groups(path)]
         else:
             account = module.get_account()
             return [self.item_from_account(r, tbn['Account']) for r in module.get_org_accounts(account.org.id)]
@@ -52,7 +52,7 @@ class Accounts(Items):
                     return redirect('/accounts/{}'.format(args['parent_id']))
                 elif 'group_id' in args:
                     module.add_account_group(args['parent_id'], args['group_id'])
-                    return redirect('/accounts/{}'.format(args['parent_id']))
+                    return redirect('/accounts/{}?active_view=groups'.format(args['parent_id']))
             elif args.get('password') != None and args.get('password') == args.get('repeat_password'):
                 contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
                 contextProvider.create_account(   
