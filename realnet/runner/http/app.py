@@ -4,6 +4,7 @@ from flask_bootstrap import Bootstrap
 
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+import os
 import json
 import jinja2
 
@@ -18,6 +19,9 @@ def create_app(contextProvider):
     logging.basicConfig(level=logging.DEBUG)
 
     cfg = Config()
+
+    # TODO make sure this is properly set unless we are behind a proxy
+    os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     app = Flask(__name__)
     CORS(app)
