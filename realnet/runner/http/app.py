@@ -2,6 +2,7 @@ from flask import Flask, Response, redirect, render_template, render_template_st
 from flask_cors import CORS
 from flask_bootstrap import Bootstrap
 
+import os
 import json
 import jinja2
 
@@ -10,7 +11,7 @@ import logging
 from realnet.core.config import Config
 from .auth import config_oauth
 from .router import router_bp
-from werkzeug.middleware.proxy_fix import ProxyFix
+
 
 def create_app(contextProvider):
     logging.basicConfig(level=logging.DEBUG)
@@ -21,12 +22,12 @@ def create_app(contextProvider):
     CORS(app)
     # import realnet_server.wsgi
 
+    # only use this behind a secure connection - TODO tidy up and validate
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
     app.secret_key = cfg.get_app_secret()
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
     app.config['REALNET_CONTEXT_PROVIDER'] = contextProvider
-    app.config['PREFERRED_URL_SCHEME'] = 'https'
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-
 
     app.jinja_loader = jinja2.ChoiceLoader([
         app.jinja_loader,
