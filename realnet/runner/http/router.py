@@ -104,7 +104,7 @@ def tenant_login(id, name):
                         if account:
                             logger.info('*** request scheme: ' + request.scheme)
                             logger.info('*** request base url: ' + request.base_url)
-                            logger.info('*** request query string: ' + request.bquery_string)
+                            logger.info('*** request query string: ' + to_unicode(request.query_string))
                             return authorization.create_token_response()
                             # return authorization.create_authorization_response(grant_user=account)
             else:
