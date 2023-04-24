@@ -18,12 +18,14 @@ def create_app(contextProvider):
 
     cfg = Config()
 
+    # only use this behind a secure connection - TODO tidy up and validate
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
     app = Flask(__name__)
     CORS(app)
     # import realnet_server.wsgi
 
-    # only use this behind a secure connection - TODO tidy up and validate
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    
 
     app.secret_key = cfg.get_app_secret()
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
