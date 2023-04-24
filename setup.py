@@ -46,9 +46,7 @@ setup(
                       "scipy",
                       "Pillow==9.4.0",
                       "pillow-heif==0.7.0",
-                      "fastapi>=0.68.0,<0.69.0",
-                      "pydantic>=1.8.0,<2.0.0",
-                      "uvicorn>=0.15.0,<0.16.0"],
+                      "gunicorn==20.1.0"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",

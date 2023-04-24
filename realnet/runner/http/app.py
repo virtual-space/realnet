@@ -10,7 +10,7 @@ import logging
 from realnet.core.config import Config
 from .auth import config_oauth
 from .router import router_bp
-
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 def create_app(contextProvider):
     logging.basicConfig(level=logging.DEBUG)
@@ -25,6 +25,7 @@ def create_app(contextProvider):
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
     app.config['REALNET_CONTEXT_PROVIDER'] = contextProvider
     app.config['PREFERRED_URL_SCHEME'] = 'https'
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 
     app.jinja_loader = jinja2.ChoiceLoader([
