@@ -20,8 +20,8 @@ def create_app(contextProvider):
 
     cfg = Config()
 
-    # TODO make sure this is properly set unless we are behind a proxy
-    os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
+    if os.getenv('REALNET_ALLOW_HTTP', 'False') == 'True':
+        os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     app = Flask(__name__)
     CORS(app)
