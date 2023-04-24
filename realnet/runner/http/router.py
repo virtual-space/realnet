@@ -17,6 +17,10 @@ except ImportError:
 
 from authlib.common.urls import url_encode
 
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 router_bp = Blueprint('router_bp',__name__)
 
 def current_user(contextProvider):
@@ -98,6 +102,9 @@ def tenant_login(id, name):
                     if password:
                         account = contextProvider.check_password(org.id, username, password)
                         if account:
+                            logger.info('*** request scheme: ' + request.scheme)
+                            logger.info('*** request base url: ' + request.base_url)
+                            logger.info('*** request query string: ' + request.bquery_string)
                             return authorization.create_token_response()
                             # return authorization.create_authorization_response(grant_user=account)
             else:
