@@ -2,7 +2,8 @@ from flask import Flask, Response, redirect, render_template, render_template_st
 from flask_cors import CORS
 from flask_bootstrap import Bootstrap
 
-import os
+from werkzeug.middleware.proxy_fix import ProxyFix
+
 import json
 import jinja2
 
@@ -17,9 +18,6 @@ def create_app(contextProvider):
     logging.basicConfig(level=logging.DEBUG)
 
     cfg = Config()
-
-    # only use this behind a secure connection - TODO tidy up and validate
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
     app = Flask(__name__)
     CORS(app)
@@ -42,6 +40,7 @@ def create_app(contextProvider):
 
     config_oauth(app)
 
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_for=1, x_host=1, x_port=1, x_prefix=1)
     app.register_blueprint(router_bp)
 
     return app
