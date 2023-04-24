@@ -24,6 +24,7 @@ def create_app(contextProvider):
     app.secret_key = cfg.get_app_secret()
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
     app.config['REALNET_CONTEXT_PROVIDER'] = contextProvider
+    app.config['PREFERRED_URL_SCHEME'] = 'https'
 
 
     app.jinja_loader = jinja2.ChoiceLoader([
