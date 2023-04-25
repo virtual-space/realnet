@@ -2769,20 +2769,14 @@
             "name": "SettingsForm",
             "base": "EditForm",
             "attributes": {
-                "type": "Form",
+                "type": "Item",
+                "path": "items",
                 "controls": [
                     {
                         "name": "Name",
                         "type": "EditCtrl",
                         "attributes": {
                             "target": "name"
-                        }
-                    },
-                    {
-                        "name": "Attributes",
-                        "type": "EditCtrl",
-                        "attributes": {
-                            "target": "attributes"
                         }
                     },
                     {
@@ -2918,6 +2912,7 @@
             "name": "QueryForm",
             "base": "EditForm",
             "attributes": {
+                "type": "Query",
                 "path": "queries",
                 "controls": [
                     {

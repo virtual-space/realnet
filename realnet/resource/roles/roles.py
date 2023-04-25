@@ -79,5 +79,10 @@ class Roles(Items):
                 return redirect('/roles/{}'.format(args['parent_id']))
             elif 'id' in args:
                 module.delete_role(args['id'])
+            elif path:
+                parts = path.split('/')
+                if len(parts) == 3 and parts[1] == 'apps':
+                    module.remove_role_app(parts[0], parts[2])
+                    return redirect('/roles/{}'.format(parts[0]))
 
         return self.render_item(module, endpoint, args, path, content_type)
