@@ -149,10 +149,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
 
     def can_account_execute_item(self, account, item):
         
-        if [acl for acl in item.acls if acl.type == AclType.public]:
+        if [acl for acl in item.acls if acl.type.value == AclType.public.value]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and acl.permission and  'e' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.user.value and acl.target_id == account.id and acl.permission and  'e' in acl.permission]:
             return True
 
         account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
@@ -160,10 +160,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
 
-        if [acl for acl in item.acls if acl.type == AclType.org and acl.org_id == account.org_id and  acl.permission and 'e' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.org.value and acl.org_id == account.org.id and  acl.permission and 'e' in acl.permission]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.group and acl.target_id in group_ids and  acl.permission and 'e' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.group.value and acl.target_id in group_ids and  acl.permission and 'e' in acl.permission]:
             return True
 
         if item.owner_id == account.id:
@@ -172,10 +172,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
 
     def can_account_message_item(self, account, item):
 
-        if [acl for acl in item.acls if acl.type == AclType.public]:
+        if [acl for acl in item.acls if acl.type.value == AclType.public.value]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and  acl.permission and 'm' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.user.value and acl.target_id == account.id and  acl.permission and 'm' in acl.permission]:
             return True
 
         account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
@@ -183,10 +183,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
 
-        if [acl for acl in item.acls if acl.type == AclType.org and acl.org_id == account.org_id and acl.permission and  'm' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.org.value and acl.org_id == account.org.id and acl.permission and  'm' in acl.permission]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.group and acl.target_id in group_ids and acl.permission and  'm' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.group.value and acl.target_id in group_ids and acl.permission and  'm' in acl.permission]:
             return True
 
         if item.owner_id == account.id:
@@ -195,10 +195,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
 
     def can_account_read_item(self, account, item):
 
-        if [acl for acl in item.acls if acl.type == AclType.public]:
+        if [acl for acl in item.acls if acl.type.value == AclType.public.value]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.user and acl.target_id == account.id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
+        if [acl for acl in item.acls if acl.type.value == AclType.user.value and acl.target_id == account.id and acl.permission and ('r' in acl.permission or 'w' in acl.permission)]:
             return True
 
         account_groups = db.query(AccountGroupModel).filter(AccountGroupModel.account_id == account.id).all()
@@ -206,10 +206,10 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
         for account_group in account_groups:
             group_ids.append(account_group.group_id)
 
-        if [acl for acl in item.acls if acl.type == AclType.group and acl.target_id in group_ids and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+        if [acl for acl in item.acls if acl.type.value == AclType.group.value and acl.target_id in group_ids and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.org and acl.org_id == account.org_id and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
+        if [acl for acl in item.acls if acl.type.value == AclType.org.value and acl.org_id == account.org.id and acl.permission and  ('r' in acl.permission or 'w' in acl.permission)]:
             return True
 
         if item.owner_id == account.id:
@@ -228,17 +228,17 @@ class SqlOrgProvider(OrgProvider, GroupProvider, AclProvider, AccountProvider, A
             group_ids.append(account_group.group_id)
 
         if [acl for acl in item.acls if
-            acl.type == AclType.group and acl.target_id in group_ids and acl.permission and 'w' in acl.permission]:
+            acl.type.value == AclType.group.value and acl.target_id in group_ids and acl.permission and 'w' in acl.permission]:
             return True
 
-        if [acl for acl in item.acls if acl.type == AclType.org and acl.org_id == account.org_id and acl.permission and  'w' in acl.permission]:
+        if [acl for acl in item.acls if acl.type.value == AclType.org.value and acl.org_id == account.org.id and acl.permission and  'w' in acl.permission]:
             return True
 
         if item.owner_id == account.id:
             return True
 
     def can_account_delete_item(self, account, item):
-        return item.owner_id == account.id and account.org_id == item.org_id
+        return item.owner_id == account.id and account.org.id == item.org_id
 
     # group provider
 

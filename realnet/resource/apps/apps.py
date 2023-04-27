@@ -6,6 +6,9 @@ class Apps(Items):
     def get_query(self, module, account, query, parent_item=None):
         return {'types':['App']}
     
+    def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
+        return module.get_apps(module)
+    
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
         
         # app_type = module.create_type(name=args.get('name'), base='App')

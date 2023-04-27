@@ -597,6 +597,9 @@ class Items(Resource):
             active_subview_name = active_subview_name[0]
 
         app = next((a for a in apps if a.name.lower() == endpoint.item.name), None)
+
+        if not app:
+            app = next((a for a in apps), None)
         
         if apps:
             if active_app_name:

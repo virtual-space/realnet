@@ -37,6 +37,7 @@ class SqlRolesProvider(RolesProvider):
         role = db.query(RoleModel).filter(RoleModel.org_id == self.org_id, RoleModel.id == id).first()
         if role:
             db.delete(role)
+            db.commit()
 
     def update_role(self, id, **kwargs):
         pass

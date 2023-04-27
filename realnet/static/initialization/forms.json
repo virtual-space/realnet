@@ -1974,7 +1974,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Attribute",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Add Attribute", 
                 "controls": [
                     {
@@ -2034,7 +2034,7 @@
             "base": "EditForm",
             "attributes": {
                 "type": "Attribute",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Edit", 
                 "controls": [
                     {
@@ -2109,7 +2109,7 @@
             "base": "DeleteForm",
             "attributes": {
                 "type": "Attribute",
-                "path": "types",
+                "path": "items",
                 "controls": [
                     {
                         "name": "ParentId",
@@ -2169,7 +2169,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "MenuItem",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Add MenuItem", 
                 "controls": [
                     {
@@ -2245,7 +2245,7 @@
             "base": "EditForm",
             "attributes": {
                 "type": "Attribute",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Edit", 
                 "controls": [
                     {
@@ -2329,7 +2329,7 @@
             "base": "DeleteForm",
             "attributes": {
                 "type": "MenuItem",
-                "path": "types",
+                "path": "items",
                 "controls": [
                     {
                         "name": "ParentId",
@@ -2389,7 +2389,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "MenuItem",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Add MenuItem", 
                 "controls": [
                     {
@@ -2458,7 +2458,7 @@
             "base": "EditForm",
             "attributes": {
                 "type": "Attribute",
-                "path": "types",
+                "path": "items",
                 "title_prefix": "Edit", 
                 "controls": [
                     {
@@ -2535,7 +2535,7 @@
             "base": "DeleteForm",
             "attributes": {
                 "type": "MenuItem",
-                "path": "types",
+                "path": "items",
                 "controls": [
                     {
                         "name": "ParentId",
@@ -2595,7 +2595,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "View",
-                "path": "types",
+                "path": "items",
                 "controls": [
                     {
                         "name": "Name",
@@ -2647,7 +2647,7 @@
             "base": "DeleteForm",
             "attributes": {
                 "type": "View",
-                "path": "types",
+                "path": "items",
                 "controls": [
                     {
                         "name": "Id",

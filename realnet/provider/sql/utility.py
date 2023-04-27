@@ -258,6 +258,10 @@ def build_item( item_id,
         acl = AclModel(id=str(uuid.uuid4()),type='public', org_id=org_id, item_id=item_id)
         db.add(acl)
         db.commit()
+    else:
+        acl = AclModel(id=str(uuid.uuid4()),type='org', org_id=org_id, item_id=item_id, permission='r')
+        db.add(acl)
+        db.commit()
     
     # instances1 = instance.type.instances
     # instances2 = instance.type.base.instances
