@@ -4,6 +4,21 @@
 {% else %}
     {% set control_type = control.instance.type.name %}
 {% endif %}
+{% set attributes = dict() %}
+{% set namespace = False %}
+{% if control.__class__.__name__ == 'dict' %}
+    {% set attributes = item.attributes %}
+    {% if 'namespace' in control.attributes %}
+        {% set attributes = attributes.get(control.attributes['namespace'], dict()) %}
+        {% set namespace = True %}
+    {% endif %}
+{% else %}
+    {% set attributes = item.attributes %}
+    {% if 'namespace' in control.attributes %}
+        {% set attributes = attributes.get(control.attributes['namespace'], dict()) %}
+        {% set namespace = True %}
+    {% endif %}
+{% endif %}
 {% if control_type == 'EditCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     {% if control.attributes['source'] == 'view' %}
@@ -17,7 +32,11 @@
             {% if control.attributes['password'] == 'true' %}
                 <input type="password" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
             {% elif control.attributes['target'] == 'name' %}
-                <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+                {% if namespace and 'name' in attributes %}
+                    <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{attributes['name']}}">
+                {% else %}
+                    <input type="text" class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.name}}">
+                {% endif %}
             {% else %}
                 <textarea class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.attributes[control.attributes['target']]}}" rows="1"></textarea>
             {% endif %} 
@@ -27,7 +46,11 @@
     {% endif %}
 {% elif control_type == 'HiddenCtrl' %}
     {% if control.attributes['source'] == 'control' %}
-        <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
+        {% if namespace %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{attributes[control.attributes['target']]}}">
+        {% else %}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{control.attributes[control.attributes['target']]}}">
+        {% endif %}
     {% elif control.attributes['source'] == 'form' %}
         <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{form.attributes[control.attributes['target']]}}">
     {% elif control.attributes['source'] == 'view' %}
@@ -36,7 +59,7 @@
         {% elif control.attributes['target'] == 'type' %}
             <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{view['type']}}">
         {% else %}
-            {{control}}
+            <input type="hidden" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{view['name']}}">
         {% endif %}
     {% else %}
         {% if control.attributes['target'] == 'id' %}
@@ -52,69 +75,109 @@
         {% endif %}
     {% endif %}
 {% elif control_type == 'MultiSelectCtrl' %}
-    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
-        {% if control.attributes['typenames'] %}
-            {% for typename in typenames %}
-                <option value="{{typename}}">{{typename}}</option>
-            {% endfor %}
-        {% else %}
-            {% for opt in control.attributes['options'] %}
-                <option value="{{opt}}">{{opt}}</option>
-            {% endfor %}    
-        {% endif %}
-    </select>
+    <div class="col">
+        <div class="row">
+            <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        </div>
+        <div class="row">
+            <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" multiple>
+                {% if attributes['typenames'] %}
+                    {% for typename in typenames %}
+                        <option value="{{typename}}">{{typename}}</option>
+                    {% endfor %}
+                {% else %}
+                    {% for opt in attributes['options'] %}
+                        <option value="{{opt}}">{{opt}}</option>
+                    {% endfor %}    
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    
+{% elif control_type == 'TagsCtrl' %}
+    <div class="col">
+        <div class="row">
+            <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        </div>
+        <div class="row">
+            {% if namespace and 'tags' in attributes %}
+                <input type="text" class="form-control tagin" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{attributes['tags']}}" data-tagin-placeholder="Add a tag... (then press comma)">
+            {% else %}
+                <input type="text" class="form-control tagin" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.tags}}" data-tagin-placeholder="Add a tag... (then press comma)">
+            {% endif %}
+        </div>
+    </div>
+    
+    <!--<input type="text" class="form-control tagin" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" value="{{item.tags}}" data-tagin-placeholder="Add a tag... (then press comma)">-->
 {% elif control_type == 'SelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
-        {% for opt in control.attributes['options'] %}
+        {% for opt in attributes['options'] %}
             <option value="{{opt}}">{{opt}}</option>
         {% endfor %}
     </select>
 {% elif control_type == 'TypeSelectCtrl' %}
-    <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
-        {% if control.attributes['typenames'] %}
-            {% for typename in control.attributes['typenames'] %}
-                <option value="{{typename}}">{{typename}}</option>
-            {% endfor %}
-        {% elif all_types %}
-        all types
-            {% if control.attributes['types'] %}
-                {% for typename in control.attributes['types'] %}
-                {{typename}}
-                    {% for type in all_types %}
-                        {% if type.is_derived_from(typename) %}
+    <div class="col">
+        <div class="row">
+            <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        </div>
+        <div class="row">
+            {% if control.attributes['multiple'] %}
+                <select class="form-control multiselect" multiple id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
+            {% else %}
+                <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
+            {% endif %}
+                {% if 'typenames' in attributes and attributes['typenames'] %}
+                    {% for typename in attributes['typenames'] %}
+                        <option value="{{typename}}">{{typename}}</option>
+                    {% endfor %}
+                {% elif all_types %}
+                    {% if 'types' in attributes and attributes['types']  and control.attributes['multiple'] != 'true' %}
+                        {% for typename in attributes['types'] %}
+                            {% for type in all_types %}
+                                {% if type.is_derived_from(typename) %}
+                                    {% if control.attributes['source'] == 'view' and type.name == view['type'] %}
+                                        <option value="{{type.name}}" selected>{{type.name}}</option>
+                                    {% else %}
+                                        <option value="{{type.name}}">{{type.name}}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% else %}
+                        {% set selected_types = [] %}
+                        {% if 'types' in attributes and attributes['types'] %}
+                            {% set selected_types = attributes['types']%}
+                        {% endif %}
+                        {% for type in all_types %}
                             {% if control.attributes['source'] == 'view' and type.name == view['type'] %}
                                 <option value="{{type.name}}" selected>{{type.name}}</option>
                             {% else %}
-                                <option value="{{type.name}}">{{type.name}}</option>
+                                {% if selected_types and type.name in selected_types %}
+                                    <option value="{{type.name}}" selected>{{type.name}}</option>
+                                {% else %}
+                                    <option value="{{type.name}}">{{type.name}}</option>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            {% else %}
-                {% for type in all_types %}
-                    {% if control.attributes['source'] == 'view' and type.name == view['type'] %}
-                        <option value="{{type.name}}" selected>{{type.name}}</option>
-                    {% else %}
-                        <option value="{{type.name}}">{{type.name}}</option>
+                        {% endfor %}
                     {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% elif typenames %}
-            {% for typename in typenames %}
-                <option value="{{typename}}">{{typename}}</option>
-            {% endfor %}
-        {% else %}
-            {% for opt in control.attributes['options'] %}
-                <option value="{{opt}}">{{opt}}</option>
-            {% endfor %}    
-        {% endif %}
-    </select>
+                {% elif typenames %}
+                    {% for typename in typenames %}
+                        <option value="{{typename}}">{{typename}}</option>
+                    {% endfor %}
+                {% else %}
+                    {% for opt in attributes['options'] %}
+                        <option value="{{opt}}">{{opt}}</option>
+                    {% endfor %}    
+                {% endif %}
+            </select>
+        </div>
+    </div>
+    
+    
 {% elif control_type == 'ItemSelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    <select class="form-control item-select-ctrl" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" data-query="{{control.attributes['query'] | from_json}}" data-path="/items">
+    <select class="form-control item-select-ctrl" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" data-query="{{attributes['query'] | from_json}}" data-path="/items">
     </select>
 {% elif control_type == 'ButtonCtrl' %}
     {% if control.attributes['is_cancel_button'] == 'true' %}
@@ -140,8 +203,14 @@
                     {% set target_controls = target_controls + [step_control] %}
                     <div class="step" data-target="#step_{{step_control.name}}">
                         <button type="button" class="step-trigger" role="tab" aria-controls="step_{{step_control.name}}" id="trigger_{{step_control.name}}">
-                            <span class="bs-stepper-circle">{{loop.index}}</span>
-                            <span class="bs-stepper-label">{{step_control.name}}</span>
+                            <div class="col">
+                                <div class="row">
+                                    <span class="bs-stepper-circle">{{loop.index}}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="bs-stepper-label">{{step_control.name}}</span>
+                                </div>    
+                            </div>
                         </button>
                     </div>
                 {% endif %}
@@ -151,8 +220,14 @@
                     {% set target_controls = target_controls + [step_control] %}
                     <div class="step" data-target="#step_{{step_control.name}}">
                         <button type="button" class="step-trigger" role="tab" aria-controls="step_{{step_control.name}}" id="trigger_{{step_control.name}}">
-                            <span class="bs-stepper-circle">{{loop.index}}</span>
-                            <span class="bs-stepper-label">{{step_control.name}}</span>
+                            <div class="col">
+                                <div class="row">
+                                    <span class="bs-stepper-circle">{{loop.index}}</span>
+                                </div>
+                                <div class="row">
+                                    <span class="bs-stepper-label">{{step_control.name}}</span>
+                                </div>    
+                            </div>
                         </button>
                     </div>
                 {% endif %}
@@ -175,13 +250,39 @@
         <button class="btn btn-primary next_button" type="button">Next</button>
     </div>
 {% elif control_type == 'StepCtrl' %}
-    {% for control in control.attributes['controls'] %}
-        <div class="form-group">
-        {% with item=item, control=control %}
-            {% include "control.html" %}
-        {% endwith %}
+    <div class="form-group">
+        <div class="col">
+            {% for control in control.attributes['controls'] %}
+        
+                {% with item=item, control=control %}
+                    <div class="row">
+                        {% include "control.html" %}
+                    </div>
+                {% endwith %}
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
+{% elif control_type == 'CheckboxCtrl' %}
+    <div class="form-check">
+        {% if control.attributes['target'] in attributes and attributes[control.attributes['target']] == 'true' %}
+            <input class="form-check-input" type="checkbox" value="1" id="check_{{control.name}}"  name="{{control.attributes['target'] | lower}}" checked="checked">
+        {% else %}
+            <input class="form-check-input" type="checkbox" value="0" id="check_{{control.name}}"  name="{{control.attributes['target'] | lower}}">
+        {% endif %}
+        <label class="form-check-label" for="check_{{control.name}}">
+            {{control.name}}
+        </label>
+    </div>
+{% elif control_type == 'DateCtrl' %}
+    <div class="form-group">
+        <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
+        <div class='input-group date datetimepicker' data-td-target-input="nearest" data-td-target-toggle="nearest" id="control_{{control.attributes['target'] | lower}}">
+            <input type='text' class="form-control" id="control_{{control.attributes['target'] | lower}}_input"  name="{{control.attributes['target'] | lower}}" data-td-target="#control_{{control.attributes['target'] | lower}}">
+            <span class="input-group-addon" data-td-target="#control_{{control.attributes['target'] | lower}}" data-td-toggle="datetimepicker">
+                <i class="fa fa-calendar"></i>
+            </span>
+        </div>
+    </div>
 {% else %}
     {{control.type}}
 {% endif %}

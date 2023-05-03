@@ -13,7 +13,7 @@ class Items(Resource):
         if path:
             item = self.get_item(module, endpoint, account, args, path)
             if item:
-                return jsonify(item.to_dict())
+                return json.dumps(item.to_dict())
             else:
                 return {}
         else:        
@@ -65,6 +65,13 @@ class Items(Resource):
         return self.render_item(module, endpoint, args, path, content_type)
 
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
+        if args:
+            for key in args:
+                if key != 'types':
+                    val = args[key]
+                    if isinstance(val, list):
+                        args[key] = val[0]
+
         if 'type' in args:
             if args['type'] == 'Attribute':
                 attrs = dict(args)
@@ -161,6 +168,33 @@ class Items(Resource):
                                 return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
                             else:
                                 return redirect('/items/{}'.format(attrs['parent_id']))
+            elif args['type'] == 'Query':
+                attrs = dict(args)
+                if 'parent_id' in attrs:
+                    account = module.get_account()
+                    item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+                    if item:
+                        if module.can_account_write_item(account, item):
+                            query = dict()
+                            if 'name' in args:
+                                query['name'] = args['name']
+                            if 'children' in args and args['children'] != '':
+                                query['children'] = 'true' if args['children'] == 'on' or args['children'] == '1' or args['children'] == 'true' else 'false'
+                            if 'any_level' in args and args['any_level'] != '':
+                                query['any_level'] = 'true' if args['any_level'] == 'on' or args['any_level'] == '1' or args['any_level'] == 'true' else 'false'  
+                            if 'types' in args:
+                                query['types'] = args['types']
+                            if 'tags' in args:
+                                query['tags'] = args['tags']
+                            
+                            current_attrs = dict(item.attributes)
+                            current_attrs['query'] = query
+                            params = {'attributes': current_attrs }
+                            module.update_item(attrs['parent_id'], **params)
+                            if 'active_view' in attrs:
+                                return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                            else:
+                                return redirect('/items/{}'.format(attrs['parent_id']))
             elif 'parent_id' in args:
                 attrs = dict(args)
                 attrs['parent_id'] = args['parent_id']
@@ -205,6 +239,13 @@ class Items(Resource):
         
 
     def put(self, module, endpoint, args, path=None, content_type='text/html'):
+        if args:
+            for key in args:
+                if key != 'types':
+                    val = args[key]
+                    if isinstance(val, list):
+                        args[key] = val[0]
+
         if 'type' in args:
             if args['type'] == 'Attribute':
                 attrs = dict(args)
@@ -325,6 +366,12 @@ class Items(Resource):
             return self.render_item(module, endpoint, args, path, content_type)
 
     def delete(self, module, endpoint, args, path=None, content_type='text/html'):
+        if args:
+            for key in args:
+                if key != 'types':
+                    val = args[key]
+                    if isinstance(val, list):
+                        args[key] = val[0]
         attrs = dict(args)
         id = None
         if path:
@@ -467,8 +514,7 @@ class Items(Resource):
             if external_types:
                 external_query = dict()
                 for k,v in query.items():
-                    if k != 'types' and k != 'type_names':
-                        external_query[k] = v
+                    external_query[k] = v
 
                 if parent_item and 'children' in external_query and external_query['children'] == 'true':
                     external_query['parent_id'] = parent_item.id
@@ -476,9 +522,13 @@ class Items(Resource):
                 for external_type in external_types:
                     func = module.get_resource_method(module, endpoint, external_type.attributes['resource'], 'get')
                     if func:
-                        external_resources = func.invoke(module, endpoint, args, path, 'application/json')
+                        external_resources = func.invoke(module, endpoint, external_query, None, 'application/json')
                         if external_resources:
-                            external_items = [self.item_from_json(module, er, tbn) for er in json.loads(external_resources)]
+                            data = json.loads(external_resources)
+                            if isinstance(data, list):
+                                external_items = [self.item_from_json(module, er, tbn) for er in data]
+                            else:
+                                external_items = [self.item_from_json(module, data, tbn)]
                             results = results + [er for er in external_items]
                 
                 if internal_types:

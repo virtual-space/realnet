@@ -27,9 +27,11 @@
               {{account.name}}@{{org.name}}
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="#" id="location"></a>
               {% for menu_item in menu_items %}
               <a class="dropdown-item" href="./views/{{menu_item.name}}"><i class="material-icons">{{menu_item.icon}}</i>{{menu_item.name}}</a>
               {% endfor %}
+              <a class="dropdown-item" href="#" id="logout"><i class="material-icons">lock</i>Logout</a>
             </div>
           </li>
         </ul>

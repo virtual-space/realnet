@@ -2780,6 +2780,29 @@
                         }
                     },
                     {
+                        "name": "Icon",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "icon"
+                        }
+                    },
+                    {
+                        "name": "Types",
+                        "type": "TypeSelectCtrl",
+                        "attributes": {
+                            "target": "types",
+                            "multiple": "true"
+                        }
+                    },
+                    {
+                        "name": "Tags",
+                        "type": "TagsCtrl",
+                        "attributes": {
+                            "target": "tags",
+                            "multiple": "true"
+                        }
+                    },
+                    {
                         "name": "Cancel",
                         "type": "ButtonCtrl",
                         "attributes": {
@@ -2913,7 +2936,7 @@
             "base": "EditForm",
             "attributes": {
                 "type": "Query",
-                "path": "queries",
+                "path": "items",
                 "controls": [
                     {
                         "name": "Query",
@@ -2921,23 +2944,24 @@
                         "attributes": {
                             "controls": [
                                 {
-                                    "name": "View",
-                                    "type": "HiddenCtrl",
-                                    "attributes": {
-                                        "target": "view",
-                                        "source": "view"
-                                    }
-                                },
-                                {
                                     "name": "General",
                                     "type": "StepCtrl",
                                     "attributes": {
                                         "controls": [
                                             {
+                                                "name": "View",
+                                                "type": "HiddenCtrl",
+                                                "attributes": {
+                                                    "target": "view",
+                                                    "source": "view"
+                                                }
+                                            },
+                                            {
                                                 "name": "Name",
                                                 "type": "EditCtrl",
                                                 "attributes": {
-                                                    "target": "name"
+                                                    "target": "name",
+                                                    "namespace": "query"
                                                 }
                                             },
                                             {
@@ -2948,11 +2972,20 @@
                                                 }
                                             },
                                             {
+                                                "name": "Type",
+                                                "type": "HiddenCtrl",
+                                                "attributes": {
+                                                    "target": "type",
+                                                    "value": "Query"
+                                                }
+                                            },
+                                            {
                                                 "name": "Types",
                                                 "type": "TypeSelectCtrl",
                                                 "attributes": {
                                                     "target": "types",
-                                                    "multiple": "true"
+                                                    "multiple": "true",
+                                                    "namespace": "query"
                                                 }
                                             },
                                             {
@@ -2960,21 +2993,24 @@
                                                 "type": "TagsCtrl",
                                                 "attributes": {
                                                     "target": "tags",
-                                                    "multiple": "true"
+                                                    "multiple": "true",
+                                                    "namespace": "query"
                                                 }
                                             },
                                             {
                                                 "name": "Children",
                                                 "type": "CheckboxCtrl",
                                                 "attributes": {
-                                                    "target": "children"
+                                                    "target": "children",
+                                                    "namespace": "query"
                                                 }
                                             },
                                             {
                                                 "name": "Any level",
                                                 "type": "CheckboxCtrl",
                                                 "attributes": {
-                                                    "target": "any_level"
+                                                    "target": "any_level",
+                                                    "namespace": "query"
                                                 }
                                             }
                             
@@ -2992,7 +3028,8 @@
                                                 "attributes": {
                                                     "target": "valid_from",
                                                     "field_name": "valid_from",
-                                                    "order": "1"
+                                                    "order": "1",
+                                                    "namespace": "query"
                                                 }
                                             },
                                             {
@@ -3001,7 +3038,8 @@
                                                 "attributes": {
                                                     "target": "valid_to",
                                                     "field_name": "valid_to",
-                                                    "order": "2"
+                                                    "order": "2",
+                                                    "namespace": "query"
                                                 }
                                             }
                                         ]
@@ -3016,7 +3054,8 @@
                                                 "name": "Location",
                                                 "type": "LocationCtrl",
                                                 "attributes": {
-                                                    "target": "location"
+                                                    "target": "location",
+                                                    "namespace": "query"
                                                 }
                                             }
                                         ]

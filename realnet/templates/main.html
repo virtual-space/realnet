@@ -56,16 +56,61 @@
     </style>
     {{ bootstrap.load_js() }}
     {{ bootstrap.load_css() }}
-    <link rel="stylesheet" href="{{url_for('static', filename='/font-awesome/css/font-awesome.min.css')}}">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+    <link rel="stylesheet" href="https://unpkg.com/tagin@2.0.2/dist/tagin.min.css">
+    <script src="https://unpkg.com/tagin@2.0.2/dist/tagin.min.js"></script>
+    <!-- Popperjs -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha256-BRqBN7dYgABqtY9Hd4ynE+1slnEw+roEPFzQ7TRRfcg=" crossorigin="anonymous"></script>
+    <!-- Tempus Dominus JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.7/dist/js/tempus-dominus.min.js" crossorigin="anonymous"></script>
+
+    <!-- Tempus Dominus Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.7/dist/css/tempus-dominus.min.css" crossorigin="anonymous">
+    <script>
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+          case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+          case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+          case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+        }
+      }
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+          document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+        }
+      }
+      
+      function showPosition(position) {
+        document.getElementById("location").innerHTML = "Lat: " + position.coords.latitude +
+        " Lng: " + position.coords.longitude;
+      }
+      </script>
     {% if forms %}
     <script>
       
       //var progress = new Stepper($('.progress')[0]);
       $(document).ready(function () {
         //$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+        //console.log(document.querySelector('.tagin'));
+        //new Tagin(document.querySelector('.tagin'));
+
         var stepper = new Stepper($('.bs-stepper')[0]);
 
         $(".previous_button").on("click", function() {
@@ -74,6 +119,10 @@
         $(".next_button").on("click", function() {
           stepper.next();
         });
+
+        //$('.multiselect').multiselect({maxHeight: 200, enableFiltering: true, enableCaseInsensitiveFiltering: true, numberDisplayed: 10, buttonWidth: '100%'});
+        $('.fa-solid').removeClass('fa-solid').addClass('fa');
+        getLocation();
 
         $('.menu-item-button').on('click', function(event) {
           const target = $(this).attr('data-target');
@@ -84,8 +133,9 @@
             $($(this).attr('data-target')).find('.modal-footer #create_submit').hide();
             //$($(this).attr('data-target')).find('.modal-footer #create_cancel').hide();
             $($(this).attr('data-target')).find('.modal-footer #create_submitting').hide();
-            console.log($($(this).attr('data-target')).find('.modal-body #control_target').val())
-          
+            const tagin = new Tagin($($(this).attr('data-target')).find('.tagin'));
+            //console.log($($(this).attr('data-target')).find('.modal-body #control_target').val())
+
             $(document).on('change', '#file', function(e) {
               //console.log(e);
               //console.log(e.target.files);
@@ -182,6 +232,46 @@
           
           }
 
+          const tags_element = $($(this).attr('data-target')).find('.tagin');
+          
+          if (tags_element.length > 0) {
+            //TODO: check if tagin already exists
+            let tagin_element = tags_element[0];
+            let classes = tagin_element.classList;
+            if (!classes.contains('tagin-init')) {
+              const tagin = new Tagin(tagin_element);
+              classes.add('form-control', 'tagin', 'tagin-init');
+              tagin_element = $(tagin_element).find('.tagin')[0];
+            }
+          }
+
+          $($(this).attr('data-target')).find('.multiselect').multiselect({maxHeight: 600, enableFiltering: true, enableCaseInsensitiveFiltering: true, numberDisplayed: 10, buttonWidth: '100%'});
+          
+          const picker_elements = $($(this).attr('data-target')).find('.datetimepicker');
+          
+          if (picker_elements.length > 0) {
+            //TODO: check if tagin already exists
+            Array.from(picker_elements).forEach(e => {
+              let classes = e.classList;
+              if (!classes.contains('picker-init')) {
+                const picker = new tempusDominus.TempusDominus(e);
+                classes.add('input-group', 'date', 'datetimepicker', 'picker-init');
+              }
+            });
+          }
+
+          $('.fa-solid').removeClass('fa-solid').addClass('fa');
+
+          
+          //$($(this).attr('data-target')).find('.datetimepicker').datetimepicker();
+          //const types_element = $($(this).attr('data-target')).find('.multiselect');
+          //Array.from(types_element).multiSelect({maxHeight: 600, enableFiltering: true, enableCaseInsensitiveFiltering: true, numberDisplayed: 10, buttonWidth: '100%'});
+          /*
+          Array.from(types_element).forEach(e => {
+            console.log(e);
+            e.multiselect({maxHeight: 600, enableFiltering: true, enableCaseInsensitiveFiltering: true, numberDisplayed: 10, buttonWidth: '100%'})
+          });
+          */
           //$($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
           //$($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
           //$($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
@@ -221,6 +311,13 @@
                       alert('Error fetching data');
                   }
               });
+          });
+          $('.form-check-input').on('click', function(event) {
+            if (this.checked) {
+              this.value = '1';
+            } else {
+              this.value = '0';
+            }
           });
       });
   </script>
@@ -262,12 +359,11 @@
           {% if form.attributes['upload'] == 'true' %} 
             <form enctype="multipart/form-data" id="create" action="/{{form.attributes['path']}}" method="post">
               <div class="modal-header">
-                {% if form.attributes['edit'] == 'true' %} 
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5>
-                {% elif form.attributes['type'] %} 
+                {{form.attributes['type']}}
+                {% if form.attributes['type'] %} 
                   <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{form.attributes['type']}}</h5>
-                {% elif item %}
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
+                {% else %}
+                    <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} {{item.name}}</h5> 
                 {% endif %}
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -309,12 +405,10 @@
           {% else %} 
             <form action="/{{form.attributes['path']}}" method="{{form.attributes['method']}}">
               <div class="modal-header">
-                {% if form.attributes['edit'] == 'true' %} 
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{item.name}}</span></h5>
-                {% elif form.attributes['type'] %} 
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{form.attributes['type']}}</span></h5>
-                {% elif item %}
-                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span id="title-name">{{item.name}}</span></h5> 
+                {% if form.attributes['type'] %} 
+                  <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span>{{form.attributes['type']}}</span></h5>
+                {% else %}
+                    <h5 class="modal-title" id="exampleModalLabel">{{form.attributes['title_prefix']}} <span>{{item.name}}</span></h5> 
                 {% endif %}
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>

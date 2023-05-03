@@ -428,7 +428,7 @@ def router(endpoint_name, path):
         args = request.args.to_dict(flat=False)
         
         if request.method.lower() == 'post' or request.method.lower() == 'put':
-            args |= request.form.to_dict()
+            args |= request.form.to_dict(flat=False)
             if args:
                 json_args = request.get_json(silent=True)
                 if json_args:
@@ -437,7 +437,10 @@ def router(endpoint_name, path):
                 args = request.get_json(silent=True)
 
         if args and '_method' in args:
-            method = args['_method'].lower() 
+            method = args['_method']
+            if not isinstance(method, str) and isinstance(method, list):
+                method = method[0]
+            method = method.lower() 
 
         return endpoint.invoke(context, endpoint, method, args, path=path, content_type=content_type)
     else:
