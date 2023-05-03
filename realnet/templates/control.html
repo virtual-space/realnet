@@ -112,7 +112,7 @@
 {% elif control_type == 'SelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
     <select class="form-control" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}">
-        {% for opt in attributes['options'] %}
+        {% for opt in control.attributes['options'] %}
             <option value="{{opt}}">{{opt}}</option>
         {% endfor %}
     </select>
@@ -177,7 +177,7 @@
     
 {% elif control_type == 'ItemSelectCtrl' %}
     <label for="control_{{control.attributes['target'] | lower}}">{{control.name}}</label>
-    <select class="form-control item-select-ctrl" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" data-query="{{attributes['query'] | from_json}}" data-path="/items">
+    <select class="form-control item-select-ctrl" id="control_{{control.attributes['target'] | lower}}" name="{{control.attributes['target'] | lower}}" data-query="{{control.attributes['query'] | from_json}}" data-path="/items">
     </select>
 {% elif control_type == 'ButtonCtrl' %}
     {% if control.attributes['is_cancel_button'] == 'true' %}

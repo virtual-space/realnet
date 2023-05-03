@@ -10,7 +10,12 @@ class Apps(Items):
         return module.get_apps(module)
     
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
-        
+        if args:
+            for key in args:
+                if key != 'types':
+                    val = args[key]
+                    if isinstance(val, list):
+                        args[key] = val[0]
         # app_type = module.create_type(name=args.get('name'), base='App')
         
         resource = module.get_resource(module, args.get('resource'))
