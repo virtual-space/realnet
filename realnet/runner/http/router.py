@@ -440,7 +440,14 @@ def router(endpoint_name, path):
             method = args['_method']
             if not isinstance(method, str) and isinstance(method, list):
                 method = method[0]
-            method = method.lower() 
+            method = method.lower()
+
+        if args:
+            for key in args:
+                if key != 'types':
+                    val = args[key]
+                    if isinstance(val, list):
+                        args[key] = val[0]
 
         return endpoint.invoke(context, endpoint, method, args, path=path, content_type=content_type)
     else:

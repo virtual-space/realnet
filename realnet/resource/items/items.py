@@ -65,13 +65,6 @@ class Items(Resource):
         return self.render_item(module, endpoint, args, path, content_type)
 
     def post(self, module, endpoint, args, path=None, content_type='text/html'):
-        if args:
-            for key in args:
-                if key != 'types':
-                    val = args[key]
-                    if isinstance(val, list):
-                        args[key] = val[0]
-
         if 'type' in args:
             if args['type'] == 'Attribute':
                 attrs = dict(args)
@@ -239,13 +232,7 @@ class Items(Resource):
         
 
     def put(self, module, endpoint, args, path=None, content_type='text/html'):
-        if args:
-            for key in args:
-                if key != 'types':
-                    val = args[key]
-                    if isinstance(val, list):
-                        args[key] = val[0]
-
+        
         if 'type' in args:
             if args['type'] == 'Attribute':
                 attrs = dict(args)
@@ -366,12 +353,6 @@ class Items(Resource):
             return self.render_item(module, endpoint, args, path, content_type)
 
     def delete(self, module, endpoint, args, path=None, content_type='text/html'):
-        if args:
-            for key in args:
-                if key != 'types':
-                    val = args[key]
-                    if isinstance(val, list):
-                        args[key] = val[0]
         attrs = dict(args)
         id = None
         if path:
