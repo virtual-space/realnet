@@ -351,36 +351,6 @@
             }
         },
         {
-            "name": "Views",
-            "base": "App",
-            "attributes": {
-                "icon": "fullscreen",
-                "types": ["View"],
-                "query": {"types": ["View"]},
-                "views": [
-                    {
-                        "name": "Views",
-                        "type": "ListView"
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Ctrls",
-            "base": "App",
-            "attributes": {
-                "icon": "widgets",
-                "types": ["Ctrl"],
-                "query": {"types": ["Ctrl"]},
-                "views": [
-                    {
-                        "name": "Ctrls",
-                        "type": "ListView"
-                    }
-                ]
-            }
-        },
-        {
             "name": "Login",
             "base": "App",
             "attributes": {

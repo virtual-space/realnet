@@ -24,6 +24,3 @@ class Login(Items):
         account = module.get_account()
 
         return self.render_item(module, endpoint, args, path, content_type)
-    
-    def get_template_args(self, module, endpoint, args, path):
-        return dict()

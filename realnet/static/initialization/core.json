@@ -739,7 +739,61 @@
             "name": "Endpoint",
             "base": "Item",
             "attributes": {
-                "icon": "functions"
+                "icon": "functions",
+                "views":[
+                    {
+                        "name": "Settings",
+                        "type": "FormView",
+                        "attributes": {
+                            "form": "EndpointEditForm"
+                        }
+                    },
+                    {
+                        "name": "Attributes",
+                        "type": "ListView",
+                        "attributes": {
+                            "hidden": "true",
+                            "source": "attributes",
+                            "internal": "true",
+                            "columns": [
+                                {
+                                    "name": "Value",
+                                    "type": "Column",
+                                    "attributes": {
+                                        "target": "value",
+                                        "namespace": "attributes"
+                                    }
+                                }
+                            ],
+                            "menu": [
+                                {
+                                    "name": "Add Attribute",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add",
+                                        "form": "AttributeCreateForm"
+                                    }
+                                },
+                                {
+                                    "name": "Add View",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add_box",
+                                        "form": "ViewCreateForm"
+                                    }
+                                },
+                                {
+                                    "name": "Delete",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "delete",
+                                        "form": "DeleteForm"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
             }
         },
         {
@@ -758,20 +812,28 @@
             "base": "Item",
             "attributes": {
                 "icon": "border_all",
-                "types": ["Func", "File"],
-                "query": {"types": ["Func", "File"], "my_items": "true"},
+                "types": ["File"],
+                "query": {"types": ["Media"], "my_items": "true"},
                 "views": [
                     {
-                        "name": "Methods",
-                        "type": "ListView",
+                        "name": "Settings",
+                        "type": "FormView",
                         "attributes": {
+                            "form": "ResourceEditForm"
+                        }
+                    },
+                    {
+                        "name": "Code",
+                        "type": "CodeView",
+                        "attributes": {
+                            "load_from_data": "true",
                             "menu": [
                                 {
-                                    "name": "Add Method",
+                                    "name": "Save",
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "add",
-                                        "form": "FuncCreateForm"
+                                        "form": "SaveForm"
                                     }
                                 },
                                 {
@@ -789,6 +851,48 @@
                                     "attributes": {
                                         "icon": "add_box",
                                         "form": "ViewCreateForm"
+                                    }
+                                },
+                                {
+                                    "name": "Delete",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "delete",
+                                        "form": "DeleteForm"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Files",
+                        "type": "ListView",
+                        "attributes": {
+                            "query": {"types": ["Media"], "my_items": "true"},
+                            "menu": [
+                                {
+                                    "name": "Import",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "file_upload",
+                                        "form": "UploadForm",
+                                        "import": "true"
+                                    }
+                                },
+                                {
+                                    "name": "Add View",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add_box",
+                                        "form": "ViewCreateForm"
+                                    }
+                                },
+                                {
+                                    "name": "Delete",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "delete",
+                                        "form": "DeleteForm"
                                     }
                                 }
                             ]
@@ -825,7 +929,7 @@
                                     "type": "MenuItem",
                                     "attributes": {
                                         "icon": "add_box",
-                                        "form": "TypeViewCreateForm"
+                                        "form": "ViewCreateForm"
                                     }
                                 },
                                 {

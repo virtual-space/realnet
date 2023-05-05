@@ -72,7 +72,7 @@
                   {% set list_items = items %}
                 {% endif %}
 
-                {% for item in list_items %}
+                {% for item in list_items or [] %}
                     <tr >
                         <th scope="row">
                             {{loop.index}}

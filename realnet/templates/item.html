@@ -41,9 +41,11 @@
                     <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
                 </form>
             </div>
+            {% if items %}
             <div class="btn-group mr-2" role="group" aria-label="Second group">
               <button class="btn btn-outline-secondary ml-2 mr-2" disabled>{{items|length}} {{types|join(',')}}(s)</button>
             </div>
+            {% endif %}
             <div class="btn-group mr-2" role="group" aria-label="Second group">
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="material-icons mr-1">more_vert</i>
