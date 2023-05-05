@@ -29,6 +29,7 @@ setup(
                     'realnet.templates': ['*'],
                     'realnet.runner.http.static': ['scripts/ace/*', 'font-awesome/css/*', 'font-awesome/fonts/*']},
     install_requires=["python-dotenv",
+                      "urllib3==1.25.4",
                       "boto3",
                       "Flask==2.2.2",
                       "SQLAlchemy==1.4.23",
