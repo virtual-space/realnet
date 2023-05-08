@@ -173,6 +173,16 @@
                         "name": "Resources",
                         "type": "ListView"
                     }
+                ],
+                "menu": [
+                    {
+                        "name": "Create Resource",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ResourceCreateForm"
+                        }
+                    }
                 ]
             }
         },

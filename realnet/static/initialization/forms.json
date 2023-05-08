@@ -345,6 +345,7 @@
             "base": "CreateForm",
             "attributes": {
                 "type": "Resource",
+                "path": "resources",
                 "controls": [
                     {
                         "name": "Name",
@@ -372,6 +373,58 @@
                     },
                     {
                         "name": "Create",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "default": "true",
+                            "close": "true",
+                            "command": "Save",
+                            "order": "9"
+                        }
+                        
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ResourceEditForm",
+            "base": "EditForm",
+            "attributes": {
+                "type": "Resource",
+                "path": "resources",
+                "controls": [
+                    {
+                        "name": "Name",
+                        "type": "EditCtrl",
+                        "attributes": {
+                            "target": "name"
+                        }
+                    },
+                    {
+                        "name": "Id",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "id"
+                        }
+                    },
+                    {
+                        "name": "Method",
+                        "type": "HiddenCtrl",
+                        "attributes": {
+                            "target": "_method",
+                            "source": "form"
+                        }
+                    },
+                    {
+                        "name": "Cancel",
+                        "type": "ButtonCtrl",
+                        "attributes": {
+                            "close": "true",
+                            "order": "8",
+                            "is_cancel_button": "true"
+                        }
+                    },
+                    {
+                        "name": "Save",
                         "type": "ButtonCtrl",
                         "attributes": {
                             "default": "true",

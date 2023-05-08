@@ -191,29 +191,32 @@ class Items(Resource):
             elif 'parent_id' in args:
                 attrs = dict(args)
                 attrs['parent_id'] = args['parent_id']
-                item = module.create_item(**attrs)
-                if 'active_view' in attrs:
-                    return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
-                else:
-                    return redirect('/items/{}'.format(attrs['parent_id']))
-        else:
-            attrs = dict()
-            for k,v in args.items():
-                if k not in set(['name', 'base']):
-                    if not 'attributes' in attrs:
-                        attrs['attributes'] = dict()
-                    attrs['attributes'][k] = v
-                else:
-                    attrs[k] = v
+                account = module.get_account()
+                parent_item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+                if module.can_account_write_item(account, parent_item):
+                    item = module.create_item(**attrs)
+                    if 'active_view' in attrs:
+                        return redirect('/items/{}?view={}'.format(attrs['parent_id'], attrs['active_view']))
+                    else:
+                        return redirect('/items/{}'.format(attrs['parent_id']))
+        
+        attrs = dict()
+        for k,v in args.items():
+            if k not in set(['name', 'base', 'type', 'parent_id']):
+                if not 'attributes' in attrs:
+                    attrs['attributes'] = dict()
+                attrs['attributes'][k] = v
+            else:
+                attrs[k] = v
 
-            if not 'attributes' in attrs:
-                attrs['attributes'] = dict()
-            
-            if not 'resource' in attrs['attributes'] or not attrs['attributes']['resource']:
-                attrs['attributes']['resource'] = 'types'
+        if not 'attributes' in attrs:
+            attrs['attributes'] = dict()
+        
+        # if not 'resource' in attrs['attributes'] or not attrs['attributes']['resource']:
+        #    attrs['attributes']['resource'] = 'types'
 
-            if 'type' in attrs:
-                type = module.get_type_by_name(attrs['type'])
+        if 'type' in attrs:
+            type = module.get_type_by_name(attrs['type'])
             if type and 'resource' in type.attributes:
                 resource_name = type.attributes['resource']
                 func = module.get_resource_method(module, endpoint, resource_name, 'post')
@@ -222,7 +225,15 @@ class Items(Resource):
                     external_resource = func.invoke(module, endpoint, args, path, 'application/json')
                     return self.item_from_json(module, external_resource.json, tbn)
             
-            item = module.create_item(**attrs)
+        parent_item = None
+
+        if 'parent_id' in args:
+            account = module.get_account()
+            parent_item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
+            if not parent_item or not module.can_account_write_item(account, parent_item):
+                return redirect('/items/{}'.format(attrs['parent_id']))
+        
+        item = module.create_item(**attrs)
 
         if content_type == 'application/json':
             return json.dumps(item.to_dict())
