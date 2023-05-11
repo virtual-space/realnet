@@ -868,7 +868,7 @@
                         "name": "Files",
                         "type": "ListView",
                         "attributes": {
-                            "query": {"types": ["Media"], "my_items": "true"},
+                            "query": {"types": ["Media"], "children": "true"},
                             "menu": [
                                 {
                                     "name": "Import",
@@ -968,7 +968,7 @@
         },
         {
             "name": "Folder",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "folder",
                 "creatable": "true",
@@ -989,7 +989,7 @@
         },
         {
             "name": "Document",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "description",
                 "creatable": "false",
@@ -1003,7 +1003,7 @@
         },
         {
             "name": "Page",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "web_asset",
                 "creatable": "false",
@@ -1017,7 +1017,7 @@
         },
         {
             "name": "Image",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "image",
                 "creatable": "false",
@@ -1031,7 +1031,7 @@
         },
         {
             "name": "Video",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "ondemand_video",
                 "creatable": "false",
@@ -1045,7 +1045,7 @@
         },
         {
             "name": "Drawing",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "gesture",
                 "creatable": "false",
@@ -1058,22 +1058,8 @@
             }
         },
         {
-            "name": "Folder",
-            "base": "Media",
-            "attributes": {
-                "icon": "folder",
-                "creatable": "true",
-                "views": [
-                    {
-                        "name": "Children",
-                        "type": "ListView"
-                    }
-                ]
-            }
-        },
-        {
             "name": "Scene",
-            "base": "Media",
+            "base": "File",
             "attributes": {
                 "icon": "view_in_ar",
                 "creatable": "false",

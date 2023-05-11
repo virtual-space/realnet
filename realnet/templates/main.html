@@ -133,12 +133,14 @@
             $($(this).attr('data-target')).find('.modal-footer #create_submit').hide();
             //$($(this).attr('data-target')).find('.modal-footer #create_cancel').hide();
             $($(this).attr('data-target')).find('.modal-footer #create_submitting').hide();
-            const tagin = new Tagin($($(this).attr('data-target')).find('.tagin'));
+            //const t = $($(this).attr('data-target')).find('.tagin');
+
+            // const tagin = new Tagin();
             //console.log($($(this).attr('data-target')).find('.modal-body #control_target').val())
 
             $(document).on('change', '#file', function(e) {
-              //console.log(e);
-              //console.log(e.target.files);
+              console.log(e);
+              console.log(e.target.files);
               //console.log($('#file')[0].files);
               var nextSibling = e.target.nextElementSibling;
               if (e.target.files && e.target.files.length > 0) {

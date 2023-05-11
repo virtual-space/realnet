@@ -324,6 +324,7 @@
       <div class="row justify-content-end mb-1 mt-1">
         <div class="col-10">
             <input type="hidden" id="language" value="python">
+            <input type="hidden" id="file_id" value="{{item.id}}">
         </div>
         <div class="col-2">
             <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
@@ -336,7 +337,7 @@
       </div>
       <div class="row justify-content-center align-items-center">
         <div class="col-md-12">
-          <div id="editor" style="min-height: 85vh; width:100%;"># Code goes here....</div>
+          <div id="editor" style="min-height: 85vh; width:100%;"></div>
         </div>
       </div>
     <script src="{{url_for('static', filename='/scripts/ace/ace.js')}}"></script>
@@ -360,7 +361,16 @@
         } else if (language === 'css') {
             editor.session.setMode("ace/mode/css");
         }
-        
+        file_id = $('#file_id').val();
+        if(file_id) {
+            $.ajax({
+                url: '/files/' + file_id + '/data',
+                type: 'GET',
+                success: function(result){ 
+                editor.setValue(result);
+                }   
+            });
+        }
         $('#save').on('click', function(event) {
             //console.log('clicked');
             const formData = new FormData();
@@ -369,7 +379,7 @@
             formData.append('data', ed.getSession().getValue());
             //console.log(ed.getSession().getValue());
             $.ajax({
-                    url: '/admin/filemgmt/' + $('#file_id').val() + '/edit',
+                    url: '/files/' + file_id + '/data',
                     type: 'POST',
                     data : formData,
                     processData: false,

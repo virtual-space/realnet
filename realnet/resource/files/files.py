@@ -8,8 +8,8 @@ class Files(Items):
     def get(self, module, endpoint, args, path=None, content_type='text/html'):
         if path == 'upload-url':
             attributes = dict()
-            attributes['filename'] = args.get('filename', ['file.tmp'])[0]
-            attributes['filesize'] = args.get('size', 0)[0]
+            attributes['filename'] = args.get('filename', 'file.tmp')
+            attributes['filesize'] = args.get('size', 0)
             content_type = mimetypes.guess_type(attributes['filename'].lower())[0]
             if not content_type:
                 if attributes['filename'].lower().endswith('heic'):
@@ -38,11 +38,11 @@ class Files(Items):
             
             attributes['content_type'] = content_type
             arguments['type'] = args.get('type', typename)
-            parent_id = args.get('parent_id', [None])[0]
+            parent_id = args.get('parent_id', [None])
             target = 'item'
             if parent_id:
                 if 'target' in args:
-                    target = args['target'][0]
+                    target = args['target']
 
                 if target == 'type':
                     parent_item = module.get_type_by_id(parent_id)
@@ -110,6 +110,11 @@ class Files(Items):
 
                 return jsonify(item.to_dict()), 200        
             # module.create_item(**args)
-        if 'add' in args:
-            del args['add']
+        elif path and path.endswith('/data'):
+            file_id = path.split('/')[-2]
+            file = module.get_item(file_id)
+            if file and module.can_account_write_item(module.get_account(), file):
+                module.update_data(file.id, args.get('data', None))
+                return jsonify(file.to_dict()), 200
+                
         return self.render_item(module, endpoint, args, path, content_type)

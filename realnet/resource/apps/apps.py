@@ -1,3 +1,5 @@
+import os
+import sys
 from flask import render_template, jsonify
 from realnet.resource.items.items import Items
 
@@ -21,6 +23,8 @@ class Apps(Items):
         resource = module.get_resource(module, args.get('resource'))
         if not resource:
             resource_item = module.create_item(name=args.get('resource'), type='Resource', attributes={'module':'true'}, public='true')
+            with open(os.path.join(os.path.abspath(os.path.join(os.path.dirname(sys.modules[__name__].__file__), os.pardir)), '../static/initialization/resource.py'), 'r') as f:
+                module.update_data(resource_item.id, f.read())
 
         app_endpoint = module.get_endpoint(module, args.get('endpoint'))
         if not app_endpoint:
