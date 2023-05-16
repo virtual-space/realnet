@@ -20,6 +20,43 @@
                         "name": "Items",
                         "type": "ListView"
                     }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Item",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TopItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add View",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add_box",
+                            "form": "ViewCreateForm",
+                            "path": "items"
+                        }
+                    },
+                    {
+                        "name": "Query",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "search",
+                            "form": "QueryForm",
+                            "path": "items"
+                        }
+                    },
+                    {
+                        "name": "Import",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "file_upload",
+                            "form": "UploadForm",
+                            "import": "true"
+                        }
+                    }
                 ]
             }
         },

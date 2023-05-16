@@ -200,6 +200,24 @@
                         }
                     },
                     {
+                        "name": "Duplicate",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "content_copy",
+                            "form": "DuplicateItemForm",
+                            "path": "items"
+                        }
+                    },
+                    {
+                        "name": "Make Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "extension",
+                            "form": "ItemCreateTypeForm",
+                            "path": "items"
+                        }
+                    },
+                    {
                         "name": "Query",
                         "type": "MenuItem",
                         "attributes": {
