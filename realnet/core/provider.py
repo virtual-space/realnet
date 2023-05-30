@@ -481,6 +481,10 @@ class OrgsProvider(ABC):
         pass
 
     @abstractmethod
+    def get_public_items(self, org_id, query):
+        pass
+
+    @abstractmethod
     def get_public_orgs(self):
         pass
 

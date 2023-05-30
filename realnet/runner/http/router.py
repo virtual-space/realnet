@@ -389,22 +389,29 @@ def router(endpoint_name, path):
                 for org in orgs:
                     forms = forms + [f for f in contextProvider.get_public_forms(org.id)]
                 return jsonify([form.to_dict() for form in forms])
-            elif path and path.startswith('items/'):
-                parts = path.split('/')
-                subpath = parts[0]
-                if subpath == 'items':
-                    id = None
-                    if len(parts) > 1:
-                        id = parts[1]
-                    if id:
-                        item = contextProvider.get_public_item(id)
-                        if item:
-                            return jsonify(item.to_dict())
-                        else:
-                            return jsonify(isError=True,
-                                        message="Failure",
-                                        statusCode=404,
-                                        data='Item {0} not found'.format(id)), 404
+            elif path:
+                if path.startswith('items/'):
+                    parts = path.split('/')
+                    subpath = parts[0]
+                    if subpath == 'items':
+                        id = None
+                        if len(parts) > 1:
+                            id = parts[1]
+                        if id:
+                            item = contextProvider.get_public_item(id)
+                            if item:
+                                return jsonify(item.to_dict())
+                            else:
+                                return jsonify(isError=True,
+                                            message="Failure",
+                                            statusCode=404,
+                                            data='Item {0} not found'.format(id)), 404
+                elif path.startswith('items'):
+                    items = []
+                    args = request.args.to_dict(flat=False)
+                    for org in orgs:
+                        items = items + [f for f in contextProvider.get_public_items(org.id, args)]
+                    return jsonify([item.to_dict() for item in items])
             else:
                 print(path)
     else:

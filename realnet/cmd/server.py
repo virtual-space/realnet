@@ -70,6 +70,9 @@ class StandardContextProvider(ContextProvider):
 
     def get_public_forms(self, org_id):
         return SqlOrgsProvider().get_public_forms(org_id)
+    
+    def get_public_items(self, org_id, data):
+        return SqlOrgsProvider().get_public_items(org_id, data)
 
     def get_public_item(self, id):
         return SqlOrgsProvider().get_public_item(id)

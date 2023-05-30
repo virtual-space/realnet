@@ -1,10 +1,16 @@
+import json
 import uuid
 
 from realnet.core.provider import OrgsProvider
 from realnet.core.type import Org, Account, Authenticator, Client, Endpoint
-from .models import AccountType, Org as OrgModel, Account as AccountModel, Authenticator as AuthenticatorModel, Client as ClientModel, Item as ItemModel, OrgRoleType, Type as TypeModel, Acl,  AclType, session as db
+from .models import AccountType, Org as OrgModel, Account as AccountModel, Authenticator as AuthenticatorModel, Client as ClientModel, Item as ItemModel, OrgRoleType, Type as TypeModel, Acl,  AclType, VisibilityType, session as db
 from .utility import item_model_to_item, get_types_by_name, type_model_to_type, get_derived_types
-from sqlalchemy import or_
+from typing import cast
+from urllib.parse import unquote
+import uuid
+
+from sqlalchemy.sql import func, or_
+from sqlalchemy.dialects.postgresql import ARRAY
 
 class SqlOrgsProvider(OrgsProvider):
 
@@ -72,6 +78,150 @@ class SqlOrgsProvider(OrgsProvider):
         derived_type_ids = get_derived_types(org_id, type_ids)
         forms = db.query(ItemModel).filter(ItemModel.acls.any(Acl.type == AclType.public), ItemModel.type_id.in_(list(set(type_ids + derived_type_ids))), ItemModel.org_id == org_id).all()
         return [item_model_to_item(org_id, form, tbn) for form in forms]
+    
+    def get_public_items(self, org_id, data):
+        op_or = False
+
+        type_names = data.get('type_names')
+        if type_names:
+            data['type_names'] = type_names
+        else:
+            types = data.get('types')
+            if types:
+                data['type_names'] = types
+                type_names = types
+        
+
+        tags = data.get('tags')
+        if tags:
+            data['tags'] = tags
+
+        status = data.get('status')
+        if status:
+            data['status'] = status
+
+        name = data.get('name')
+        if name:
+            data['name'] = name
+        
+        parent_id = data.get('parent_id')
+        if parent_id:
+            data['parent_id'] = parent_id
+        else:
+            if 'any_level' in data and str(data['any_level']).lower() == 'true': 
+                pass
+            else:
+                data['parent_id'] = None
+
+        location = data.get('location')
+        if location:
+            data['location'] = location
+
+        valid_from = data.get('valid_from')
+        if valid_from:
+            data['valid_from'] = valid_from
+
+        valid_to = data.get('valid_to')
+        if valid_to:
+            data['valid_to'] = valid_to
+
+        status = data.get('status')
+        if status:
+            data['status'] = status
+
+        # TODO below
+
+        keys = data.get('keys')
+        if keys:
+            data['keys'] = keys
+
+        values = data.get('values')
+        if values:
+            data['values'] = values
+
+        visibility = data.get('visibility')
+        if visibility:
+            data['visibility'] = visibility
+
+        op = data.get('op')
+
+        if op:
+            if op.lower() == 'or':
+                op_or = True
+
+        conditions = []
+
+        if type_names:
+            type_ids = [ti.id for ti in db.query(TypeModel).filter(TypeModel.name.in_(type_names), TypeModel.org_id == self.org_id).all()]
+            derived_type_ids = get_derived_types(self.org_id, type_ids)
+            conditions.append(ItemModel.type_id.in_(list(set(type_ids + derived_type_ids))))
+
+        if tags:
+            if isinstance(tags, list):
+                conditions.append(ItemModel.tags.contains(cast(ARRAY(db.String), tags)))
+            else:
+                conditions.append(ItemModel.tags.contains([tags]))
+        
+        if name:
+            conditions.append(ItemModel.name.ilike('{}%'.format(unquote(str(name)))))
+        
+        if parent_id:
+            conditions.append(ItemModel.parent_id == parent_id)
+        else:
+            if 'any_level' in data and str(data['any_level']).lower() == 'true': 
+                pass
+            else:
+                conditions.append(ItemModel.parent_id == None)
+
+        if location:
+            loc_data = json.loads(location)
+            if isinstance(loc_data,str):
+                    loc_data = json.loads(loc_data)
+            if loc_data['type'] == 'Point':
+                item_location = 'SRID=4326;POINT({0} {1})'.format(loc_data['coordinates'][0], loc_data['coordinates'][1])
+                range = (0.00001) * float(500) #converting from meters to lng/lat scale
+                conditions.append(func.ST_DWithin(ItemModel.location, item_location, range))
+            else:
+                item_location = 'SRID=4326;POLYGON(('
+                for ii in loc_data['coordinates'][0]:
+                    item_location = item_location + '{0} {1},'.format(ii[0], ii[1])
+                item_location = item_location[0:-1] + '))'
+                conditions.append(func.ST_Within(ItemModel.location, item_location))
+
+        if valid_from:
+            conditions.append(ItemModel.valid_from >= valid_from)
+
+        if valid_to:
+            conditions.append(ItemModel.valid_to <= valid_to)
+
+        if status:
+            conditions.append(ItemModel.status == status)
+
+        
+        if keys and values:
+            if len(keys) > 1 and op_or:
+                subconditions = []
+                for kv in zip(keys, values):
+                    subconditions.append(ItemModel.attributes.op('->>')(kv[0]) == kv[1])
+                
+                conditions.append(or_(*subconditions))
+            else:
+                for kv in zip(keys, values):
+                    # conditions.append(ItemModel.attributes[kv[0]].astext == kv[1])
+                    conditions.append(ItemModel.attributes.op('->>')(kv[0]) == kv[1])
+
+        if visibility:
+            conditions.append(ItemModel.visibility == VisibilityType[visibility])
+
+        result_item_models = []
+
+        conditions.append(ItemModel.org_id == org_id)
+        conditions.append(ItemModel.acls.any(Acl.type == AclType.public))
+        result_item_models = db.query(ItemModel).filter(*conditions).all()
+        
+        tbn = get_types_by_name(org_id)
+        items = [item_model_to_item(org_id, i, tbn, False) for i in result_item_models]
+        return items
 
     def get_public_orgs(self):
         return [Org(org.id, org.name) for org in db.query(OrgModel).filter(OrgModel.public == True).all()]
