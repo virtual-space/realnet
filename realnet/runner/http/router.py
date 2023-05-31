@@ -21,6 +21,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 router_bp = Blueprint('router_bp',__name__)
 
 def current_user(contextProvider):
@@ -105,8 +106,9 @@ def tenant_login(id, name):
                             # logger.info('*** request scheme: ' + request.scheme)
                             # logger.info('*** request base url: ' + request.base_url)
                             # logger.info('*** request query string: ' + to_unicode(request.query_string))
-                            return authorization.create_token_response()
-                            # return authorization.create_authorization_response(grant_user=account)
+                            
+                            # return authorization.create_token_response(request)
+                            return authorization.create_authorization_response(request, grant_user=account)
             else:
                 if name == None:
                     oauths = [{'name': n['name'],

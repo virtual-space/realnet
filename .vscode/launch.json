@@ -20,7 +20,8 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
-                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}"
+                "PYTHONPATH":"${PYTHONPATH}:${workspaceRoot}",
+                "OAUTHLIB_INSECURE_TRANSPORT":"1"
             },
             "args": [
                 "server",
