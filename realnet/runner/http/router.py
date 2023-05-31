@@ -241,7 +241,7 @@ def register_org():
 
 @router_bp.route('/oauth/token', methods=['POST'])
 def oauth_token():
-    return authorization.create_token_response()
+    return authorization.create_token_response(request)
     
 @router_bp.route('/<id>/authorize/<name>', defaults={'client_id': None})
 @router_bp.route('/<id>/<client_id>/authorize/<name>')
