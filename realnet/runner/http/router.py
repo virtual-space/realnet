@@ -108,7 +108,8 @@ def tenant_login(id, name):
                             # logger.info('*** request query string: ' + to_unicode(request.query_string))
                             
                             # return authorization.create_token_response(request)
-                            return authorization.create_authorization_response(request, grant_user=account)
+                            return authorization.create_token_response(request)
+                            # return authorization.create_authorization_response(request, grant_user=account)
             else:
                 if name == None:
                     oauths = [{'name': n['name'],
