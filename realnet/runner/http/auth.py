@@ -187,6 +187,12 @@ class HybridGrant(oidc_grants.OpenIDHybridGrant):
             user_info['email'] = user.email
         return user_info
 
+class RealnetImplicitGrant(grants.ImplicitGrant):
+    TOKEN_ENDPOINT_AUTH_METHODS = [
+    'client_secret_basic',
+    'client_secret_post',
+    'none',
+    ]
 
 query_client = create_query_client_func(db, Client)
 save_token = create_save_token_func(db, Token)
@@ -202,7 +208,7 @@ def config_oauth(app):
     authorization.init_app(app)
 
     # support all grants
-    authorization.register_grant(grants.ImplicitGrant)
+    authorization.register_grant(RealnetImplicitGrant)
     authorization.register_grant(OpenIDImplicitGrant)
     authorization.register_grant(grants.ClientCredentialsGrant)
     authorization.register_grant(AuthorizationCodeGrant, [CodeChallenge(required=True), OpenIDCode(require_nonce=True)])

@@ -101,7 +101,8 @@ class Type:
     def to_dict(self):
         base_data = None
         if self.base:
-            base_data = self.base.to_dict()
+            base_data = self.base.name
+            #base_data = self.base.to_dict()
         instances = []
         internal_instances = self.instances
         if internal_instances:

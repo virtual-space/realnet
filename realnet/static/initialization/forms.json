@@ -3624,16 +3624,6 @@
             "public": "true"
         },
         {
-            "name": "AccountGroupCreateForm",
-            "type": "AccountGroupCreateForm",
-            "public": "true"
-        },
-        {
-            "name": "AccountGroupDeleteForm",
-            "type": "AccountGroupDeleteForm",
-            "public": "true"
-        },
-        {
             "name": "AccountCreateForm",
             "type": "AccountCreateForm",
             "public": "true"
