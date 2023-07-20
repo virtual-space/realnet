@@ -472,7 +472,7 @@ class Items(Resource):
 
     def item_from_json(self, module, item_json, tbn):
         account = module.get_account()
-        type = tbn.get(item_json['type'], 'Item')
+        type = tbn.get(item_json['name'], 'Item')
         instance = Instance(type.id, type, item_json['name'], dict())
         return Item(account.id, account.org.id, instance, item_json.get('id', str(uuid.uuid4())), item_json.get('name', None), item_json.get('attributes', None))
 
