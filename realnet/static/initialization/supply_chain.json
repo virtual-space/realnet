@@ -1,0 +1,633 @@
+{
+    "types": [
+        {
+            "name": "Product",
+            "base": "Item"
+        },
+        {
+            "name": "Products",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Product", "ProductType"],
+                "query": {"types": ["Product", "ProductType"]},
+                "views": [
+                    {
+                        "name": "Products",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Product",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Product Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "ProductType",
+            "base": "Type"
+        },
+        {
+            "name": "Suppliers",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Supplier", "SupplierType"],
+                "query": {"types": ["Supplier", "SupplierType"]},
+                "views": [
+                    {
+                        "name": "Suppliers",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Supplier",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Supplier Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "Type CreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Supplier",
+            "base": "Item"
+        },
+        {
+            "name": "SupplierType",
+            "base": "Type"
+        },
+        {
+            "name": "Clients",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Client", "ClientType"],
+                "query": {"types": ["Cleint", "CleintType"]},
+                "views": [
+                    {
+                        "name": "Clients",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Client",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Client Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "Type CreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Client",
+            "base": "Item"
+        },
+        {
+            "name": "ClientType",
+            "base": "Type"
+        },
+        {
+            "name": "Tasks",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Task", "TaskType"],
+                "query": {"types": ["Task"]},
+                "views": [
+                    {
+                        "name": "Board",
+                        "type": "BoardView"
+                    },
+                    {
+                        "name": "Tasks",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Task",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Task Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Task",
+            "base": "Item"
+        },
+        {
+            "name": "TaskType",
+            "base": "Type"
+        },
+        {
+            "name": "Map",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Place"],
+                "query": {"types": ["Place"]},
+                "views": [
+                    {
+                        "name": "Map",
+                        "type": "MapView"
+                    },
+                    {
+                        "name": "Places",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Venue",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Venue Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Place",
+            "base": "Item"
+        },
+        {
+            "name": "PlaceType",
+            "base": "Type"
+        },
+        {
+            "name": "Venues",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Venue", "VenueType"],
+                "query": {"types": ["Place"]},
+                "views": [
+                    {
+                        "name": "Map",
+                        "type": "MapView"
+                    },
+                    {
+                        "name": "Venues",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Venue",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Venue Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Venue",
+            "base": "Place"
+        },
+        {
+            "name": "VenueType",
+            "base": "PlaceType"
+        },
+        {
+            "name": "Calendar",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Event"],
+                "query": {"types": ["Event","EventType"]},
+                "views": [
+                    {
+                        "name": "Events",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Event",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Event Type",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "TypeCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Event",
+            "base": "Item"
+        },
+        {
+            "name": "EventType",
+            "base": "Type"
+        },
+        {
+            "name": "Orders",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Order", "Product"],
+                "query": {"types": ["Order", "Product"]},
+                "views": [
+                    {
+                        "name": "Orders",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Order",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Order",
+            "base": "Item"
+        },
+        {
+            "name": "Cashflow",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Expense", "Income"],
+                "query": {"types": ["Expense", "Income"]},
+                "views": [
+                    {
+                        "name": "Cashflow",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Expense",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Add Income",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Expense",
+            "base": "Item"
+        },
+        {
+            "name": "Income",
+            "base": "Item"
+        },
+        {
+            "name": "Client",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Products",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Orders",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "Farmer",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Products",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Orders",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Clients",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Suppliers",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Cashflow",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Tasks",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Calendar",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Map",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "Driver",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Products",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Orders",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Clients",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Suppliers",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Cashflow",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Tasks",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Calendar",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Map",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "Chef",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Products",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Orders",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Clients",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Suppliers",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Cashflow",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Tasks",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Calendar",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Map",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        },
+        {
+            "name": "Maker",
+            "base": "Role",
+            "instances": [
+                {
+                    "name": "Products",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Orders",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Clients",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Suppliers",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Cashflow",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Tasks",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Calendar",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Map",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Login",
+                    "type": "RoleApp"
+                }
+            ]
+        }
+    ],
+    "items": [
+        {
+            "name": "Products",
+            "type": "Products"
+        },
+        {
+            "name": "Suppliers",
+            "type": "Suppliers"
+        },
+        {
+            "name": "Clients",
+            "type": "Clients"
+        },
+        {
+            "name": "Tasks",
+            "type": "Tasks"
+        },
+        {
+            "name": "Calendar",
+            "type": "Calendar"
+        },
+        {
+            "name": "Map",
+            "type": "Map"
+        },
+        {
+            "name": "Orders",
+            "type": "Orders"
+        },
+        {
+            "name": "Cashflow",
+            "type": "Cashflow"
+        },
+        {
+            "name": "Farmer",
+            "type": "Farmer"
+        },
+        {
+            "name": "Chef",
+            "type": "Chef"
+        },
+        {
+            "name": "Driver",
+            "type": "Driver"
+        },
+        {
+            "name": "Maker",
+            "type": "Maker"
+        },
+        {
+            "name": "Client",
+            "type": "client"
+        }
+    ]
+}
