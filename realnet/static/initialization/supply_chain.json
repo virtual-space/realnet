@@ -362,6 +362,64 @@
             }
         },
         {
+            "name": "Menus",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Menu"],
+                "query": {"types": ["Menu"]},
+                "views": [
+                    {
+                        "name": "Menus",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Menu",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Menu",
+            "base": "Item"
+        },
+        {
+            "name": "Ingredients",
+            "base": "App",
+            "attributes": {
+                "icon": "square",
+                "types": ["Ingredient"],
+                "query": {"types": ["Ingredient"]},
+                "views": [
+                    {
+                        "name": "Ingredients",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Ingredient",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Ingredient",
+            "base": "Item"
+        },
+        {
             "name": "Expense",
             "base": "Item"
         },
@@ -488,7 +546,11 @@
             "base": "Role",
             "instances": [
                 {
-                    "name": "Products",
+                    "name": "Menus",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "Ingredients",
                     "type": "RoleApp"
                 },
                 {
@@ -580,6 +642,14 @@
         {
             "name": "Products",
             "type": "Products"
+        },
+        {
+            "name": "Menus",
+            "type": "Menus"
+        },
+        {
+            "name": "Ingredients",
+            "type": "Ingredients"
         },
         {
             "name": "Suppliers",
