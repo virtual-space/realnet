@@ -143,7 +143,8 @@ class Initialize(ProtoCmd):
                 import_structure_from_resource(context, 'static/initialization/geometry.json')
                 import_structure_from_resource(context, 'static/initialization/apps.json')
                 import_structure_from_resource(context, 'static/initialization/access.json')
-                import_structure_from_resource(context, 'static/initialization/supply_chain.json')
+                # import_structure_from_resource(context, 'static/initialization/supply_chain.json')
+                import_structure_from_resource(context, 'static/initialization/crm.json')
         
 
         # with app.app_context():

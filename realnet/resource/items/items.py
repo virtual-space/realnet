@@ -516,11 +516,16 @@ class Items(Resource):
                     if func:
                         external_resources = func.invoke(module, endpoint, external_query, None, 'application/json')
                         if external_resources:
+                            external_items = []
                             data = json.loads(external_resources)
-                            if isinstance(data, list):
-                                external_items = [self.item_from_json(module, er, tbn) for er in data]
-                            else:
-                                external_items = [self.item_from_json(module, data, tbn)]
+                            try:
+                                
+                                if isinstance(data, list):
+                                    external_items = [self.item_from_json(module, er, tbn) for er in data]
+                                else:
+                                    external_items = [self.item_from_json(module, data, tbn)]
+                            except Exception as e:
+                                print(e)
                             results = results + [er for er in external_items]
                 
                 if internal_types:

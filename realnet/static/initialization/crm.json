@@ -1,6 +1,84 @@
 {
     "types": [
         {
+            "name": "Lead",
+            "base": "Item",
+            "attributes": {
+                "icon": "lightbulb",
+                "views": [
+                    {
+                        "name": "Details",
+                        "type": "AttributesView"
+                    },
+                    {
+                        "name": "Notes",
+                        "type": "ListView",
+                        "attributes": {
+                            "query": {"types": ["Note"], "children": "true"},
+                            "menu": [
+                                {
+                                    "name": "Add Note",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add",
+                                        "form": "ItemCreateForm"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Timeline",
+                        "type": "BoardView",
+                        "attributes": {
+                            "query": {"types": ["Activity"], "children": "true"}
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Leads",
+            "base": "App",
+            "attributes": {
+                "icon": "lightbulb",
+                "types": ["Lead"],
+                "query": {"types": ["Lead"]},
+                "views": [
+                    {
+                        "name": "All Leads",
+                        "type": "ListView"
+                    },
+                    {
+                        "name": "Kanban",
+                        "type": "BoardView",
+                        "attributes": {
+                            "query": {"types": ["Lead"]},
+                            "group_by": "status"
+                        }
+                    },
+                    {
+                        "name": "Calendar",
+                        "type": "CalendarView",
+                        "attributes": {
+                            "query": {"types": ["Lead"]},
+                            "date_field": "due_date"
+                        }
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Lead",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "Customer",
             "base": "Item"
         },
@@ -10,7 +88,7 @@
             "attributes": {
                 "icon": "person",
                 "types": ["Customer"],
-                "query": {"types": ["Customer"]},
+                "query": {"types": ["Customer"], "any_level": "true"},
                 "views": [
                     {
                         "name": "Customers",
@@ -30,25 +108,25 @@
             }
         },
         {
-            "name": "Lead",
+            "name": "Contact",
             "base": "Item"
         },
         {
-            "name": "Leads",
+            "name": "Contacts",
             "base": "App",
             "attributes": {
-                "icon": "lightbulb",
-                "types": ["Lead"],
-                "query": {"types": ["Lead"]},
+                "icon": "contacts",
+                "types": ["Contact"],
+                "query": {"types": ["Contact"], "any_level": "true"},
                 "views": [
                     {
-                        "name": "Leads",
+                        "name": "Contacts",
                         "type": "ListView"
                     }
                 ],
                 "menu": [
                     {
-                        "name": "Add Lead",
+                        "name": "Add Contact",
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "add",
@@ -59,25 +137,25 @@
             }
         },
         {
-            "name": "Task",
+            "name": "Opportunity",
             "base": "Item"
         },
         {
-            "name": "Tasks",
+            "name": "Opportunities",
             "base": "App",
             "attributes": {
-                "icon": "checklist",
-                "types": ["Task"],
-                "query": {"types": ["Task"]},
+                "icon": "monetization_on",
+                "types": ["Opportunity"],
+                "query": {"types": ["Opportunity"], "any_level": "true"},
                 "views": [
                     {
-                        "name": "Tasks",
+                        "name": "Opportunities",
                         "type": "ListView"
                     }
                 ],
                 "menu": [
                     {
-                        "name": "Add Task",
+                        "name": "Add Opportunity",
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "add",
@@ -88,88 +166,16 @@
             }
         },
         {
-            "name": "Product",
-            "base": "Item"
-        },
-        {
-            "name": "Products",
+            "name": "SalesPipeline",
             "base": "App",
             "attributes": {
-                "icon": "square",
-                "types": ["Product"],
-                "query": {"types": ["Product"]},
+                "icon": "pipeline",
+                "types": ["Opportunity"],
+                "query": {"types": ["Opportunity"], "any_level": "true"},
                 "views": [
                     {
-                        "name": "Products",
-                        "type": "ListView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add Product",
-                        "type": "MenuItem",
-                        "attributes": {
-                            "icon": "add",
-                            "form": "ItemCreateForm"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Design",
-            "base": "Item"
-        },
-        {
-            "name": "Designs",
-            "base": "App",
-            "attributes": {
-                "icon": "design_services",
-                "types": ["Design"],
-                "query": {"types": ["Design"]},
-                "views": [
-                    {
-                        "name": "Designs",
-                        "type": "ListView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add Design",
-                        "type": "MenuItem",
-                        "attributes": {
-                            "icon": "add",
-                            "form": "ItemCreateForm"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "Build",
-            "base": "Item"
-        },
-        {
-            "name": "Builds",
-            "base": "App",
-            "attributes": {
-                "icon": "build",
-                "types": ["Build"],
-                "query": {"types": ["Build"]},
-                "views": [
-                    {
-                        "name": "Builds",
-                        "type": "ListView"
-                    }
-                ],
-                "menu": [
-                    {
-                        "name": "Add Build",
-                        "type": "MenuItem",
-                        "attributes": {
-                            "icon": "add",
-                            "form": "ItemCreateForm"
-                        }
+                        "name": "Pipeline",
+                        "type": "BoardView"
                     }
                 ]
             }
@@ -184,7 +190,7 @@
             "attributes": {
                 "icon": "shopping_cart",
                 "types": ["Order"],
-                "query": {"types": ["Order"]},
+                "query": {"types": ["Order"], "any_level": "true"},
                 "views": [
                     {
                         "name": "Orders",
@@ -204,25 +210,25 @@
             }
         },
         {
-            "name": "Inventory",
+            "name": "Campaign",
             "base": "Item"
         },
         {
-            "name": "Inventories",
+            "name": "Campaigns",
             "base": "App",
             "attributes": {
-                "icon": "warehouse",
-                "types": ["Inventory"],
-                "query": {"types": ["Inventory"]},
+                "icon": "campaign",
+                "types": ["Campaign"],
+                "query": {"types": ["Campaign"], "any_level": "true"},
                 "views": [
                     {
-                        "name": "Inventories",
+                        "name": "Campaigns",
                         "type": "ListView"
                     }
                 ],
                 "menu": [
                     {
-                        "name": "Add Inventory",
+                        "name": "Add Campaign",
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "add",
@@ -231,22 +237,57 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "Task",
+            "base": "Item"
+        },
+        {
+            "name": "Tasks",
+            "base": "App",
+            "attributes": {
+                "icon": "checklist",
+                "types": ["Task"],
+                "query": {"types": ["Task"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Tasks",
+                        "type": "ListView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Task",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Report",
+            "base": "Item"
+        },
+        {
+            "name": "Reports",
+            "base": "App",
+            "attributes": {
+                "icon": "analytics",
+                "types": ["Report"],
+                "query": {"types": ["Report"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Reports",
+                        "type": "PanelView"
+                    }
+                ]
+            }
         }
     ],
     "items": [
-        {
-            "name": "customers",
-            "type": "Endpoint",
-            "attributes": {
-                "path": "customers",
-                "resource": "items"
-            },
-            "public": "true"
-        },
-        {
-            "name": "Customers",
-            "type": "Customers"
-        },
         {
             "name": "leads",
             "type": "Endpoint",
@@ -261,56 +302,56 @@
             "type": "Leads"
         },
         {
-            "name": "tasks",
+            "name": "customers",
             "type": "Endpoint",
             "attributes": {
-                "path": "tasks",
+                "path": "customers",
                 "resource": "items"
             },
             "public": "true"
         },
         {
-            "name": "Tasks",
-            "type": "Tasks"
+            "name": "Customers",
+            "type": "Customers"
         },
         {
-            "name": "products",
+            "name": "contacts",
             "type": "Endpoint",
             "attributes": {
-                "path": "products",
+                "path": "contacts",
                 "resource": "items"
             },
             "public": "true"
         },
         {
-            "name": "Products",
-            "type": "Products"
+            "name": "Contacts",
+            "type": "Contacts"
         },
         {
-            "name": "designs",
+            "name": "opportunities",
             "type": "Endpoint",
             "attributes": {
-                "path": "designs",
+                "path": "opportunities",
                 "resource": "items"
             },
             "public": "true"
         },
         {
-            "name": "Designs",
-            "type": "Designs"
+            "name": "Opportunities",
+            "type": "Opportunities"
         },
         {
-            "name": "builds",
+            "name": "salespipeline",
             "type": "Endpoint",
             "attributes": {
-                "path": "builds",
+                "path": "salespipeline",
                 "resource": "items"
             },
             "public": "true"
         },
         {
-            "name": "Builds",
-            "type": "Builds"
+            "name": "SalesPipeline",
+            "type": "SalesPipeline"
         },
         {
             "name": "orders",
@@ -326,17 +367,43 @@
             "type": "Orders"
         },
         {
-            "name": "inventories",
+            "name": "campaigns",
             "type": "Endpoint",
             "attributes": {
-                "path": "inventories",
+                "path": "campaigns",
                 "resource": "items"
             },
             "public": "true"
         },
         {
-            "name": "Inventories",
-            "type": "Inventories"
+            "name": "Campaigns",
+            "type": "Campaigns"
+        },
+        {
+            "name": "tasks",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "tasks",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Tasks",
+            "type": "Tasks"
+        },
+        {
+            "name": "reports",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "reports",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Reports",
+            "type": "Reports"
         }
     ]
 }

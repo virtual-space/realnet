@@ -10,7 +10,7 @@
         },
         {
             "name": "Node",
-            "base": "Folder",
+            "base": "Item",
             "attributes": {
                 "icon": "line_start",
                 "types": ["Node", "Media", "Attribute"]

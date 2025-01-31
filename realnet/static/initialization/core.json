@@ -986,7 +986,7 @@
         },
         {
             "name": "Folder",
-            "base": "File",
+            "base": "Item",
             "attributes": {
                 "icon": "folder",
                 "creatable": "true",

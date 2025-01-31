@@ -41,7 +41,7 @@ class GenericResourceProvider(ResourceProvider):
                     resource_instance = resource_class()
                     func = getattr(resource_instance, method_name, None)
                     if callable(func):
-                        return Func(callback=lambda module, endpoint, args, path, content_type : func(module, endpoint, args, path, content_type))
+                        return Func(callback=lambda m, e, a, p, c_t: func(m, e, a, p, c_t))
                 else:
                     resource_data = module.get_data(resource_item.id)
                     if resource_data:

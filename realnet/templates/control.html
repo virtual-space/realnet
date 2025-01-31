@@ -8,8 +8,8 @@
 {% set namespace = False %}
 {% if control.__class__.__name__ == 'dict' %}
     {% set attributes = item.attributes %}
-    {% if 'namespace' in control.attributes %}
-        {% set attributes = attributes.get(control.attributes['namespace'], dict()) %}
+    {% if 'namespace' in control %}
+        {% set attributes = attributes.get(control['namespace'], dict()) %}
         {% set namespace = True %}
     {% endif %}
 {% else %}

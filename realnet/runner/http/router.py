@@ -30,8 +30,8 @@ def current_user(contextProvider):
         return contextProvider.get_account_by_id(uid)
     return None
 
-@router_bp.route('/signin', defaults={'org_name': None}, methods=['GET', 'POST'])
 @router_bp.route('/<org_name>/signin', methods=['GET', 'POST'])
+# @router_bp.route('/signin', defaults={'org_name': None}, methods=['GET', 'POST'])
 def login(org_name):
     contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
     if request.method == 'GET':
@@ -367,7 +367,7 @@ def router(endpoint_name, path):
                         statusCode=401,
                         data='Unauthorized'.format(id)), 401
             else:
-                return redirect('/signin')
+                pass # return redirect('/signin')
     else:
         account = current_token.account
 

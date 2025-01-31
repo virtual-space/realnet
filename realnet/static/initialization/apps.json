@@ -436,6 +436,13 @@
                 ],
                 "menu": []
             }
+        },
+        {
+            "name": "Home",
+            "base": "App",
+            "attributes": {
+                "icon": "home"
+            }
         }
     ],
     "items": [
@@ -516,6 +523,18 @@
         {
             "name": "Attributes",
             "type": "Attributes"
+        },
+        {
+            "name": "Home",
+            "type": "Home"
+        },
+        {
+            "name": "home",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "home",
+                "resource": "items"
+            }
         },
         {
             "name": "items",
