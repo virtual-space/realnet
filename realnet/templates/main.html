@@ -53,6 +53,47 @@
       table.table-fit tbody td, table.table-fit tfoot td {
           width: auto !important;
       }
+
+      @media (max-width: 768px) {
+        .navbar-nav {
+          flex-direction: row !important;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .form-inline {
+          flex-wrap: nowrap;
+        }
+
+        .nav-item {
+          width: auto;
+          text-align: center;
+        }
+
+        .dropdown-menu {
+          text-align: left;
+        }
+
+        .dropdown-menu-right {
+          right: 0;
+          left: auto;
+        }
+        .d-flex.flex-wrap {
+          flex-direction: row;
+          justify-content: center;
+        }
+
+        .nav-item.dropdown .dropdown-menu {
+          top: 100% !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+        }
+
+        .dropdown-menu-right {
+          right: 0;
+          left: auto;
+        }
+      }
     </style>
     {{ bootstrap.load_js() }}
     {{ bootstrap.load_css() }}
@@ -347,7 +388,6 @@
     
 <!-- EndRender world app -->
 <div class="container-fluid p-0">
-  {% include "nav.html" %}
   <main role="main">
     <div class="container-fluid p-0">
       {% block content %}{% endblock %}

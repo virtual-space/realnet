@@ -1,89 +1,128 @@
 {% extends "main.html" %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/"><i class="material-icons mr-1">{{app.attributes['icon']}}</i>{{app.name}}</a>
-  <ul class="nav nav-tabs mr-auto">
-    {% for view in views %}
-      {% if active_view_name and (view.name | lower) == active_view_name %}
-      <li class="nav-item active">
-        <a class="nav-link active d-inline" href="?view={{view['name'] | lower}}">{{view.name}}</a>
-        <div class="dropdown d-inline">
-          <button type="button" class="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="material-icons mr-1">more_vert</i>
-          </button>
-          <div class="dropdown-menu">
-            {% if endpoint == 'types' %}
-              <button data-toggle="modal" data-target="#form_TypeViewEditForm" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-              <button data-toggle="modal" data-target="#form_TypeViewQueryForm" class="dropdown-item" type="button"><i class="material-icons mr-1">search</i>Query</button>
-              <button data-toggle="modal" data-target="#form_TypeViewDeleteForm" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
-            {% else %}
-              <button data-toggle="modal" data-target="#form_ViewEditForm" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-              <button data-toggle="modal" data-target="#form_ViewQueryForm" class="dropdown-item" type="button"><i class="material-icons mr-1">search</i>Query</button>
-              <button data-toggle="modal" data-target="#form_ViewDeleteForm" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
-            {% endif %}
-          </div>
+<div class="container-fluid justify-content-center align-items-center">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid justify-content-center align-items-center">
+      <div class="dropdown align-items-center">
+          
+        <button type="button" class="btn btn-secondary dropdown-toggle mr-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          REALNET
+        </button>
+        
+        <div class="dropdown-menu w-100">
+          {% for app in apps %}  <!-- Put extra buttons in dropdown -->
+          <a class="dropdown-item" href="/{{ app.name | lower }}">
+            <i class="material-icons me-1">{{ app.attributes['icon'] }}</i> {{ app.name }}
+          </a>
+          {% endfor %}
         </div>
-      </li>
-      {% else %}
-      <li class="nav-item">
-        <a class="nav-link" href="?view={{view['name'] | lower}}">{{view.name}}</a>
-      </li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-  <ul class="nav navbar-right mr-auto">
-    <li class="nav-item  mr-auto">
-        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group mr-2" role="group" aria-label="First group">
-                <form class="form-inline" role="form">
-                    <input class="form-control" type="search" placeholder="Keywords" aria-label="keywords" id="search">
-                    <button type="submit" class="btn btn-success ml-2 mr-2">Search</button>
-                </form>
-            </div>
-            {% if items %}
-            <div class="btn-group mr-2" role="group" aria-label="Second group">
-              <button class="btn btn-outline-secondary ml-2 mr-2" disabled>{{items|length}} {{types|join(',')}}(s)</button>
-            </div>
-            {% endif %}
-            <div class="btn-group mr-2" role="group" aria-label="Second group">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="material-icons mr-1">more_vert</i>
-              </button>
-              <div class="dropdown-menu dropdown-menu-right">
-                {% if menu %}
-                  {% for menu_item in menu %}
-                  {% if endpoint == 'types' %}
-                    <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="types" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
-                  {% else %}
-                    <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="{{menu_item['attributes']['path']}}" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
-                  {% endif %}
-                  {% endfor %}
-                  <script>
-                    $(document).ready(function(){
-                      $('.menu-item-button').on('click', function(event) {
-                        const path = $(this).attr('data-path');
-                        console.log('****', path);
-                        if (path) {
-                          $($(this).attr('data-target')).find('form').attr('action', '/' + path);
-                        }  
-                      });
-                    });
-                  </script>
+      </div>
+
+      <a class="navbar-text mr-1" href="/"><i class="material-icons mr-1">{{app.attributes['icon']}}</i>{{app.name}}</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        
+        <form class="d-flex mr-1">
+          <input class="form-control me-2" type="search" placeholder="Keywords" aria-label="keywords" id="search">
+          <button type="submit" class="btn btn-outline-success">Search</button>
+        </form>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mr-1">
+          {% if items %}
+          <li class="nav-item">
+            <button class="btn btn-outline-secondary" disabled>{{items|length}} {{types|join(',')}}(s)</button>
+          </li>
+          {% endif %}
+          <li class="nav-item dropdown">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="material-icons mr-1">more_vert</i>
+            </button>
+            <div class="dropdown-menu">
+              {% if menu %}
+                {% for menu_item in menu %}
+                {% if endpoint == 'types' %}
+                  <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="types" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
+                {% else %}
+                  <button data-toggle="modal" data-target="#form_{{menu_item['attributes']['form']}}" data-path="{{menu_item['attributes']['path']}}" class="dropdown-item menu-item-button" type="button"><i class="material-icons mr-1">{{menu_item['attributes']['icon']}}</i>{{menu_item['name']}}</button>
                 {% endif %}
-              </div>
+                {% endfor %}
+                <script>
+                  $(document).ready(function(){
+                    $('.menu-item-button').on('click', function(event) {
+                      const path = $(this).attr('data-path');
+                      console.log('****', path);
+                      if (path) {
+                        $($(this).attr('data-target')).find('form').attr('action', '/' + path);
+                      }  
+                    });
+                  });
+                </script>
+              {% endif %}
             </div>
+          </li>
+        </ul>
+        <div class="nav-item dropdown mr-1" id="accountMenu">
+          <a class="nav-item dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            {{ account.name }}@{{ org.name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+            <a class="dropdown-item" href="#" id="location"></a>
+              {% for menu_item in menu_items %}
+              <a class="dropdown-item" href="./views/{{menu_item.name}}"><i class="material-icons">{{menu_item.icon}}</i>{{menu_item.name}}</a>
+              {% endfor %}
+              <a class="dropdown-item" href="#" id="logout"><i class="material-icons">lock</i>Logout</a>
+          </ul>
         </div>
-    </li>
-  </ul>
+        
+        
+        <ul class="nav nav-tabs">
+          {% for view in views %}
+                  {% if active_view_name and (view.name | lower) == active_view_name %}
+                  <li class="nav-item active">
+                    <a class="nav-link active d-inline" href="?view={{view['name'] | lower}}">{{view.name}}</a>
+                    <div class="dropdown d-inline">
+                      <button type="button" class="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="material-icons mr-1">more_vert</i>
+                      </button>
+                      <div class="dropdown-menu">
+                        {% if endpoint == 'types' %}
+                          <button data-toggle="modal" data-target="#form_TypeViewEditForm" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                          <button data-toggle="modal" data-target="#form_TypeViewQueryForm" class="dropdown-item" type="button"><i class="material-icons mr-1">search</i>Query</button>
+                          <button data-toggle="modal" data-target="#form_TypeViewDeleteForm" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                        {% else %}
+                          <button data-toggle="modal" data-target="#form_ViewEditForm" class="dropdown-item" type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                          <button data-toggle="modal" data-target="#form_ViewQueryForm" class="dropdown-item" type="button"><i class="material-icons mr-1">search</i>Query</button>
+                          <button data-toggle="modal" data-target="#form_ViewDeleteForm" class="dropdown-item" type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </li>
+                  {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="?view={{view['name'] | lower}}">{{view.name}}</a>
+                  </li>
+                  {% endif %}
+                {% endfor %}  
+        </ul>
+      </div>
+    </div>
+  </nav>
   
-</nav>
-  {% for view in views %}
-    {% if active_view_name and (view['name'] | lower) == active_view_name %}
-      {% with item=item, items=items %}
-          {% include "view.html" %}
-      {% endwith %}
-    {% endif %}
-  {% endfor %}
+
+{% for view in views %}
+{% if active_view_name and (view['name'] | lower) == active_view_name %}
+  {% with item=item, items=items %}
+      {% include "view.html" %}
+  {% endwith %}
+{% endif %}
+{% endfor %}
+
+</div>
 {% endblock %}
+
+
     
