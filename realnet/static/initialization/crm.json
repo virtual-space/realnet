@@ -12,7 +12,7 @@
                     },
                     {
                         "name": "Notes",
-                        "type": "ListView",
+                        "type": "CardsView",
                         "attributes": {
                             "query": {"types": ["Note"], "children": "true"},
                             "menu": [
@@ -47,7 +47,7 @@
                 "views": [
                     {
                         "name": "All Leads",
-                        "type": "ListView"
+                        "type": "CardsView"
                     },
                     {
                         "name": "Kanban",
@@ -92,7 +92,7 @@
                 "views": [
                     {
                         "name": "Customers",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -121,7 +121,7 @@
                 "views": [
                     {
                         "name": "Contacts",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -150,7 +150,7 @@
                 "views": [
                     {
                         "name": "Opportunities",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -169,7 +169,7 @@
             "name": "SalesPipeline",
             "base": "App",
             "attributes": {
-                "icon": "pipeline",
+                "icon": "filter_alt",
                 "types": ["Opportunity"],
                 "query": {"types": ["Opportunity"], "any_level": "true"},
                 "views": [
@@ -194,7 +194,7 @@
                 "views": [
                     {
                         "name": "Orders",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -223,7 +223,7 @@
                 "views": [
                     {
                         "name": "Campaigns",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -252,7 +252,7 @@
                 "views": [
                     {
                         "name": "Tasks",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [

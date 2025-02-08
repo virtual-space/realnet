@@ -207,7 +207,12 @@ class Items(Resource):
                     attrs['attributes'] = dict()
                 attrs['attributes'][k] = v
             else:
-                attrs[k] = v
+                if k == 'parent_id':
+                    parent_item = self.get_item(module, endpoint, account, attrs, v);
+                    if parent_item and module.can_account_write_item(account, parent_item):
+                        attrs[k] = v
+                else:
+                    attrs[k] = v
 
         if not 'attributes' in attrs:
             attrs['attributes'] = dict()
@@ -227,12 +232,6 @@ class Items(Resource):
             
         parent_item = None
 
-        if 'parent_id' in args:
-            account = module.get_account()
-            parent_item = self.get_item(module, endpoint, account, attrs, attrs['parent_id']);
-            if not parent_item or not module.can_account_write_item(account, parent_item):
-                return redirect('/items/{}'.format(attrs['parent_id']))
-        
         item = module.create_item(**attrs)
 
         if content_type == 'application/json':
@@ -472,7 +471,7 @@ class Items(Resource):
 
     def item_from_json(self, module, item_json, tbn):
         account = module.get_account()
-        type = tbn.get(item_json['name'], 'Item')
+        type = tbn.get(item_json['type'], tbn.get('Item'))
         instance = Instance(type.id, type, item_json['name'], dict())
         return Item(account.id, account.org.id, instance, item_json.get('id', str(uuid.uuid4())), item_json.get('name', None), item_json.get('attributes', None))
 

@@ -416,7 +416,7 @@
                 "views": [
                     {
                         "name": "Roles",
-                        "type": "ListView",
+                        "type": "CardsView",
                         "attributes": {
                             "query": {"types": ["AccountRole"], "children": "true"},
                             "menu": [
@@ -433,7 +433,7 @@
                     },
                     {
                         "name": "Groups",
-                        "type": "ListView",
+                        "type": "CardsView",
                         "attributes": {
                             "query": {"types": ["AccountGroup"], "children": "true"},
                             "menu": [
@@ -588,7 +588,7 @@
                 "views": [
                     {
                         "name": "Apps",
-                        "type": "ListView",
+                        "type": "CardsView",
                         "query": {"types": ["RoleApp"], "children": "true"}
                     }
                 ],
@@ -884,7 +884,7 @@
                     },
                     {
                         "name": "Files",
-                        "type": "ListView",
+                        "type": "CardsView",
                         "attributes": {
                             "query": {"types": ["Media"], "children": "true"},
                             "menu": [
@@ -998,7 +998,7 @@
                         "type": "MenuItem",
                         "attributes": {
                             "icon": "file_upload",
-                            "form": "Import",
+                            "form": "UploadForm",
                             "import": "true"
                         }
                     }

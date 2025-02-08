@@ -18,7 +18,7 @@
                 "views": [
                     {
                         "name": "Items",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -70,7 +70,7 @@
                 "views": [
                     {
                         "name": "Apps",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -104,7 +104,7 @@
                 "views": [
                     {
                         "name": "All",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -129,7 +129,7 @@
                 "views": [
                     {
                         "name": "All",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -163,7 +163,7 @@
                 "views": [
                     {
                         "name": "Files",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -193,7 +193,7 @@
                 "views": [
                     {
                         "name": "Items",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -208,7 +208,7 @@
                 "views": [
                     {
                         "name": "Resources",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ],
                 "menu": [
@@ -252,7 +252,7 @@
                 "views": [
                     {
                         "name": "Types",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -277,7 +277,7 @@
                 "views": [
                     {
                         "name": "Accounts",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -302,7 +302,7 @@
                 "views": [
                     {
                         "name": "Roles",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -327,7 +327,7 @@
                 "views": [
                     {
                         "name": "Groups",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -352,7 +352,7 @@
                 "views": [
                     {
                         "name": "Auths",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -367,7 +367,7 @@
                 "views": [
                     {
                         "name": "Public",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -392,7 +392,7 @@
                 "views": [
                     {
                         "name": "Clients",
-                        "type": "ListView"
+                        "type": "CardsView"
                     }
                 ]
             }
@@ -441,7 +441,15 @@
             "name": "Home",
             "base": "App",
             "attributes": {
-                "icon": "home"
+                "icon": "home",
+                "types": ["Folder", "Link"],
+                "query": {"types": ["Folder", "Link"]},
+                "views": [
+                    {
+                        "name": "Home",
+                        "type": "CardsView"
+                    }
+                ]
             }
         }
     ],

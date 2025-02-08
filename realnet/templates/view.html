@@ -191,6 +191,154 @@
         });
       });
     </script>
+    {% elif view['type'] == 'CardsView' %}
+    <style>
+      .icon-lg {
+          font-size: 100px;  /* Adjust the size to fit properly */
+          line-height: 1;
+          display: block;
+          margin: auto;
+          padding: 10px 0;  /* Prevents touching the top */
+      }
+      .icon-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          padding: 10px 0;
+      }
+      .material-icons1 {
+          font-size: 100px;  /* Adjust the icon size */
+          line-height: 1 !important;  /* Fix the sticking-out issue */
+          display: block;
+          margin: auto;
+          padding: 10px 0;  /* Adds space around the icon */
+      }
+      .item-card {
+        margin: 4px;
+      }
+    </style>
+    <div class="row  justify-content-center align-items-center row-cols-1 row-cols-auto">
+      
+      {% if view['attributes'] and view['attributes']['internal'] == 'true' %}
+        {% if view['attributes']['source'] == 'attributes' %} 
+          {% set list_items = get_items_from_attributes(item.attributes, None) %}
+        {% else %}
+          {% set list_items = get_items_from_attributes(item.attributes, view['attributes']['source']) %}
+        {% endif %}
+      {% else %}
+        {% set list_items = items %}
+      {% endif %}
+      {% for item in list_items or [] %}
+      <div class="col-md-4 col-lg-3 text-center">
+        <div class="card item-card p-2" style="max-width: 300px;">
+          {% if item.attributes %}
+          <div class="card-header text-center bg-light w-100">
+            {% if item.attributes and item.attributes['resource'] %}
+                <a  href="/{{item.attributes['resource']}}/{{item.id}}"><i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i></a>
+            {% else %}
+                <a  href="/items/{{item.id}}"><i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i></h5></a>
+            {% endif %}
+            
+          </div>
+          {% endif %}
+          {% set type_name = None %} 
+          {% if item.instance %} 
+            {% set type_name = item.instance.type.name %}
+          {% elif item.type %}
+            {% set type_name = item.type.name %}
+          {% else %}
+            {% set type_name = item.name %}
+          {% endif %} 
+          <div class="card-body text-center">
+            {% if item.attributes and item.attributes['resource'] %}
+                <a  href="/{{item.attributes['resource']}}/{{item.id}}"><h5 class="card-title">{{item.name}}</h5></a>
+            {% else %}
+                <a  href="/items/{{item.id}}"><h5 class="card-title">{{item.name}}</h5></a>
+            {% endif %}
+            <h6 class="card-subtitle mb-2 text-muted">{{type_name}}</h6>
+            <div class="btn-group mr-2 card-link" role="group" aria-label="Second group">
+              <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="material-icons mr-1">more_vert</i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right">
+                {% if item.attributes and item.attributes['forms'] %}
+                  {% set type_name = None %} 
+                  {% if item.instance %} 
+                    {% set type_name = item.instance.type.name %}
+                  {% elif item.type %}
+                    {% set type_name = item.type.name %}
+                  {% else %}
+                    {% set type_name = item.name %}
+                  {% endif %} 
+                  <button data-toggle="modal" 
+                          data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
+                          class="dropdown-item edit-button" 
+                          data-item="{{item.to_dict()}}" 
+                          data-id="{{item.id}}" 
+                          data-type="{{type_name}}" 
+                          data-name="{{item.name}}" 
+                          data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
+                          type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                  <button data-toggle="modal" 
+                          data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
+                          class="dropdown-item delete-button" 
+                          data-id="{{item.id}}" 
+                          data-type="{{type_name}}" 
+                          data-name="{{item.name}}" 
+                          data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
+                          type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                {% endif %}
+              </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <script>
+      function updateForm(key, item, control) {
+        var json_item = item.replaceAll("\'","\"");
+        try {
+          json_item = JSON.parse(json_item);
+        } catch(e) {
+          console.log('*** failed parsing json item ***', e);
+        }
+        if(key === 'name' || key === 'type') {
+          control.val(json_item[key]);
+        } else if(key === 'value') {
+          var value = json_item['attributes'][key];
+          if(typeof(value) === 'string' || typeof(value) === 'number') {
+            control.val(value);  
+          } else {
+            control.val(JSON.stringify(json_item['attributes'][key]));
+          }
+        } else {
+          control.val(json_item['attributes'][key]);
+        }
+      }
+      $(document).ready(function(){
+        $('.edit-button').on('click', function(event) {
+          $($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
+          $($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
+          $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
+          $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
+          $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          const item = $(this).attr('data-item');
+          $($(this).attr('data-target')).find('.form-control').each(function () { updateForm($(this).attr('name'), item, $(this))});
+          //todo populate edit form with item attributes
+          //console.log('edit:', $(this).attr('data-id'), $(this).attr('data-target'));
+        });
+        $('.delete-button').on('click', function(event) {
+          $($(this).attr('data-target')).find('.modal-body #control_id').val($(this).attr('data-id'));
+          $($(this).attr('data-target')).find('.modal-body #control_type').val($(this).attr('data-type')).change();
+          $($(this).attr('data-target')).find('form').attr('action', '/' + $(this).attr('data-resource'));
+          $($(this).attr('data-target')).find('.modal-body #control_name').val($(this).attr('data-name'));
+          $($(this).attr('data-target')).find('.modal-header #title-name').text($(this).attr('data-name'));
+          //console.log('delete:', $(this).attr('data-id'), $(this).attr('data-target'));
+        });
+      });
+    </script>
     {% elif view['type'] == 'FormView' %}
     <div class="row  justify-content-center align-items-center">
         <div class="col-8 .text-center">

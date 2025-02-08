@@ -63,7 +63,11 @@
             "base": "Role",
             "instances": [
                 {
-                    "name": "Items",
+                    "name": "Home",
+                    "type": "RoleApp"
+                },
+                {
+                    "name": "ARVR",
                     "type": "RoleApp"
                 },
                 {
@@ -77,11 +81,7 @@
             "base": "Role",
             "instances": [
                 {
-                    "name": "Items",
-                    "type": "RoleApp"
-                },
-                {
-                    "name": "ChatGPT",
+                    "name": "Home",
                     "type": "RoleApp"
                 },
                 {

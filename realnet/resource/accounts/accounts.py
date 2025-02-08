@@ -23,7 +23,7 @@ class Accounts(Items):
     def get_items(self, module, endpoint, args, path, account, query, parent_item=None):
         tbn = {t.name:t for t in module.get_types()}
         if path:
-            view = args.get('view', ['roles'])[0]
+            view = args.get('view', ['roles'])
             if view == 'roles':
                 roles = module.get_account_roles(path)
                 return [self.item_from_account_role(r, tbn['AccountRole']) for r in roles]
