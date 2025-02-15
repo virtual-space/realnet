@@ -339,6 +339,10 @@
         });
       });
     </script>
+     {% elif view['type'] == 'ImageView' %}
+     <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
+      <img src="/items/{{ item.id }}/data" class="img-fluid w-100 h-100" style="object-fit: cover;">
+      </div>
     {% elif view['type'] == 'FormView' %}
     <div class="row  justify-content-center align-items-center">
         <div class="col-8 .text-center">

@@ -1002,6 +1002,26 @@
                             "import": "true"
                         }
                     }
+                ],
+                "views": [
+                    {
+                        "name": "Contents",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["Media"], "children": "true"},
+                            "menu": [
+                                {
+                                    "name": "Upload Media",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "file_upload",
+                                        "form": "UploadForm",
+                                        "import": "true"
+                                    }
+                                }
+                            ]
+                        }
+                    }
                 ]
             }
         },
