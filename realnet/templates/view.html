@@ -216,9 +216,16 @@
       }
       .item-card {
         margin: 4px;
+        width: 100% !important;
+      }
+      @media (max-width: 576px) {
+        .col-sm-6 {
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
       }
     </style>
-    <div class="row  justify-content-center align-items-center row-cols-1 row-cols-auto">
+    <div class="row justify-content-center align-items-center g-4">
       
       {% if view['attributes'] and view['attributes']['internal'] == 'true' %}
         {% if view['attributes']['source'] == 'attributes' %} 
@@ -230,16 +237,19 @@
         {% set list_items = items %}
       {% endif %}
       {% for item in list_items or [] %}
-      <div class="col-md-4 col-lg-3 text-center">
-        <div class="card item-card p-2" style="max-width: 300px;">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+        <div class="card item-card w-100 h-100 shadow-sm hover-shadow">
           {% if item.attributes %}
-          <div class="card-header text-center bg-light w-100">
+          <div class="card-header text-center bg-light border-bottom-0">
             {% if item.attributes and item.attributes['resource'] %}
-                <a  href="/{{item.attributes['resource']}}/{{item.id}}"><i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i></a>
+                <a href="/{{item.attributes['resource']}}/{{item.id}}" class="text-decoration-none">
+                    <i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i>
+                </a>
             {% else %}
-                <a  href="/items/{{item.id}}"><i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i></h5></a>
+                <a href="/items/{{item.id}}" class="text-decoration-none">
+                    <i class="material-icons material-icons1 text-primary icon-lg">{{item.attributes['icon']}}</i>
+                </a>
             {% endif %}
-            
           </div>
           {% endif %}
           {% set type_name = None %} 
@@ -250,53 +260,58 @@
           {% else %}
             {% set type_name = item.name %}
           {% endif %} 
-          <div class="card-body text-center">
+          <div class="card-body d-flex flex-column">
             {% if item.attributes and item.attributes['resource'] %}
-                <a  href="/{{item.attributes['resource']}}/{{item.id}}"><h5 class="card-title">{{item.name}}</h5></a>
+                <a href="/{{item.attributes['resource']}}/{{item.id}}" class="text-decoration-none">
+                    <h5 class="card-title text-center mb-2">{{item.name}}</h5>
+                </a>
             {% else %}
-                <a  href="/items/{{item.id}}"><h5 class="card-title">{{item.name}}</h5></a>
+                <a href="/items/{{item.id}}" class="text-decoration-none">
+                    <h5 class="card-title text-center mb-2">{{item.name}}</h5>
+                </a>
             {% endif %}
-            <h6 class="card-subtitle mb-2 text-muted">{{type_name}}</h6>
-            <div class="btn-group mr-2 card-link" role="group" aria-label="Second group">
-              <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="material-icons mr-1">more_vert</i>
-              </button>
-              <div class="dropdown-menu dropdown-menu-right">
-                {% if item.attributes and item.attributes['forms'] %}
-                  {% set type_name = None %} 
-                  {% if item.instance %} 
-                    {% set type_name = item.instance.type.name %}
-                  {% elif item.type %}
-                    {% set type_name = item.type.name %}
-                  {% else %}
-                    {% set type_name = item.name %}
-                  {% endif %} 
-                  <button data-toggle="modal" 
-                          data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
-                          class="dropdown-item edit-button" 
-                          data-item="{{item.to_dict()}}" 
-                          data-id="{{item.id}}" 
-                          data-type="{{type_name}}" 
-                          data-name="{{item.name}}" 
-                          data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
-                          type="button"><i class="material-icons mr-1">edit</i>Edit</button>
-                  <button data-toggle="modal" 
-                          data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
-                          class="dropdown-item delete-button" 
-                          data-id="{{item.id}}" 
-                          data-type="{{type_name}}" 
-                          data-name="{{item.name}}" 
-                          data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
-                          type="button"><i class="material-icons mr-1">delete</i>Delete</button>
-                {% endif %}
+            <h6 class="card-subtitle mb-3 text-muted text-center">{{type_name}}</h6>
+            <div class="mt-auto d-flex justify-content-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons">more_vert</i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  {% if item.attributes and item.attributes['forms'] %}
+                    {% set type_name = None %} 
+                    {% if item.instance %} 
+                      {% set type_name = item.instance.type.name %}
+                    {% elif item.type %}
+                      {% set type_name = item.type.name %}
+                    {% else %}
+                      {% set type_name = item.name %}
+                    {% endif %} 
+                    <button data-toggle="modal" 
+                            data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['form']}}" 
+                            class="dropdown-item edit-button" 
+                            data-item="{{item.to_dict()}}" 
+                            data-id="{{item.id}}" 
+                            data-type="{{type_name}}" 
+                            data-name="{{item.name}}" 
+                            data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'edit')|list)[0]['attributes']['path']}}" 
+                            type="button"><i class="material-icons mr-1">edit</i>Edit</button>
+                    <button data-toggle="modal" 
+                            data-target="#form_{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['form']}}" 
+                            class="dropdown-item delete-button" 
+                            data-id="{{item.id}}" 
+                            data-type="{{type_name}}" 
+                            data-name="{{item.name}}" 
+                            data-resource="{{(item['attributes']['forms']|selectattr('name', 'eq', 'delete')|list)[0]['attributes']['path']}}" 
+                            type="button"><i class="material-icons mr-1">delete</i>Delete</button>
+                  {% endif %}
+                </div>
               </div>
-          </div>
+            </div>
           </div>
         </div>
       </div>
       {% endfor %}
-    </div>
-    <script>
+    </div>    <script>
       function updateForm(key, item, control) {
         var json_item = item.replaceAll("\'","\"");
         try {
@@ -338,8 +353,7 @@
           //console.log('delete:', $(this).attr('data-id'), $(this).attr('data-target'));
         });
       });
-    </script>
-     {% elif view['type'] == 'ImageView' %}
+    </script>     {% elif view['type'] == 'ImageView' %}
      <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100%;">
       <img src="/items/{{ item.id }}/data" class="img-fluid w-100 h-100" style="object-fit: cover;">
       </div>
