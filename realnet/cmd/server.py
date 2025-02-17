@@ -8,8 +8,10 @@ from realnet.provider.generic.resource import GenericResourceProvider
 from realnet.provider.generic.importer import GenericImportProvider
 from realnet.provider.sql.type import SqlTypeProvider
 from realnet.provider.sql.postgres.item import PostgresItemProvider
+from realnet.provider.generic.data import LocalDataProvider
 from realnet.provider.aws.data import S3DataProvider
 from realnet.provider.sql.org import SqlOrgProvider
+from realnet.core.config import Config
 from realnet.provider.sql.orgs import SqlOrgsProvider
 from realnet.provider.sql.init import SqlInitProvider
 from realnet.provider.sql.client import SqlClientProvider
@@ -21,9 +23,18 @@ class StandardContextProvider(ContextProvider):
     
     def context(self, org_id, account_id):
         org_provider = SqlOrgProvider(org_id, account_id)
+        cfg = Config()
+        
+        # Select data provider based on storage type configuration
+        storage_type = cfg.get_storage_type()
+        if storage_type == 's3' and cfg.get_s3_bucket():
+            data_provider = S3DataProvider()
+        else:
+            data_provider = LocalDataProvider()
+        
         return Context( SqlTypeProvider(org_id, account_id),
                         PostgresItemProvider(org_id, account_id),
-                        S3DataProvider(),
+                        data_provider,
                         org_provider,
                         org_provider,
                         org_provider,

@@ -1,0 +1,107 @@
+# Project Intelligence
+
+## File Organization Patterns
+
+### Directory Structure
+- cmd/ - Command implementations
+- core/ - Core system functionality
+- provider/ - Storage backend providers
+- resource/ - Resource type definitions
+- runner/ - Protocol runners
+- shell/ - Shell interface
+- templates/ - HTML templates
+- static/ - Static files and resources
+
+### File Naming
+- Python modules use snake_case
+- Classes use PascalCase
+- Functions use snake_case
+- Constants use UPPER_CASE
+
+## Implementation Patterns
+
+### Provider Pattern
+- Abstract provider interface in core/provider.py
+- Concrete implementations in provider/
+- Each provider must implement CRUD operations
+- Provider selection through configuration
+- Transaction handling required
+- Error management consistent
+
+### Resource Pattern
+- Resource types defined in resource/
+- Hierarchical organization
+- Access control integration
+- Attribute management
+- Type validation
+- File handling
+
+### Runner Pattern
+- Base runner in runner/runner.py
+- Protocol-specific implementations
+- Middleware support
+- Template processing
+- Static file handling
+- Error responses
+
+### Command Pattern
+- Command modules in cmd/
+- Consistent argument parsing
+- Error handling
+- Help documentation
+- Status feedback
+
+## Common Workflows
+
+### Server Management
+1. Environment configuration
+2. Database initialization
+3. Server startup
+4. Token management
+
+### Resource Handling
+1. Type definition
+2. Instance creation
+3. Access control
+4. Attribute management
+5. File operations
+
+### Provider Usage
+1. Provider selection
+2. Connection management
+3. CRUD operations
+4. Transaction handling
+5. Error recovery
+
+### Authentication
+1. Token generation
+2. Validation
+3. Access control
+4. Session management
+
+## Key Paths
+- Main entry: realnet.py
+- Configuration: core/config.py
+- Access control: core/acl.py
+- Type system: core/type.py
+- HTTP runner: runner/http/runner.py
+- Server command: cmd/server.py
+
+## Critical Operations
+1. Database initialization
+2. Token management
+3. File storage
+4. Access control
+5. Error handling
+
+## Best Practices
+1. Always validate configuration
+2. Handle transactions properly
+3. Implement proper error handling
+4. Follow access control patterns
+5. Document command usage
+6. Test provider implementations
+7. Validate resource types
+8. Handle file operations safely
+
+This intelligence will be updated as new patterns and workflows are discovered.

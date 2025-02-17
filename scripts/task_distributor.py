@@ -1,10 +1,13 @@
 import yaml
 from pathlib import Path
 from typing import Dict, List
+import time
+import logging
 
 class AgentTaskManager:
     def __init__(self):
         self.agents = self.load_agents_from_config()
+        print(f"Initialized agents: {list(self.agents.keys())}")
         
     def load_agents_from_config(self) -> Dict:
         config_path = Path('.github/team-config.yml')
@@ -23,11 +26,17 @@ class AgentTaskManager:
         
     def list_all_agents(self) -> List[str]:
         return list(self.agents.keys())
+    
+    def run_service(self):
+        while True:
+            # Process agent tasks
+            time.sleep(1)
 
 def main():
     manager = AgentTaskManager()
     # Example usage
     print("Available agents:", manager.list_all_agents())
+    manager.run_service()
     
 if __name__ == "__main__":
     main()
