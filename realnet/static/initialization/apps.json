@@ -443,7 +443,7 @@
             "attributes": {
                 "icon": "home",
                 "types": ["Folder", "Link"],
-                "query": {"types": ["Folder", "Link"]},
+                "query": {"types": ["Folder", "Link"], "children": "true"},
                 "views": [
                     {
                         "name": "Home",
