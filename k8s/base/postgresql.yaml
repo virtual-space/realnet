@@ -1,32 +1,32 @@
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgresql-config
-  namespace: realnet
-data:
-  POSTGRES_DB: realnet
-  POSTGRES_USER: realnet
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgresql-secret
-  namespace: realnet
-type: Opaque
-data:
-  POSTGRES_PASSWORD: cmVhbG5ldA== # base64 encoded 'realnet'
----
-apiVersion: apps/v1
-kind: StatefulSet
+kind: Service
 metadata:
   name: postgresql
   namespace: realnet
 spec:
-  serviceName: postgresql
-  replicas: 1
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432        # Internal port for cluster communication
+      targetPort: 5432  # Container port
+    - name: external
+      port: 5433        # External port for local access
+      targetPort: 5432  # Maps to container port
+  selector:
+    app: postgresql
+  externalTrafficPolicy: Local
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: realnet
+spec:
   selector:
     matchLabels:
       app: postgresql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -34,47 +34,27 @@ spec:
     spec:
       containers:
         - name: postgresql
-          image: postgres:latest
+          image: postgis/postgis:15-3.3
+          env:
+            - name: POSTGRES_DB
+              value: realnet
+            - name: POSTGRES_USER
+              value: realnet
+            - name: POSTGRES_PASSWORD
+              value: realnet
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: postgresql-config
-            - secretRef:
-                name: postgresql-secret
           volumeMounts:
             - name: postgresql-data
               mountPath: /var/lib/postgresql/data
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "1Gi"
-              cpu: "500m"
-          readinessProbe:
-            exec:
-              command: ["pg_isready", "-U", "realnet"]
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            exec:
-              command: ["pg_isready", "-U", "realnet"]
-            initialDelaySeconds: 30
-            periodSeconds: 20
+          lifecycle:
+            postStart:
+              exec:
+                command: 
+                  - "sh"
+                  - "-c"
+                  - "sleep 10 && PGPASSWORD=realnet psql -U realnet -d realnet -c 'CREATE EXTENSION IF NOT EXISTS postgis;'"
       volumes:
         - name: postgresql-data
           persistentVolumeClaim:
-            claimName: realnet-postgresql
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgresql
-  namespace: realnet
-spec:
-  ports:
-    - port: 5432
-      targetPort: 5432
-  selector:
-    app: postgresql
+            claimName: postgresql-data

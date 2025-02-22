@@ -1,27 +1,16 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: realnet-config
+  name: realnet
   namespace: realnet
-data:
-  REALNET_SERVER_HOST: "0.0.0.0"
-  REALNET_SERVER_PORT: "8080"
-  REALNET_DB_TYPE: "postgresql"
-  REALNET_DB_HOST: "postgresql"
-  REALNET_DB_PORT: "5432"
-  REALNET_DB_NAME: "realnet"
-  REALNET_DB_USER: "realnet"
-  REALNET_MQTT_HOST: "mosquitto"
-  REALNET_MQTT_PORT: "1883"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: realnet-secret
-  namespace: realnet
-type: Opaque
-data:
-  REALNET_DB_PASS: cmVhbG5ldA== # base64 encoded 'realnet'
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: realnet
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -29,7 +18,6 @@ metadata:
   name: realnet
   namespace: realnet
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: realnet
@@ -41,51 +29,42 @@ spec:
       containers:
         - name: realnet
           image: realnet:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
               name: http
-          envFrom:
-            - configMapRef:
-                name: realnet-config
-            - secretRef:
-                name: realnet-secret
-          volumeMounts:
-            - name: data
-              mountPath: /data
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
+          env:
+            - name: REALNET_SERVER_HOST
+              value: "0.0.0.0"
+            - name: REALNET_SERVER_PORT
+              value: "8080"
+            - name: REALNET_DB_TYPE
+              value: "postgresql"
+            - name: REALNET_DB_USER
+              value: "realnet"
+            - name: REALNET_DB_PASS
+              value: "realnet"
+            - name: REALNET_DB_HOST
+              value: "postgresql"
+            - name: REALNET_DB_PORT
+              value: "5432"
+            - name: REALNET_DB_NAME
+              value: "realnet"
+            - name: REALNET_MQTT_HOST
+              value: "mosquitto"
+            - name: REALNET_MQTT_PORT
+              value: "1883"
+            - name: REALNET_APP_SECRET
+              value: "realnet-dev-secret-key-change-in-production"
           readinessProbe:
             httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 30
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /health
-              port: http
+              path: /healthz
+              port: 8080
             initialDelaySeconds: 30
-            periodSeconds: 60
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: realnet-data
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: realnet
-  namespace: realnet
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: http
-      name: http
-  selector:
-    app: realnet
+            periodSeconds: 20

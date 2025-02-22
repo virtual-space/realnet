@@ -87,7 +87,7 @@
                 {
                     "name": "Login",
                     "type": "RoleApp",
-                    "public": true
+                    "public": "true"
                 }
             ]
         }

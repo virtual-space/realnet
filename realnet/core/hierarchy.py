@@ -58,8 +58,12 @@ def build_type(module, type, existing_types_by_name):
         for instance in type.get('instances', []):
             attributes = instance.get('attributes', dict())
             is_public = instance.get('public')
-            if is_public:
-                is_public = is_public.lower() in ['true', 'True', '1']
+            if isinstance(is_public, bool):
+                pass  # Keep boolean value as is
+            elif is_public:
+                is_public = str(is_public).lower() in ['true', 'true', '1']
+            else:
+                is_public = False
             type_id = existing_types_by_name[instance['type']].id
             if type_id:
                 module.create_instance(**{  'id': str(uuid.uuid4()),

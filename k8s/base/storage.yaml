@@ -1,47 +1,23 @@
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: realnet-data
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: /data
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: realnet-data
-  namespace: realnet
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: realnet-postgresql
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /data/postgresql
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: realnet-postgresql
+  name: postgresql-data
   namespace: realnet
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-data
+  namespace: realnet
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

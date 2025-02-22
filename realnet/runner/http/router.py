@@ -24,6 +24,10 @@ logger.setLevel(logging.INFO)
 
 router_bp = Blueprint('router_bp',__name__)
 
+@router_bp.route('/healthz')
+def healthcheck():
+    return '', 200
+
 def current_user(contextProvider):
     if 'id' in session:
         uid = session['id']

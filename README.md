@@ -77,15 +77,47 @@ By default, Realnet uses `/data` for persistent storage. You can modify this in 
 #### Linux/macOS
 ```bash
 chmod +x k8s/deploy.sh  # Make script executable
+
+# Basic deployment with initialization
 ./k8s/deploy.sh
+
+# Deploy with database clear
+./k8s/deploy.sh -c
+# or
+./k8s/deploy.sh --clear-db
+
+# Deploy without initialization
+./k8s/deploy.sh -s
+# or
+./k8s/deploy.sh --skip-init
+
+# Deploy with database clear but skip initialization
+./k8s/deploy.sh -c -s
+# or
+./k8s/deploy.sh --clear-db --skip-init
 ```
 
 #### Windows (PowerShell)
 ```powershell
 # Run as Administrator
 Set-ExecutionPolicy Bypass -Scope Process -Force
+
+# Basic deployment with initialization
 .\k8s\deploy.ps1
+
+# Deploy with database clear
+.\k8s\deploy.ps1 -ClearDB
+
+# Deploy without initialization
+.\k8s\deploy.ps1 -SkipInit
+
+# Deploy with database clear but skip initialization
+.\k8s\deploy.ps1 -ClearDB -SkipInit
 ```
+
+The deployment scripts support the following options:
+- Database clearing: Removes all existing data and starts fresh
+- Initialization skipping: Deploys services without running the initialization step
 
 ### 3. Verify Deployment
 ```bash
@@ -110,15 +142,17 @@ kubectl config use-context docker-desktop
 
 ### 4. Access Services
 
-Services are available at:
-- PostgreSQL: postgresql.realnet.svc.cluster.local:5432
-- MQTT Broker: mosquitto.realnet.svc.cluster.local:1883
-- Realnet API: realnet.realnet.svc.cluster.local:8080
+Services are available locally at:
+- PostgreSQL: localhost:5433 (external) / postgresql:5432 (internal)
+  - Database: realnet
+  - Username: realnet
+  - Password: realnet
+- MQTT Broker: 
+  - MQTT: localhost:1883
+  - WebSockets: localhost:9001
+- Realnet API: http://localhost:8080
 
-For local access, use port forwarding:
-```bash
-kubectl port-forward -n realnet svc/realnet 8080:8080
-```
+All services are exposed via LoadBalancer, so no manual port forwarding is needed.
 
 ## Agent System
 
