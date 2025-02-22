@@ -10,20 +10,21 @@ RUN apt-get update && apt-get install -y curl && \
 
 WORKDIR /app
 
-# Copy application files
-ADD realnet ./realnet
+# Copy setup files first for better layer caching
 COPY setup.py ./
 COPY LICENSE ./
 COPY README.md ./
+
+# Install dependencies
+RUN pip install --no-cache-dir -e .
+
+# Copy application files
+ADD realnet ./realnet
 COPY runner ./
-RUN python setup.py install
 
 # Copy Kubernetes deployment files
 COPY k8s/base /app/k8s/base
 COPY k8s/deploy.sh /app/k8s/deploy.sh
 RUN chmod +x /app/k8s/deploy.sh
-
-# Install required Python packages for MQTT support
-RUN pip install paho-mqtt
 
 CMD [ "realnet", "server", "start" ]

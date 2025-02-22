@@ -1,6 +1,6 @@
 # Realnet
 
-Realnet is a flexible backend infrastructure for building and managing applications, now with Kubernetes cluster management capabilities.
+Realnet is a flexible backend infrastructure for building and managing applications, now with Kubernetes cluster management capabilities and agent system support.
 
 ## Features
 
@@ -10,6 +10,7 @@ Realnet is a flexible backend infrastructure for building and managing applicati
 - Kubernetes cluster management
 - MQTT message broker integration
 - Persistent storage management
+- Agent system for distributed task execution
 
 ## Prerequisites
 
@@ -72,17 +73,19 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 By default, Realnet uses `/data` for persistent storage. You can modify this in `k8s/base/storage.yaml`.
 
 ### 2. Deploy the Cluster
+
+#### Linux/macOS
 ```bash
-chmod +x k8s/deploy.sh  # Make script executable (Linux/macOS only)
+chmod +x k8s/deploy.sh  # Make script executable
 ./k8s/deploy.sh
 ```
 
-The script will:
-1. Create the realnet namespace
-2. Deploy PostgreSQL database
-3. Deploy MQTT broker
-4. Deploy Realnet application
-5. Configure persistent storage
+#### Windows (PowerShell)
+```powershell
+# Run as Administrator
+Set-ExecutionPolicy Bypass -Scope Process -Force
+.\k8s\deploy.ps1
+```
 
 ### 3. Verify Deployment
 ```bash
@@ -94,6 +97,17 @@ You should see:
 - mosquitto-xxxxxx
 - realnet-xxxxxx
 
+All pods should show status as "Running".
+
+Note for Windows users: If you're using Docker Desktop, ensure Kubernetes is enabled in Docker Desktop settings and the context is set correctly:
+```powershell
+# Check current context
+kubectl config current-context
+
+# If needed, switch to docker-desktop context
+kubectl config use-context docker-desktop
+```
+
 ### 4. Access Services
 
 Services are available at:
@@ -104,6 +118,64 @@ Services are available at:
 For local access, use port forwarding:
 ```bash
 kubectl port-forward -n realnet svc/realnet 8080:8080
+```
+
+## Agent System
+
+Realnet includes an agent system that enables communication via MQTT topics. Agents can be created and managed through the realnet API and communicate using MQTT messages.
+
+### Creating an Agent
+
+1. Using the API:
+```python
+agent_data = {
+    'id': 'my-agent',
+    'name': 'My Agent',
+    'description': 'Sample agent instance'
+}
+agent = Agent(provider)
+agent.create(agent_data)
+```
+
+2. Running a Sample Agent:
+```bash
+# Linux/macOS
+python examples/sample_agent.py
+
+# Windows
+python.exe examples\sample_agent.py
+```
+
+### Agent Communication
+
+Each agent uses two MQTT topics:
+- Command topic: `realnet/agents/{agent_id}/command`
+- Status topic: `realnet/agents/{agent_id}/status`
+
+Example command:
+```json
+{
+    "action": "process",
+    "data": {
+        "task": "example_task",
+        "parameters": {
+            "param1": "value1",
+            "param2": "value2"
+        }
+    }
+}
+```
+
+Example status:
+```json
+{
+    "state": "processing",
+    "last_command": {
+        "action": "process",
+        "data": {...}
+    },
+    "timestamp": 1645123456.789
+}
 ```
 
 ## Configuration
