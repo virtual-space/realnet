@@ -1,6 +1,25 @@
 {
     "types": [
         {
+            "name": "Topic",
+            "base": "Item",
+            "attributes": {
+                "name": "string",
+                "qos": "integer",
+                "retain": "boolean",
+                "access": "string"
+            }
+        },
+        {
+            "name": "Cluster",
+            "base": "Item",
+            "attributes": {
+                "name": "string",
+                "status": "string",
+                "config": "object"
+            }
+        },
+        {
             "name": "App",
             "base": "Item",
             "attributes": {
@@ -455,6 +474,31 @@
     ],
     "items": [
         {
+            "name": "Clusters",
+            "type": "App",
+            "attributes": {
+                "icon": "cloud",
+                "types": ["Cluster"],
+                "query": {"types": ["Cluster"]},
+                "views": [
+                    {
+                        "name": "Clusters",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Create Cluster",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ClusterCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "Items",
             "type": "Items"
         },
@@ -534,7 +578,12 @@
         },
         {
             "name": "Home",
-            "type": "Home"
+            "type": "Home",
+            "attributes": {
+                "access": {
+                    "roles": ["Visitor"]
+                }
+            }
         },
         {
             "name": "home",

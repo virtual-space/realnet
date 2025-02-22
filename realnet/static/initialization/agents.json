@@ -1,0 +1,80 @@
+{
+    "types": [
+        {
+            "name": "Agent",
+            "base": "Item",
+            "attributes": {
+                "icon": "smart_toy",
+                "resource": "agents",
+                "menu": [
+                    {
+                        "name": "Add Agent",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "AgentCreateForm"
+                        }
+                    },
+                    {
+                        "name": "Send Command",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "send",
+                            "form": "AgentCommandForm"
+                        }
+                    }
+                ],
+                "forms": [
+                    {
+                        "name": "create",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "agents",
+                            "form": "AgentCreateForm"
+                        }
+                    },
+                    {
+                        "name": "edit",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "agents",
+                            "form": "AgentEditForm"
+                        }
+                    },
+                    {
+                        "name": "delete",
+                        "type": "FormItem",
+                        "attributes": {
+                            "path": "agents",
+                            "form": "AgentDeleteForm"
+                        }
+                    }
+                ],
+                "views": [
+                    {
+                        "name": "Status",
+                        "type": "ListView",
+                        "attributes": {
+                            "columns": [
+                                {
+                                    "name": "Status",
+                                    "type": "Column",
+                                    "attributes": {
+                                        "target": "status"
+                                    }
+                                },
+                                {
+                                    "name": "Last Status",
+                                    "type": "Column", 
+                                    "attributes": {
+                                        "target": "last_status"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -85,12 +85,9 @@
                     "type": "RoleApp"
                 },
                 {
-                    "name": "ARVR",
-                    "type": "RoleApp"
-                },
-                {
                     "name": "Login",
-                    "type": "RoleApp"
+                    "type": "RoleApp",
+                    "public": true
                 }
             ]
         }
