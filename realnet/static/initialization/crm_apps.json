@@ -1,0 +1,372 @@
+{
+    "types": [
+        {
+            "name": "Leads",
+            "base": "App",
+            "attributes": {
+                "icon": "lightbulb",
+                "types": ["Lead"],
+                "query": {"types": ["Lead"]},
+                "views": [
+                    {
+                        "name": "All Leads",
+                        "type": "CardsView"
+                    },
+                    {
+                        "name": "Details",
+                        "type": "AttributesView"
+                    },
+                    {
+                        "name": "Notes",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["Note"], "children": "true"},
+                            "menu": [
+                                {
+                                    "name": "Add Note",
+                                    "type": "MenuItem",
+                                    "attributes": {
+                                        "icon": "add",
+                                        "form": "ItemCreateForm"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Timeline",
+                        "type": "BoardView",
+                        "attributes": {
+                            "query": {"types": ["Activity"], "children": "true"}
+                        }
+                    },
+                    {
+                        "name": "Kanban",
+                        "type": "BoardView",
+                        "attributes": {
+                            "query": {"types": ["Lead"]},
+                            "group_by": "status"
+                        }
+                    },
+                    {
+                        "name": "Calendar",
+                        "type": "CalendarView",
+                        "attributes": {
+                            "query": {"types": ["Lead"]},
+                            "date_field": "due_date"
+                        }
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Lead",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Customers",
+            "base": "App",
+            "attributes": {
+                "icon": "person",
+                "types": ["Customer"],
+                "query": {"types": ["Customer"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Customers",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Customer",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Contacts",
+            "base": "App",
+            "attributes": {
+                "icon": "contacts",
+                "types": ["Contact"],
+                "query": {"types": ["Contact"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Contacts",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Contact",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Opportunities",
+            "base": "App",
+            "attributes": {
+                "icon": "monetization_on",
+                "types": ["Opportunity"],
+                "query": {"types": ["Opportunity"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Opportunities",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Opportunity",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "SalesPipeline",
+            "base": "App",
+            "attributes": {
+                "icon": "filter_alt",
+                "types": ["Opportunity"],
+                "query": {"types": ["Opportunity"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Pipeline",
+                        "type": "BoardView"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Orders",
+            "base": "App",
+            "attributes": {
+                "icon": "shopping_cart",
+                "types": ["Order"],
+                "query": {"types": ["Order"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Orders",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Order",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Campaigns",
+            "base": "App",
+            "attributes": {
+                "icon": "campaign",
+                "types": ["Campaign"],
+                "query": {"types": ["Campaign"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Campaigns",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Campaign",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Tasks",
+            "base": "App",
+            "attributes": {
+                "icon": "checklist",
+                "types": ["Task"],
+                "query": {"types": ["Task"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Tasks",
+                        "type": "CardsView"
+                    }
+                ],
+                "menu": [
+                    {
+                        "name": "Add Task",
+                        "type": "MenuItem",
+                        "attributes": {
+                            "icon": "add",
+                            "form": "ItemCreateForm"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Reports",
+            "base": "App",
+            "attributes": {
+                "icon": "analytics",
+                "types": ["Report"],
+                "query": {"types": ["Report"], "any_level": "true"},
+                "views": [
+                    {
+                        "name": "Reports",
+                        "type": "PanelView"
+                    }
+                ]
+            }
+        }
+    ],
+    "items": [
+        {
+            "name": "leads",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "leads",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Leads",
+            "type": "Leads"
+        },
+        {
+            "name": "customers",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "customers",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Customers",
+            "type": "Customers"
+        },
+        {
+            "name": "contacts",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "contacts",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Contacts",
+            "type": "Contacts"
+        },
+        {
+            "name": "opportunities",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "opportunities",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Opportunities",
+            "type": "Opportunities"
+        },
+        {
+            "name": "salespipeline",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "salespipeline",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "SalesPipeline",
+            "type": "SalesPipeline"
+        },
+        {
+            "name": "orders",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "orders",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Orders",
+            "type": "Orders"
+        },
+        {
+            "name": "campaigns",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "campaigns",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Campaigns",
+            "type": "Campaigns"
+        },
+        {
+            "name": "tasks",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "tasks",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Tasks",
+            "type": "Tasks"
+        },
+        {
+            "name": "reports",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "reports",
+                "resource": "items"
+            },
+            "public": "true"
+        },
+        {
+            "name": "Reports",
+            "type": "Reports"
+        }
+    ]
+}

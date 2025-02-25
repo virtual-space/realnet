@@ -8,6 +8,27 @@ param(
 Write-Host "Creating namespace..."
 kubectl apply -f k8s/base/namespace.yaml
 
+# Create WordPress secrets and config maps
+Write-Host "Creating WordPress secrets and config maps..."
+kubectl create secret generic wordpress-api-secret -n realnet `
+    --from-literal=username=admin `
+    --from-literal=password=admin `
+    --from-literal=token=realnet-dev-jwt-secret-key-change-in-production `
+    --dry-run=client -o yaml | kubectl apply -f -
+
+kubectl create secret generic wordpress-db-secret -n realnet `
+    --from-literal=username=wordpress `
+    --from-literal=password=wordpress `
+    --dry-run=client -o yaml | kubectl apply -f -
+
+# Create realnet plugin ConfigMap
+Write-Host "Creating realnet plugin ConfigMap..."
+mkdir -Force wordpress-plugin/templates | Out-Null
+Copy-Item realnet-wordpress/realnet.php wordpress-plugin/ | Out-Null
+Copy-Item realnet-wordpress/templates/*.php wordpress-plugin/templates/ | Out-Null
+kubectl create configmap realnet-plugin -n realnet --from-file=wordpress-plugin --dry-run=client -o yaml | kubectl apply -f -
+Remove-Item -Recurse -Force wordpress-plugin
+
 # Apply storage configuration
 Write-Host "Configuring storage..."
 kubectl apply -f k8s/base/storage.yaml
@@ -15,17 +36,29 @@ kubectl apply -f k8s/base/storage.yaml
 # Clear database if requested
 if ($ClearDB) {
     Write-Host "Clearing database..."
-    # Delete realnet first since it depends on PostgreSQL
+    # Delete realnet and RBAC first
     kubectl delete -f k8s/base/realnet.yaml --ignore-not-found
+    kubectl delete -f k8s/base/rbac.yaml --ignore-not-found
+    # Delete WordPress and its database
+    kubectl delete -f k8s/base/wordpress.yaml --ignore-not-found
+    kubectl delete -f k8s/base/wordpress-db.yaml --ignore-not-found
     # Delete existing PostgreSQL deployment and PVC
     kubectl delete -f k8s/base/postgresql.yaml --ignore-not-found
     kubectl delete pvc -n realnet postgresql-data --ignore-not-found
+    kubectl delete pvc -n realnet wordpress-pvc --ignore-not-found
+    kubectl delete pvc -n realnet wordpress-db-pvc --ignore-not-found
     # Wait for pods to be fully terminated
     try {
         kubectl wait --namespace realnet --for=delete pod -l app=realnet --timeout=60s 2>$null
     } catch {}
     try {
         kubectl wait --namespace realnet --for=delete pod -l app=postgresql --timeout=60s 2>$null
+    } catch {}
+    try {
+        kubectl wait --namespace realnet --for=delete pod -l app=wordpress --timeout=60s 2>$null
+    } catch {}
+    try {
+        kubectl wait --namespace realnet --for=delete pod -l app=wordpress-db --timeout=60s 2>$null
     } catch {}
     
     # Wait for PVC to be fully deleted
@@ -61,6 +94,18 @@ kubectl apply -f k8s/base/postgresql.yaml
 Write-Host "Deploying Mosquitto MQTT broker..."
 kubectl apply -f k8s/base/mosquitto.yaml
 
+# Deploy WordPress database
+Write-Host "Deploying WordPress database..."
+kubectl apply -f k8s/base/wordpress-db.yaml
+
+# Deploy WordPress
+Write-Host "Deploying WordPress..."
+kubectl apply -f k8s/base/wordpress.yaml
+
+# Deploy RBAC configuration
+Write-Host "Deploying RBAC configuration..."
+kubectl apply -f k8s/base/rbac.yaml
+
 # Deploy realnet
 Write-Host "Deploying realnet..."
 kubectl apply -f k8s/base/realnet.yaml
@@ -74,6 +119,14 @@ kubectl wait --namespace realnet --for=condition=ready pod -l app=postgresql --t
 # Wait for Mosquitto to be ready
 Write-Host "Waiting for Mosquitto to be ready..."
 kubectl wait --namespace realnet --for=condition=ready pod -l app=mosquitto --timeout=300s
+
+# Wait for WordPress database to be ready
+Write-Host "Waiting for WordPress database to be ready..."
+kubectl wait --namespace realnet --for=condition=ready pod -l app=wordpress-db --timeout=300s
+
+# Wait for WordPress to be ready
+Write-Host "Waiting for WordPress to be ready..."
+kubectl wait --namespace realnet --for=condition=ready pod -l app=wordpress --timeout=300s
 
 # Wait for realnet to be ready
 Write-Host "Waiting for realnet to be ready..."
@@ -109,6 +162,10 @@ Write-Host "  - Password: realnet"
 Write-Host "MQTT Broker: localhost:1883"
 Write-Host "  - MQTT: localhost:1883"
 Write-Host "  - WebSockets: localhost:9001"
+Write-Host "WordPress: http://localhost:8081"
+Write-Host "  - Admin: http://localhost:8081/wp-admin"
+Write-Host "  - Username: admin"
+Write-Host "  - Password: admin"
 Write-Host "Realnet API: http://localhost:8080"
 
 # Wait for LoadBalancer services to get external IPs

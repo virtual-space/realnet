@@ -1,33 +1,6 @@
 {
     "types": [
         {
-            "name": "Topic",
-            "base": "Item",
-            "attributes": {
-                "name": "string",
-                "qos": "integer",
-                "retain": "boolean",
-                "access": "string"
-            }
-        },
-        {
-            "name": "Cluster",
-            "base": "Item",
-            "attributes": {
-                "name": "string",
-                "status": "string",
-                "config": "object"
-            }
-        },
-        {
-            "name": "App",
-            "base": "Item",
-            "attributes": {
-                "app": "true",
-                "icon": "square"
-            }
-        },
-        {
             "name": "Items",
             "base": "App",
             "attributes": {
@@ -470,34 +443,66 @@
                     }
                 ]
             }
-        }
-    ],
-    "items": [
+        },
         {
-            "name": "Clusters",
-            "type": "App",
+            "name": "Cluster",
+            "base": "App",
             "attributes": {
-                "icon": "cloud",
-                "types": ["Cluster"],
-                "query": {"types": ["Cluster"]},
+                "icon": "cloud_sync",
+                "types": ["Pod", "Deployment", "Service", "ConfigMap", "Secret", "Namespace", "PersistentVolume", "PersistentVolumeClaim", "StatefulSet", "DaemonSet", "Job", "CronJob", "Ingress", "ServiceAccount", "Role", "RoleBinding", "ClusterRole", "ClusterRoleBinding"],
+                "query": {"types": ["KubernetesResource"], "any_level": "true"},
                 "views": [
                     {
-                        "name": "Clusters",
+                        "name": "Resources",
                         "type": "CardsView"
-                    }
-                ],
-                "menu": [
+                    },
                     {
-                        "name": "Create Cluster",
-                        "type": "MenuItem",
+                        "name": "Namespaces",
+                        "type": "CardsView",
                         "attributes": {
-                            "icon": "add",
-                            "form": "ClusterCreateForm"
+                            "query": {"types": ["Namespace"]}
+                        }
+                    },
+                    {
+                        "name": "Workloads",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["Pod", "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob"]}
+                        }
+                    },
+                    {
+                        "name": "Services",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["Service", "Ingress"]}
+                        }
+                    },
+                    {
+                        "name": "Config",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["ConfigMap", "Secret"]}
+                        }
+                    },
+                    {
+                        "name": "Storage",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["PersistentVolume", "PersistentVolumeClaim"]}
+                        }
+                    },
+                    {
+                        "name": "RBAC",
+                        "type": "CardsView",
+                        "attributes": {
+                            "query": {"types": ["ServiceAccount", "Role", "RoleBinding", "ClusterRole", "ClusterRoleBinding"]}
                         }
                     }
                 ]
             }
-        },
+        }
+    ],
+    "items": [
         {
             "name": "Items",
             "type": "Items"
@@ -584,6 +589,10 @@
                     "roles": ["Visitor"]
                 }
             }
+        },
+        {
+            "name": "Cluster",
+            "type": "Cluster"
         },
         {
             "name": "home",
@@ -951,6 +960,25 @@
             "attributes": {
                 "path": "login",
                 "resource": "login"
+            },
+            "public": "true"
+        },
+        {
+            "name": "cluster",
+            "type": "Resource",
+            "attributes": {
+                "module_path": "realnet.resource.cluster.cluster",
+                "module_class": "Cluster",
+                "module": "true"
+            },
+            "public": "true"
+        },
+        {
+            "name": "cluster",
+            "type": "Endpoint",
+            "attributes": {
+                "path": "cluster",
+                "resource": "cluster"
             },
             "public": "true"
         }

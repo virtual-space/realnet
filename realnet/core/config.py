@@ -5,19 +5,24 @@ path = os.path.join(os.getcwd(), ".env")
 if os.path.exists(path):
     load_dotenv(dotenv_path=path)
 
+def load_config():
+    """Load configuration from environment variables."""
+    return Config()
+
 class Config:
 
     def get_database_url(self):
-        if(os.getenv('REALNET_DB_TYPE') == 'sqlite'):
-            return '{0}:///{1}.db'.format(os.getenv('REALNET_DB_TYPE'),
-                                                         os.getenv('REALNET_DB_NAME'))
+        db_type = os.getenv('REALNET_DB_TYPE', 'postgresql')
+        if db_type == 'sqlite':
+            db_name = os.getenv('REALNET_DB_NAME', 'realnet')
+            return f'{db_type}:///{db_name}.db'
         else:
-            return '{0}://{1}:{2}@{3}:{4}/{5}'.format(os.getenv('REALNET_DB_TYPE'),
-                                                         os.getenv('REALNET_DB_USER'),
-                                                         os.getenv('REALNET_DB_PASS'),
-                                                         os.getenv('REALNET_DB_HOST'),
-                                                         os.getenv('REALNET_DB_PORT'),
-                                                         os.getenv('REALNET_DB_NAME'))
+            db_user = os.getenv('REALNET_DB_USER', 'realnet')
+            db_pass = os.getenv('REALNET_DB_PASS', 'realnet')
+            db_host = os.getenv('REALNET_DB_HOST', 'localhost')
+            db_port = os.getenv('REALNET_DB_PORT', '5432')
+            db_name = os.getenv('REALNET_DB_NAME', 'realnet')
+            return f'{db_type}://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
 
     def get_db_type(self):
         return os.getenv('REALNET_DB_TYPE')

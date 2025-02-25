@@ -1,306 +1,141 @@
-# Realnet
+# Realnet WordPress Integration
 
-Realnet is a flexible backend infrastructure for building and managing applications, now with Kubernetes cluster management capabilities and agent system support.
+This project integrates WordPress multisite with realnet, enabling content management through realnet's type system and message queue processing.
 
-## Features
+## Components
 
-- Multi-provider data storage (PostgreSQL, AWS S3)
-- Authentication and authorization
-- API and CLI interfaces
-- Kubernetes cluster management
-- MQTT message broker integration
-- Persistent storage management
-- Agent system for distributed task execution
+### WordPress Provider
 
-## Prerequisites
+The WordPress provider enables managing WordPress content through realnet's type system:
 
-### 1. Install Docker
-- Windows: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- Linux:
-  ```bash
-  curl -fsSL https://get.docker.com -o get-docker.sh
-  sudo sh get-docker.sh
-  ```
+- `Website` - Represents a WordPress multisite instance
+- `WebPage` - Represents a WordPress page
+- `WebPost` - Represents a WordPress post
 
-### 2. Install Kubernetes
-#### Windows (using Docker Desktop)
-1. Open Docker Desktop
-2. Go to Settings > Kubernetes
-3. Check "Enable Kubernetes"
-4. Click "Apply & Restart"
+### WordPress Plugin
 
-#### Linux (using Minikube)
-1. Install Minikube:
-   ```bash
-   curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-   sudo install minikube-linux-amd64 /usr/local/bin/minikube
-   ```
-2. Start Minikube:
-   ```bash
-   minikube start
-   ```
+The WordPress plugin (`realnet-wordpress/`) provides:
 
-### 3. Install kubectl
-#### Windows
-1. Download kubectl:
-   ```powershell
-   curl.exe -LO "https://dl.k8s.io/release/v1.28.0/bin/windows/amd64/kubectl.exe"
-   ```
-2. Add to PATH or move to a directory in your PATH
+- REST API endpoints for content synchronization
+- JWT authentication for secure API access
+- Custom templates for realnet-managed content
+- Multisite support
 
-#### Linux
-```bash
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-```
+### Runner Integration
 
-## Installation
+The runner component processes messages from realnet's message queue:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/realnet.git
-   cd realnet
-   ```
-
-2. Build the Docker image:
-   ```bash
-   docker build -t realnet:latest .
-   ```
-
-## Running Realnet Cluster
-
-### 1. Configure Storage
-By default, Realnet uses `/data` for persistent storage. You can modify this in `k8s/base/storage.yaml`.
-
-### 2. Deploy the Cluster
-
-#### Linux/macOS
-```bash
-chmod +x k8s/deploy.sh  # Make script executable
-
-# Basic deployment with initialization
-./k8s/deploy.sh
-
-# Deploy with database clear
-./k8s/deploy.sh -c
-# or
-./k8s/deploy.sh --clear-db
-
-# Deploy without initialization
-./k8s/deploy.sh -s
-# or
-./k8s/deploy.sh --skip-init
-
-# Deploy with database clear but skip initialization
-./k8s/deploy.sh -c -s
-# or
-./k8s/deploy.sh --clear-db --skip-init
-```
-
-#### Windows (PowerShell)
-```powershell
-# Run as Administrator
-Set-ExecutionPolicy Bypass -Scope Process -Force
-
-# Basic deployment with initialization
-.\k8s\deploy.ps1
-
-# Deploy with database clear
-.\k8s\deploy.ps1 -ClearDB
-
-# Deploy without initialization
-.\k8s\deploy.ps1 -SkipInit
-
-# Deploy with database clear but skip initialization
-.\k8s\deploy.ps1 -ClearDB -SkipInit
-```
-
-The deployment scripts support the following options:
-- Database clearing: Removes all existing data and starts fresh
-- Initialization skipping: Deploys services without running the initialization step
-
-### 3. Verify Deployment
-```bash
-kubectl get pods -n realnet
-```
-
-You should see:
-- postgresql-0
-- mosquitto-xxxxxx
-- realnet-xxxxxx
-
-All pods should show status as "Running".
-
-Note for Windows users: If you're using Docker Desktop, ensure Kubernetes is enabled in Docker Desktop settings and the context is set correctly:
-```powershell
-# Check current context
-kubectl config current-context
-
-# If needed, switch to docker-desktop context
-kubectl config use-context docker-desktop
-```
-
-### 4. Access Services
-
-Services are available locally at:
-- PostgreSQL: localhost:5433 (external) / postgresql:5432 (internal)
-  - Database: realnet
-  - Username: realnet
-  - Password: realnet
-- MQTT Broker: 
-  - MQTT: localhost:1883
-  - WebSockets: localhost:9001
-- Realnet API: http://localhost:8080
-
-All services are exposed via LoadBalancer, so no manual port forwarding is needed.
-
-## Agent System
-
-Realnet includes an agent system that enables communication via MQTT topics. Agents can be created and managed through the realnet API and communicate using MQTT messages.
-
-### Creating an Agent
-
-1. Using the API:
-```python
-agent_data = {
-    'id': 'my-agent',
-    'name': 'My Agent',
-    'description': 'Sample agent instance'
-}
-agent = Agent(provider)
-agent.create(agent_data)
-```
-
-2. Running a Sample Agent:
-```bash
-# Linux/macOS
-python examples/sample_agent.py
-
-# Windows
-python.exe examples\sample_agent.py
-```
-
-### Agent Communication
-
-Each agent uses two MQTT topics:
-- Command topic: `realnet/agents/{agent_id}/command`
-- Status topic: `realnet/agents/{agent_id}/status`
-
-Example command:
-```json
-{
-    "action": "process",
-    "data": {
-        "task": "example_task",
-        "parameters": {
-            "param1": "value1",
-            "param2": "value2"
-        }
-    }
-}
-```
-
-Example status:
-```json
-{
-    "state": "processing",
-    "last_command": {
-        "action": "process",
-        "data": {...}
-    },
-    "timestamp": 1645123456.789
-}
-```
+- Uses MQTT as the default message broker
+- Handles content synchronization between realnet and WordPress
+- Supports create/update/delete operations for all content types
 
 ## Configuration
 
 ### Environment Variables
-- `REALNET_DB_TYPE`: Database type (default: postgresql)
-- `REALNET_DB_HOST`: Database host
-- `REALNET_DB_PORT`: Database port
-- `REALNET_DB_NAME`: Database name
-- `REALNET_DB_USER`: Database user
-- `REALNET_DB_PASS`: Database password
-- `REALNET_MQTT_HOST`: MQTT broker host
-- `REALNET_MQTT_PORT`: MQTT broker port
 
-### Kubernetes Configuration
-Configuration files in `k8s/base/`:
-- `namespace.yaml`: Namespace definition
-- `storage.yaml`: Persistent volume configuration
-- `postgresql.yaml`: Database deployment
-- `mosquitto.yaml`: MQTT broker deployment
-- `realnet.yaml`: Main application deployment
+```bash
+# WordPress Configuration
+REALNET_WORDPRESS_URL=http://wordpress:8081
+REALNET_WORDPRESS_ADMIN_USER=admin
+REALNET_WORDPRESS_ADMIN_PASS=admin
+REALNET_WORDPRESS_TOKEN=realnet-wordpress-jwt-key
 
-## User Roles
+# MQTT Configuration
+REALNET_MQTT_HOST=mosquitto
+REALNET_MQTT_PORT=1883
+REALNET_MQTT_TOPIC=realnet/tasks
 
-- **Admin**: Full system access
-- **User**: Limited access to specific applications
-- **Visitor**: Access restricted to home directory only
+# Database Configuration
+REALNET_DB_HOST=postgresql
+REALNET_DB_PORT=5432
+REALNET_DB_NAME=realnet
+REALNET_DB_USER=realnet
+REALNET_DB_PASS=realnet
+```
+
+### Kubernetes Deployment
+
+The system is deployed using Kubernetes:
+
+```bash
+# Deploy all components
+kubectl apply -k k8s/base
+
+# Access WordPress admin
+open http://wordpress.local:8081/wp-admin
+
+# Access realnet
+open http://localhost:8080
+```
 
 ## Development
 
-### Local Development
-1. Create Python virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/macOS
-   venv\Scripts\activate     # Windows
-   ```
+### Adding New Content Types
 
-2. Install dependencies:
-   ```bash
-   pip install -e .
-   ```
+1. Define the type in `realnet/static/initialization/websites.json`
+2. Create corresponding views in `realnet/static/initialization/websites_apps.json`
+3. Update the WordPress plugin to handle the new type
+4. Update the runner script to process the new type
 
-3. Run development server:
-   ```bash
-   realnet server start
-   ```
+### Runner Scripts
 
-### Building Docker Image
-```bash
-docker build -t realnet:latest .
+Runner scripts are Python modules that process messages from the queue:
+
+```python
+def handle_message(message):
+    """Process incoming message"""
+    data = json.loads(message)
+    # Handle message...
+    publish({
+        'status': 'success',
+        'data': result
+    })
 ```
 
-## Troubleshooting
+### WordPress Templates
 
-### Common Issues
+Custom templates can be added to `realnet-wordpress/templates/`:
 
-1. **Pods not starting**
-   ```bash
-   kubectl describe pod -n realnet <pod-name>
-   ```
-
-2. **Storage issues**
-   - Check persistent volumes:
-     ```bash
-     kubectl get pv,pvc -n realnet
-     ```
-   - Verify storage paths exist
-
-3. **Service connectivity**
-   - Check services:
-     ```bash
-     kubectl get svc -n realnet
-     ```
-   - Verify DNS resolution:
-     ```bash
-     kubectl run -n realnet -it --rm debug --image=busybox -- nslookup postgresql
-     ```
-
-### Logs
-```bash
-# Realnet logs
-kubectl logs -n realnet -l app=realnet
-
-# PostgreSQL logs
-kubectl logs -n realnet postgresql-0
-
-# MQTT broker logs
-kubectl logs -n realnet -l app=mosquitto
+```php
+<?php
+// templates/realnet-page.php
+get_header();
+$content = $GLOBALS['realnet_content'];
+?>
+<article>
+    <h1><?php echo esc_html($content['title']); ?></h1>
+    <div class="content">
+        <?php echo apply_filters('the_content', $content['content']); ?>
+    </div>
+</article>
+<?php
+get_footer();
 ```
+
+## Architecture
+
+```mermaid
+graph TD
+    A[Realnet Server] --> B[MQTT Broker]
+    B --> C[Realnet Runner]
+    C --> D[WordPress API]
+    D --> E[WordPress Multisite]
+    A --> F[PostgreSQL]
+```
+
+The system uses:
+- MQTT for message queuing
+- JWT for API authentication
+- WordPress multisite for content management
+- PostgreSQL for realnet data storage
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-See LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.

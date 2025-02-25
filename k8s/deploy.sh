@@ -57,8 +57,9 @@ kubectl apply -f k8s/base/storage.yaml
 # Clear database if requested
 if [ "$CLEAR_DB" = true ]; then
     echo "Clearing database..."
-    # Delete realnet first since it depends on PostgreSQL
+    # Delete realnet and RBAC first
     kubectl delete -f k8s/base/realnet.yaml --ignore-not-found
+    kubectl delete -f k8s/base/rbac.yaml --ignore-not-found
     # Delete existing PostgreSQL deployment and PVC
     kubectl delete -f k8s/base/postgresql.yaml --ignore-not-found
     kubectl delete pvc -n realnet postgresql-data --ignore-not-found
@@ -95,6 +96,18 @@ wait_for_pod realnet postgresql
 kubectl apply -f k8s/base/mosquitto.yaml
 wait_for_pod realnet mosquitto
 
+# Deploy WordPress database
+kubectl apply -f k8s/base/wordpress-db.yaml
+wait_for_pod realnet wordpress-db
+
+# Deploy WordPress
+kubectl apply -f k8s/base/wordpress.yaml
+wait_for_pod realnet wordpress
+
+# Deploy RBAC configuration
+echo "Deploying RBAC configuration..."
+kubectl apply -f k8s/base/rbac.yaml
+
 # Deploy Realnet
 kubectl apply -f k8s/base/realnet.yaml
 wait_for_pod realnet realnet
@@ -123,6 +136,10 @@ echo "  - Password: realnet"
 echo "MQTT Broker: localhost:1883"
 echo "  - MQTT: localhost:1883"
 echo "  - WebSockets: localhost:9001"
+echo "WordPress: http://localhost:8081"
+echo "  - Admin: http://localhost:8081/wp-admin"
+echo "  - Username: admin"
+echo "  - Password: admin"
 echo "Realnet API: http://localhost:8080"
 
 # Wait for LoadBalancer services to get external IPs

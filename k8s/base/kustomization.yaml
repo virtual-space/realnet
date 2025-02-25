@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- namespace.yaml
+- storage.yaml
+- postgresql.yaml
+- wordpress-db.yaml
+- wordpress.yaml
+- mosquitto.yaml
+- rbac.yaml
+- realnet.yaml
+- runner.yaml
+
+configMapGenerator:
+- name: wordpress-config
+  files:
+  - install-plugins.sh=wordpress/install-plugins.sh
+- name: realnet-plugin
+  files:
+  - realnet.php=realnet-wordpress/realnet.php
+  - templates/realnet-page.php=realnet-wordpress/templates/realnet-page.php
+  - templates/realnet-post.php=realnet-wordpress/templates/realnet-post.php
+- name: realnet-runner-script
+  files:
+  - script.py=runner/script.py
+
+secretGenerator:
+- name: wordpress-db-secret
+  literals:
+  - username=wordpress
+  - password=wordpress_password
+- name: wordpress-api-secret
+  namespace: realnet
+  literals:
+  - token=realnet-wordpress-jwt-key
+  - username=admin
+  - password=admin
+
+commonLabels:
+  app.kubernetes.io/part-of: realnet
+
+namespace: realnet

@@ -1,0 +1,104 @@
+{
+  "types": [
+    {
+      "name": "WebsitesApp",
+      "base": "App",
+      "attributes": {
+        "icon": "web",
+        "views": [
+          {
+            "name": "Websites",
+            "icon": "web",
+            "type": "Website",
+            "query": {
+              "type": "websites.website"
+            },
+            "actions": [
+              {
+                "name": "Create Website",
+                "icon": "add",
+                "type": "Website"
+              }
+            ]
+          },
+          {
+            "name": "Pages",
+            "icon": "description",
+            "type": "WebPage",
+            "query": {
+              "type": "websites.page"
+            },
+            "actions": [
+              {
+                "name": "Create Page",
+                "icon": "add",
+                "type": "WebPage"
+              }
+            ],
+            "filters": [
+              {
+                "field": "website",
+                "type": "reference",
+                "reference": "Website"
+              },
+              {
+                "field": "status",
+                "type": "enum",
+                "values": ["draft", "published"]
+              }
+            ]
+          },
+          {
+            "name": "Posts",
+            "icon": "article",
+            "type": "WebPost",
+            "query": {
+              "type": "websites.post"
+            },
+            "actions": [
+              {
+                "name": "Create Post",
+                "icon": "add",
+                "type": "WebPost"
+              }
+            ],
+            "filters": [
+              {
+                "field": "website",
+                "type": "reference",
+                "reference": "Website"
+              },
+              {
+                "field": "status",
+                "type": "enum",
+                "values": ["draft", "published"]
+              },
+              {
+                "field": "author",
+                "type": "string"
+              },
+              {
+                "field": "categories",
+                "type": "array"
+              },
+              {
+                "field": "tags",
+                "type": "array"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "type": "WebsitesApp",
+      "name": "Websites",
+      "icon": "web",
+      "attributes": {
+        "description": "Multi-Website Content Management"
+      }
+    }
+  ]
+}

@@ -6,6 +6,8 @@ from realnet.core.hierarchy import import_structure_from_resource
 from realnet.provider.generic.endpoint import GenericEndpointProvider
 from realnet.provider.generic.resource import GenericResourceProvider
 from realnet.provider.generic.importer import GenericImportProvider
+from realnet.provider.websites.resource import WebsitesResourceProvider
+from realnet.provider.websites.router import WebsitesRouter
 from realnet.provider.sql.type import SqlTypeProvider
 from realnet.provider.sql.postgres.item import PostgresItemProvider
 from realnet.provider.generic.data import LocalDataProvider
@@ -43,7 +45,7 @@ class StandardContextProvider(ContextProvider):
                         None,
                         org_provider,
                         org_provider,
-                        GenericResourceProvider(),
+                        WebsitesResourceProvider(),
                         GenericImportProvider(),
                         SqlClientProvider(org_id, account_id),
                         SqlRolesProvider(org_id, account_id))
@@ -147,15 +149,30 @@ class Initialize(ProtoCmd):
         if account:
             context = context_provider.context(account.org.id, account.id)
             if context:
+                # Core system initialization
                 import_structure_from_resource(context, 'static/initialization/core.json')
                 import_structure_from_resource(context, 'static/initialization/controls.json')
                 import_structure_from_resource(context, 'static/initialization/views.json')
                 import_structure_from_resource(context, 'static/initialization/forms.json')
                 import_structure_from_resource(context, 'static/initialization/geometry.json')
-                import_structure_from_resource(context, 'static/initialization/apps.json')
-                import_structure_from_resource(context, 'static/initialization/access.json')
-                # import_structure_from_resource(context, 'static/initialization/supply_chain.json')
+                
+                # Resource types initialization
+                import_structure_from_resource(context, 'static/initialization/kubernetes.json')
+                import_structure_from_resource(context, 'static/initialization/websites.json')
+                import_structure_from_resource(context, 'static/initialization/runner.json')
                 import_structure_from_resource(context, 'static/initialization/crm.json')
+                
+                # App types initialization
+                import_structure_from_resource(context, 'static/initialization/websites_apps.json')
+                import_structure_from_resource(context, 'static/initialization/runner_apps.json')
+                import_structure_from_resource(context, 'static/initialization/crm_apps.json')
+                import_structure_from_resource(context, 'static/initialization/apps.json')
+
+                # Create default runner script
+                import_structure_from_resource(context, 'static/initialization/runner_script.json')
+                
+                # Access initialization
+                import_structure_from_resource(context, 'static/initialization/access.json')
         
 
         # with app.app_context():

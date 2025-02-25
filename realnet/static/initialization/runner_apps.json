@@ -1,0 +1,31 @@
+{
+  "types": [
+    {
+      "name": "RunnerApp",
+      "base": "App",
+      "attributes": {
+        "icon": "terminal",
+        "views": [
+          {
+            "name": "Scripts",
+            "icon": "code",
+            "type": "RunnerScript",
+            "query": {
+              "type": "runner.script"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "type": "RunnerApp",
+      "name": "Runner",
+      "icon": "terminal",
+      "attributes": {
+        "description": "Message Queue Runner Management"
+      }
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realnet-runner
+  labels:
+    app: realnet-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: realnet-runner
+  template:
+    metadata:
+      labels:
+        app: realnet-runner
+    spec:
+      containers:
+      - name: runner
+        image: realnet:latest
+        imagePullPolicy: Never
+        command: ["python", "-m", "realnet", "runner"]
+        env:
+        - name: REALNET_MQTT_HOST
+          value: mosquitto
+        - name: REALNET_MQTT_PORT
+          value: "1883"
+        - name: REALNET_MQTT_TOPIC
+          value: realnet/tasks
+        - name: REALNET_DB_HOST
+          value: postgresql
+        - name: REALNET_DB_PORT
+          value: "5432"
+        - name: REALNET_DB_NAME
+          value: realnet
+        - name: REALNET_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: username
+        - name: REALNET_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgresql
+              key: password
+        - name: REALNET_WORDPRESS_URL
+          value: http://wordpress:8081
+        - name: REALNET_WORDPRESS_ADMIN_USER
+          value: admin
+        - name: REALNET_WORDPRESS_ADMIN_PASS
+          value: admin
+        - name: REALNET_WORDPRESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-api-secret
+              key: token
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - |
+              import paho.mqtt.client as mqtt
+              client = mqtt.Client()
+              client.connect('mosquitto', 1883)
+              client.disconnect()
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - |
+              import paho.mqtt.client as mqtt
+              client = mqtt.Client()
+              client.connect('mosquitto', 1883)
+              client.disconnect()
+          initialDelaySeconds: 20
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wordpress-api-secret
+type: Opaque
+stringData:
+  token: realnet-wordpress-jwt-key

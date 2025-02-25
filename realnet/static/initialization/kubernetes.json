@@ -1,0 +1,138 @@
+{
+  "types": [
+    {
+      "name": "KubernetesResource",
+      "base": "Item",
+      "attributes": {
+        "module": "cluster",
+        "icon": "kubernetes"
+      }
+    },
+    {
+      "name": "Pod",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "memory"
+      }
+    },
+    {
+      "name": "Deployment",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "rocket_launch"
+      }
+    },
+    {
+      "name": "Service",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "share"
+      }
+    },
+    {
+      "name": "ConfigMap",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "settings"
+      }
+    },
+    {
+      "name": "Secret",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "key"
+      }
+    },
+    {
+      "name": "Namespace",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "folder"
+      }
+    },
+    {
+      "name": "PersistentVolume",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "storage"
+      }
+    },
+    {
+      "name": "PersistentVolumeClaim",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "hard_drive"
+      }
+    },
+    {
+      "name": "StatefulSet",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "database"
+      }
+    },
+    {
+      "name": "DaemonSet",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "device_hub"
+      }
+    },
+    {
+      "name": "Job",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "timer"
+      }
+    },
+    {
+      "name": "CronJob",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "schedule"
+      }
+    },
+    {
+      "name": "Ingress",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "route"
+      }
+    },
+    {
+      "name": "ServiceAccount",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "account_circle"
+      }
+    },
+    {
+      "name": "Role",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "verified_user"
+      }
+    },
+    {
+      "name": "RoleBinding",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "link"
+      }
+    },
+    {
+      "name": "ClusterRole",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "security"
+      }
+    },
+    {
+      "name": "ClusterRoleBinding",
+      "base": "KubernetesResource",
+      "attributes": {
+        "icon": "hub"
+      }
+    }
+  ]
+}

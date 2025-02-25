@@ -1,0 +1,28 @@
+{
+  "types": [
+    {
+      "name": "Website",
+      "base": "Item",
+      "attributes": {
+        "module": "websites.resource",
+        "icon": "web"
+        }
+    },
+    {
+      "name": "WebPage",
+      "base": "Item",
+      "attributes": {
+        "module": "websites.resource",
+        "icon": "description"
+      }
+    },
+    {
+      "name": "WebPost",
+      "base": "Item",
+      "attributes": {
+        "module": "websites.resource",
+        "icon": "article"
+      }
+    }
+  ]
+}

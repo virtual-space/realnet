@@ -1,0 +1,55 @@
+{
+  "types": [
+    {
+      "name": "WordPressApp",
+      "base": "App",
+      "attributes": {
+        "icon": "wordpress",
+        "views": [
+          {
+            "name": "Sites",
+            "icon": "web",
+            "type": "WordPressSite",
+            "query": {
+              "type": "wordpress.site"
+            }
+          },
+          {
+            "name": "Pages",
+            "icon": "description",
+            "type": "WordPressPage",
+            "query": {
+              "type": "wordpress.page"
+            }
+          },
+          {
+            "name": "Posts",
+            "icon": "article",
+            "type": "WordPressPost",
+            "query": {
+              "type": "wordpress.post"
+            }
+          },
+          {
+            "name": "Users",
+            "icon": "person",
+            "type": "WordPressUser",
+            "query": {
+              "type": "wordpress.user"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "items": [
+    {
+      "type": "WordPressApp",
+      "name": "WordPress",
+      "icon": "wordpress",
+      "attributes": {
+        "description": "WordPress Multisite Management"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "types": [
+    {
+      "name": "RunnerScript",
+      "base": "Item",
+      "attributes": {
+        "module": "runner",
+        "icon": "code"
+      }
+    }
+  ],
+  "items": [
+    {
+      "type": "RunnerScript",
+      "name": "Default Runner Script",
+      "attributes": {
+        "script": "# Default runner script\ndef handle_message(message):\n    publish({\n        'status': 'success',\n        'message': f'Processed message: {message}'\n    })"
+      }
+    }
+  ]
+}

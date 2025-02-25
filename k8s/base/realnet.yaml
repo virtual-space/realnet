@@ -1,4 +1,93 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: realnet-runner-script
+  namespace: realnet
+data:
+  script.py: |
+    import json
+    import requests
+    from urllib.parse import urljoin
+    import os
+
+    def get_wordpress_client():
+        """Get WordPress API client"""
+        base_url = os.environ.get('REALNET_WORDPRESS_URL', 'http://wordpress:8081')
+        token = os.environ.get('REALNET_WORDPRESS_TOKEN')
+        return {
+            'base_url': base_url.rstrip('/'),
+            'headers': {
+                'Authorization': f'Bearer {token}',
+                'Content-Type': 'application/json'
+            }
+        }
+
+    def wordpress_request(method, endpoint, data=None):
+        """Make WordPress API request"""
+        client = get_wordpress_client()
+        url = urljoin(client['base_url'], f'/wp-json/realnet/v1/{endpoint}')
+        response = requests.request(method, url, json=data, headers=client['headers'])
+        response.raise_for_status()
+        return response.json()
+
+    def handle_message(message):
+        """Handle incoming message from MQTT topic"""
+        try:
+            # Parse message
+            data = json.loads(message)
+            action = data.get('action')
+            content_type = data.get('type')
+            content = data.get('content', {})
+
+            # Validate required fields
+            if not action or not content_type:
+                raise ValueError("Missing required fields: action and type")
+
+            # Handle WordPress content sync
+            if content_type.startswith('websites.'):
+                sync_wordpress_content(action, content_type, content)
+            else:
+                publish({
+                    'status': 'error',
+                    'message': f'Unsupported content type: {content_type}'
+                })
+
+        except Exception as e:
+            publish({
+                'status': 'error',
+                'message': str(e)
+            })
+
+    def sync_wordpress_content(action, content_type, content):
+        """Sync content with WordPress"""
+        try:
+            # Map content type to WordPress type
+            wp_type = content_type.split('.')[1]  # e.g. websites.page -> page
+            
+            # Make WordPress API request
+            response = wordpress_request('post', 'sync', {
+                'type': wp_type,
+                'action': action,
+                'data': content
+            })
+
+            # Publish response
+            publish({
+                'status': 'success',
+                'type': content_type,
+                'action': action,
+                'data': response
+            })
+
+        except Exception as e:
+            publish({
+                'status': 'error',
+                'type': content_type,
+                'action': action,
+                'message': str(e)
+            })
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: realnet
@@ -26,6 +115,7 @@ spec:
       labels:
         app: realnet
     spec:
+      serviceAccountName: realnet
       containers:
         - name: realnet
           image: realnet:latest
@@ -54,6 +144,17 @@ spec:
               value: "mosquitto"
             - name: REALNET_MQTT_PORT
               value: "1883"
+            - name: REALNET_WORDPRESS_URL
+              value: "http://wordpress:8081"
+            - name: REALNET_WORDPRESS_ADMIN_USER
+              value: "admin"
+            - name: REALNET_WORDPRESS_ADMIN_PASS
+              value: "admin"
+            - name: REALNET_WORDPRESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: wordpress-api-secret
+                  key: token
             - name: REALNET_APP_SECRET
               value: "realnet-dev-secret-key-change-in-production"
           readinessProbe:
@@ -68,3 +169,80 @@ spec:
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realnet-runner
+  namespace: realnet
+spec:
+  selector:
+    matchLabels:
+      app: realnet-runner
+  template:
+    metadata:
+      labels:
+        app: realnet-runner
+    spec:
+      serviceAccountName: realnet
+      containers:
+        - name: realnet-runner
+          image: realnet:latest
+          imagePullPolicy: Never
+          command: ["python", "-m", "realnet.cmd.runner"]
+          env:
+            - name: REALNET_DB_TYPE
+              value: "postgresql"
+            - name: REALNET_DB_USER
+              value: "realnet"
+            - name: REALNET_DB_PASS
+              value: "realnet"
+            - name: REALNET_DB_HOST
+              value: "postgresql"
+            - name: REALNET_DB_PORT
+              value: "5432"
+            - name: REALNET_DB_NAME
+              value: "realnet"
+            - name: REALNET_MQTT_HOST
+              value: "mosquitto"
+            - name: REALNET_MQTT_PORT
+              value: "1883"
+            - name: REALNET_MQTT_RATE_LIMIT
+              value: "10"
+            - name: REALNET_MQTT_RATE_PERIOD
+              value: "1.0"
+            - name: REALNET_WORDPRESS_URL
+              value: "http://wordpress:8081"
+            - name: REALNET_WORDPRESS_ADMIN_USER
+              value: "admin"
+            - name: REALNET_WORDPRESS_ADMIN_PASS
+              value: "admin"
+            - name: REALNET_WORDPRESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: wordpress-api-secret
+                  key: token
+            - name: REALNET_APP_SECRET
+              value: "realnet-dev-secret-key-change-in-production"
+            - name: REALNET_RUNNER_SCRIPT
+              value: "/app/script.py"
+          volumeMounts:
+            - name: runner-script
+              mountPath: /app/script.py
+              subPath: script.py
+            - name: requests-lib
+              mountPath: /usr/local/lib/python3.11/site-packages/requests
+      volumes:
+        - name: runner-script
+          configMap:
+            name: realnet-runner-script
+            defaultMode: 0755
+        - name: requests-lib
+          emptyDir: {}
+      initContainers:
+        - name: install-requests
+          image: python:3.11-slim
+          command: ['pip', 'install', '--target=/mnt/requests', 'requests']
+          volumeMounts:
+            - name: requests-lib
+              mountPath: /mnt/requests

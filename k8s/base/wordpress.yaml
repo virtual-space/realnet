@@ -1,0 +1,203 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: realnet
+  labels:
+    app: wordpress
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8082
+      targetPort: 80
+      name: http
+  selector:
+    app: wordpress
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-pvc
+  namespace: realnet
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: realnet
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:6.4-apache
+        command: ['/bin/bash', '-c']
+        args:
+        - |
+          # Install required packages
+          apt-get update && \
+          apt-get install -y default-mysql-client curl less util-linux netcat-traditional && \
+          
+          # Install WP-CLI
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+          chmod +x wp-cli.phar && \
+          mv wp-cli.phar /usr/local/bin/wp && \
+          mkdir -p /var/www/.wp-cli && \
+          chown -R www-data:www-data /var/www/.wp-cli && \
+          chown -R www-data:www-data /var/www/html && \
+
+          # Copy realnet plugin
+          echo "Installing realnet plugin..."
+          mkdir -p /var/www/html/wp-content/plugins/realnet
+          cp -r /tmp/realnet/* /var/www/html/wp-content/plugins/realnet/
+          chown -R www-data:www-data /var/www/html/wp-content/plugins/realnet
+          
+          # Configure wp-cli
+          cat > /var/www/.wp-cli/config.yml << 'WPCONFIG'
+          apache_modules:
+            - mod_rewrite
+          path: /var/www/html
+          url: http://localhost:8082
+          user: admin
+          WPCONFIG
+          chown -R www-data:www-data /var/www/.wp-cli && \
+          
+          # Wait for database DNS and connection
+          echo "Waiting for database DNS..."
+          until getent hosts "$WORDPRESS_DB_HOST"; do
+            echo "Database DNS not ready..."
+            sleep 5
+          done
+
+          echo "Checking database connection..."
+          until nc -z -w1 "$WORDPRESS_DB_HOST" 3306; do
+            echo "Database port not ready..."
+            sleep 5
+          done
+
+          echo "Checking database ping..."
+          until mysqladmin ping -h"$WORDPRESS_DB_HOST" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --silent; do
+            echo "Database ping failed..."
+            sleep 5
+          done
+
+          # Wait for database readiness probe
+          echo "Waiting for database readiness..."
+          until mysql -h"$WORDPRESS_DB_HOST" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" -e 'SELECT 1'; do
+            echo "Database not ready..."
+            sleep 5
+          done
+
+          echo "Starting WordPress..."
+          docker-entrypoint.sh apache2-foreground &
+
+          echo "Waiting for WordPress files..."
+          until [ -f /var/www/html/wp-config.php ]; do
+            echo "Waiting for WordPress files..."
+            sleep 5
+          done
+
+          # Install WordPress if not already installed
+          echo "Installing WordPress..."
+          if ! runuser -u www-data -- wp core is-installed --allow-root; then
+            runuser -u www-data -- wp core install --allow-root \
+              --url=http://localhost:8082 \
+              --title="Realnet WordPress" \
+              --admin_user="$WORDPRESS_ADMIN_USER" \
+              --admin_password="$WORDPRESS_ADMIN_PASSWORD" \
+              --admin_email=admin@realnet.local
+          fi
+
+          # Install and activate plugins
+          echo "Installing plugins..."
+          runuser -u www-data -- wp plugin install jwt-authentication-for-wp-rest-api --activate --allow-root || true
+          runuser -u www-data -- wp plugin install advanced-custom-fields --activate --allow-root || true
+          runuser -u www-data -- wp plugin install wp-rest-api-v2-menus --activate --allow-root || true
+          runuser -u www-data -- wp plugin install members --activate --allow-root || true
+
+          # Update site URL
+          echo "Updating site URL..."
+          runuser -u www-data -- wp option update siteurl http://localhost:8082 --allow-root || true
+          runuser -u www-data -- wp option update home http://localhost:8082 --allow-root || true
+          
+          # Keep container running
+          wait
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wordpress-db
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-db-secret
+              key: username
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-db-secret
+              key: password
+        - name: WORDPRESS_DB_NAME
+          value: wordpress
+        - name: WORDPRESS_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-api-secret
+              key: username
+        - name: WORDPRESS_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-api-secret
+              key: password
+        - name: WORDPRESS_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: wordpress-api-secret
+              key: token
+        - name: WORDPRESS_CONFIG_EXTRA
+          value: |
+            /* JWT Auth */
+            define('JWT_AUTH_SECRET_KEY', getenv('WORDPRESS_JWT_SECRET'));
+            define('JWT_AUTH_CORS_ENABLE', true);
+        ports:
+        - containerPort: 80
+          name: wordpress
+        readinessProbe:
+          httpGet:
+            path: /wp-admin/install.php
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /wp-login.php
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 20
+        volumeMounts:
+        - name: wordpress-storage
+          mountPath: /var/www/html
+        - name: realnet-plugin
+          mountPath: /tmp/realnet
+      volumes:
+      - name: wordpress-storage
+        persistentVolumeClaim:
+          claimName: wordpress-pvc
+      - name: realnet-plugin
+        configMap:
+          name: realnet-plugin
+          defaultMode: 0755

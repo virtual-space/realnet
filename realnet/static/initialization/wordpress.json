@@ -1,0 +1,40 @@
+{
+  "types": [
+    {
+      "name": "WordPressResource",
+      "base": "Item",
+      "attributes": {
+        "module": "wordpress.resource",
+        "icon": "wordpress"
+      }
+    },
+    {
+      "name": "WordPressSite",
+      "base": "WordPressResource",
+      "attributes": {
+        "icon": "web"
+      }
+    },
+    {
+      "name": "WordPressPage",
+      "base": "WordPressResource",
+      "attributes": {
+        "icon": "description"
+      }
+    },
+    {
+      "name": "WordPressPost",
+      "base": "WordPressResource",
+      "attributes": {
+        "icon": "article"
+      }
+    },
+    {
+      "name": "WordPressUser",
+      "base": "WordPressResource",
+      "attributes": {
+        "icon": "person"
+      }
+    }
+  ]
+}

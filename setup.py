@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="realnet",
-    version="0.0.114",
+    version="0.0.115",
     description="Realnet command line interface",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -27,7 +27,9 @@ setup(
     include_package_data=True,
     package_data={  'realnet.static.initialization': ['*'],
                     'realnet.templates': ['*'],
-                    'realnet.runner.http.static': ['scripts/ace/*', 'font-awesome/css/*', 'font-awesome/fonts/*']},
+                    'realnet.runner.http.static': ['scripts/ace/*', 'font-awesome/css/*', 'font-awesome/fonts/*'],
+                    'realnet.runner.mqtt': ['*'],
+                    'realnet.provider.wordpress': ['*']},
     install_requires=["python-dotenv",
                       "urllib3",
                       "boto3",
@@ -48,7 +50,8 @@ setup(
                       "scipy",
                       "Pillow",
                       "pillow-heif",
-                      "gunicorn"],
+                      "gunicorn",
+                      "kubernetes>=28.1.0"],
     entry_points={
         "console_scripts": [
             "realnet=realnet.__main__:main",

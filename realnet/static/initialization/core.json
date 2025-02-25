@@ -1109,6 +1109,24 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "Topic",
+            "base": "Item",
+            "attributes": {
+                "name": "string",
+                "qos": "integer",
+                "retain": "boolean",
+                "access": "string"
+            }
+        },
+        {
+            "name": "App",
+            "base": "Item",
+            "attributes": {
+                "app": "true",
+                "icon": "square"
+            }
         }
     ]
 }
