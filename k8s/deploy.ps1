@@ -1,8 +1,21 @@
 # PowerShell script for deploying realnet to Kubernetes on Windows
 param(
     [switch]$ClearDB,
-    [switch]$SkipInit
+    [switch]$SkipInit,
+    [switch]$Shutdown
 )
+
+if ($Shutdown) {
+    Write-Host "Shutting down cluster..."
+    # Delete all deployments and services but keep PVCs
+    kubectl delete deployment -n realnet --all
+    kubectl delete service -n realnet --all
+    kubectl delete configmap -n realnet --all
+    kubectl delete secret -n realnet --all
+    kubectl delete ingress -n realnet --all
+    Write-Host "Cluster shutdown complete. Data volumes are preserved."
+    exit 0
+}
 
 # Create namespace if it doesn't exist
 Write-Host "Creating namespace..."

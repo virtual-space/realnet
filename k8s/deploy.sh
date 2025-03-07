@@ -4,23 +4,40 @@ set -e
 # Parse command line arguments
 CLEAR_DB=false
 SKIP_INIT=false
+SHUTDOWN=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         -c|--clear-db)
             CLEAR_DB=true
             shift
             ;;
-        -s|--skip-init)
+        -s|--shutdown)
+            SHUTDOWN=true
+            shift
+            ;;
+        --skip-init)
             SKIP_INIT=true
             shift
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [-c|--clear-db] [-s|--skip-init]"
+            echo "Usage: $0 [-c|--clear-db] [--skip-init] [-s|--shutdown]"
             exit 1
             ;;
     esac
 done
+
+if [ "$SHUTDOWN" = true ]; then
+    echo "Shutting down cluster..."
+    # Delete all deployments and services but keep PVCs
+    kubectl delete deployment -n realnet --all
+    kubectl delete service -n realnet --all
+    kubectl delete configmap -n realnet --all
+    kubectl delete secret -n realnet --all
+    kubectl delete ingress -n realnet --all
+    echo "Cluster shutdown complete. Data volumes are preserved."
+    exit 0
+fi
 
 # Function to wait for a pod to be ready
 wait_for_pod() {
