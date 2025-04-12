@@ -1,4 +1,5 @@
 import os
+import logging
 import importlib
 
 from flask import Response, redirect, render_template, render_template_string, request, jsonify, Blueprint, send_file, session, current_app, url_for
@@ -93,6 +94,12 @@ def tenant_login(id, name):
             # client = [c for c in contextProvider.get_org_clients(org.id) if c.name.endswith("_cli")][0]
         if client:
             if request.method == 'POST':
+                # Add detailed logging for debugging
+                logger.info("Login endpoint POST request received")
+                logger.info(f"Request headers: {dict(request.headers)}")
+                logger.info(f"Request form data: {request.form}")
+                logger.info(f"Request JSON data: {request.get_json(silent=True)}")
+                logger.info(f"Request query string: {request.query_string}")
                 username = request.form.get('username')
                 if not username:
                     username = request.args.get('username')
@@ -107,12 +114,78 @@ def tenant_login(id, name):
                     if password:
                         account = contextProvider.check_password(org.id, username, password)
                         if account:
-                            # logger.info('*** request scheme: ' + request.scheme)
-                            # logger.info('*** request base url: ' + request.base_url)
-                            # logger.info('*** request query string: ' + to_unicode(request.query_string))
+                            logger.info('*** request scheme: ' + request.scheme)
+                            logger.info('*** request base url: ' + request.base_url)
+                            logger.info('*** request query string: ' + to_unicode(request.query_string))
                             
-                            # return authorization.create_token_response(request)
-                            return authorization.create_token_response(request)
+                            # Add grant_type parameter if missing
+                            modified_request = False
+                            
+                            if request.is_json:
+                                logger.info(f"*** request JSON body: {request.json}")
+                                # Check if grant_type is missing in JSON body
+                                if 'grant_type' not in request.json:
+                                    # Create a mutable copy of the request
+                                    from werkzeug.utils import cached_property
+                                    from flask import Request
+                                    
+                                    class ModifiedRequest(Request):
+                                        @cached_property
+                                        def json(self):
+                                            data = request.get_json(silent=True) or {}
+                                            data['grant_type'] = 'password'
+                                            return data
+                                    
+                                    modified_req = ModifiedRequest(
+                                        request.environ,
+                                        request.shallow,
+                                        request.environ.get('werkzeug.request')
+                                    )
+                                    logger.info(f"*** Added grant_type to JSON request: {modified_req.json}")
+                                    modified_request = True
+                            elif request.form:
+                                logger.info(f"*** request form data: {request.form}")
+                                # Check if grant_type is missing in form data
+                                if 'grant_type' not in request.form:
+                                    # For form data, we need to modify the request differently
+                                    from werkzeug.datastructures import ImmutableMultiDict
+                                    from flask import Request
+                                    
+                                    class ModifiedFormRequest(Request):
+                                        @property
+                                        def form(self):
+                                            form_data = dict(request.form.items())
+                                            form_data['grant_type'] = 'password'
+                                            return ImmutableMultiDict(form_data)
+                                    
+                                    modified_req = ModifiedFormRequest(
+                                        request.environ,
+                                        request.shallow,
+                                        request.environ.get('werkzeug.request')
+                                    )
+                                    logger.info(f"*** Added grant_type to form request: {modified_req.form}")
+                                    modified_request = True
+                            else:
+                                logger.info(f"*** request data: {request.data}")
+                            
+                            try:
+                                logger.info("Attempting to create token response")
+                                logger.info(f"Grant type in request: {request.form.get('grant_type') or (request.get_json(silent=True) or {}).get('grant_type')}")
+                                
+                                if modified_request:
+                                    logger.info("Using modified request with added grant_type")
+                                    response = authorization.create_token_response(modified_req)
+                                else:
+                                    logger.info("Using original request")
+                                    response = authorization.create_token_response(request)
+                                    
+                                logger.info(f"*** response status: {response.status_code}")
+                                logger.info(f"*** response body: {response.get_data(as_text=True)}")
+                                return response
+                            except Exception as e:
+                                logger.error(f"Token creation error: {str(e)}")
+                                logger.error(f"AUTHLIB_INSECURE_TRANSPORT setting: {os.environ.get('AUTHLIB_INSECURE_TRANSPORT', 'Not set')}")
+                                raise
                             # return authorization.create_authorization_response(request, grant_user=account)
             else:
                 if name == None:
@@ -246,7 +319,57 @@ def register_org():
 
 @router_bp.route('/oauth/token', methods=['POST'])
 def oauth_token():
-    return authorization.create_token_response(request)
+    # Add detailed logging for debugging
+    logger.info("OAuth token request received")
+    logger.info(f"Request headers: {dict(request.headers)}")
+    logger.info(f"Request form data: {request.form}")
+    logger.info(f"Request JSON data: {request.get_json(silent=True)}")
+    logger.info(f"Request query string: {request.query_string}")
+    
+    # Check for grant_type parameter
+    grant_type = request.form.get('grant_type') or (request.get_json(silent=True) or {}).get('grant_type')
+    logger.info(f"Grant type: {grant_type}")
+    
+    # Process the token request
+    response = authorization.create_token_response(request)
+    
+    # Log the response status
+    logger.info(f"Token response status: {response.status_code}")
+    if response.status_code != 200:
+        logger.info(f"Token response data: {response.get_data(as_text=True)}")
+    
+    return response
+
+@router_bp.route('/<org_name>/oauth/token', methods=['POST'])
+def org_oauth_token(org_name):
+    # Add detailed logging for debugging
+    logger.info(f"OAuth token request received for organization: {org_name}")
+    logger.info(f"Request headers: {dict(request.headers)}")
+    logger.info(f"Request form data: {request.form}")
+    logger.info(f"Request JSON data: {request.get_json(silent=True)}")
+    logger.info(f"Request query string: {request.query_string}")
+    
+    # Get the organization
+    contextProvider = current_app.config['REALNET_CONTEXT_PROVIDER']
+    org = contextProvider.get_org_by_name(org_name)
+    
+    if not org:
+        logger.error(f"Organization not found: {org_name}")
+        return jsonify({"error": "invalid_request", "error_description": f"Organization '{org_name}' not found"}), 400
+    
+    # Check for grant_type parameter
+    grant_type = request.form.get('grant_type') or (request.get_json(silent=True) or {}).get('grant_type')
+    logger.info(f"Grant type: {grant_type}")
+    
+    # Process the token request
+    response = authorization.create_token_response(request)
+    
+    # Log the response status
+    logger.info(f"Token response status: {response.status_code}")
+    if response.status_code != 200:
+        logger.info(f"Token response data: {response.get_data(as_text=True)}")
+    
+    return response
     
 @router_bp.route('/<id>/authorize/<name>', defaults={'client_id': None})
 @router_bp.route('/<id>/<client_id>/authorize/<name>')
@@ -369,7 +492,7 @@ def router(endpoint_name, path):
                 return jsonify(isError=True,
                         message="Failure",
                         statusCode=401,
-                        data='Unauthorized'.format(id)), 401
+                        data='Unauthorized'), 401
             else:
                 pass # return redirect('/signin')
     else:
