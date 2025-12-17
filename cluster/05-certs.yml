@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+ name: ambassador-certs
+ namespace: ambassador
+spec:
+ secretName: gitlab-realnet-dev-tls
+ issuerRef:
+  name: letsencrypt-production
+  kind: ClusterIssuer
+ commonName: "*.realnet-dev.asuscomm.com"
+ dnsNames:
+  - *.realnet-dev.asuscomm.com
