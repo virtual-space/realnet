@@ -13,7 +13,10 @@ RealNet is built on Flask and SQLAlchemy with PostgreSQL, featuring:
 - Multi-tenancy (organizations/accounts)
 - OAuth2 authentication
 - Hierarchical item storage with spatial support (PostGIS)
-- AWS S3 integration for file storage
+- Flexible file storage (local filesystem by default, AWS S3 optional)
+- Kubernetes resource management (20+ resource types)
+- AI agents via MQTT messaging
+- WordPress CMS integration
 - RESTful API with dynamic endpoint registration
 - Digital twin and mixed reality capabilities
 
@@ -63,8 +66,11 @@ The application requires a `.env` file in the project root. Key environment vari
 - `REALNET_SERVER_HOST` / `REALNET_SERVER_PORT` - Server binding
 - `REALNET_DB_TYPE` - Database type (postgresql or sqlite)
 - `REALNET_DB_USER` / `REALNET_DB_HOST` / `REALNET_DB_PASS` / `REALNET_DB_PORT` / `REALNET_DB_NAME` - Database connection
-- `REALNET_STORAGE_TYPE` - Storage backend (s3 or local)
-- `REALNET_STORAGE_S3_BUCKET` / `REALNET_STORAGE_S3_KEY` / `REALNET_STORAGE_S3_SECRET` / `REALNET_STORAGE_S3_REGION` - AWS S3 configuration
+- `REALNET_STORAGE_TYPE` - Storage backend (local or s3, defaults to local)
+- `REALNET_STORAGE_PATH` - Local storage directory (defaults to 'data')
+- `REALNET_STORAGE_S3_BUCKET` / `REALNET_STORAGE_S3_KEY` / `REALNET_STORAGE_S3_SECRET` / `REALNET_STORAGE_S3_REGION` - AWS S3 configuration (optional)
+- `REALNET_MQTT_HOST` / `REALNET_MQTT_PORT` - MQTT broker configuration for agents and runners
+- `REALNET_WORDPRESS_URL` / `REALNET_WORDPRESS_ADMIN_USER` / `REALNET_WORDPRESS_ADMIN_PASS` / `REALNET_WORDPRESS_TOKEN` - WordPress integration
 - `REALNET_SQS_URL` - AWS SQS queue URL
 - `REALNET_APP_SECRET` - Flask secret key for sessions
 - `REALNET_URI` / `REALNET_REDIRECT_URI` / `REALNET_MOBILE_REDIRECT_URI` - OAuth redirect URIs
@@ -245,7 +251,7 @@ RealNet serves as the backend entity engine in the VirtualSpace product stack:
 - GLTF for 3D models (pygltflib, trimesh in setup.py)
 - HEIF image format support (pillow-heif)
 - Spatial geometries (Shapely, GeoAlchemy2)
-- Binary data storage in S3
+- Binary data storage (local filesystem by default, S3 optional)
 
 ## Data Flow Example
 

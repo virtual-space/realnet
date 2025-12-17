@@ -11,8 +11,11 @@ Realnet is a server application that provides a flexible backend infrastructure 
 
 Realnet provides solutions through:
 - Flexible database support (primarily PostgreSQL)
-- Cloud storage integration (AWS S3)
-- Message queue handling (SQS)
+- Local and cloud storage (local filesystem by default, AWS S3 optional)
+- Message queue handling (MQTT for distributed processing, SQS for AWS)
+- Kubernetes resource management (20+ resource types)
+- AI agent orchestration via MQTT
+- WordPress CMS integration with bidirectional sync
 - File management system
 - Token-based authentication
 - Environment-based configuration
@@ -50,17 +53,37 @@ Realnet provides solutions through:
 
 4. **Runner System**
    - Protocol abstraction
-   - HTTP Server
-   - SQS Handler
+   - HTTP Server (Flask-based REST API)
+   - MQTT Runner (message-driven async processing)
+   - SQS Handler (AWS integration)
    - Shell Interface
    - Static file serving
    - Template processing
 
 5. **Type System**
    - Base types in core.json
-   - Resource types in specific JSONs
+   - Resource types in specific JSONs (kubernetes.json, websites.json, wordpress.json, runner.json, crm.json)
    - App types for UI
    - Module attribute for handling
+
+6. **Agent System**
+   - MQTT-based distributed agents
+   - Command and status topics per agent
+   - Active/inactive lifecycle management
+   - Script-based message processing
+
+7. **Kubernetes Integration**
+   - K8s API client wrapper
+   - 20+ resource types (Pod, Deployment, Service, etc.)
+   - In-cluster and kubeconfig authentication
+   - Manifest generation and deployment
+
+8. **WordPress Integration**
+   - PHP plugin for WordPress multisite
+   - Python client for WordPress API
+   - JWT authentication
+   - Website, Page, Post synchronization
+   - MQTT-driven sync runner
 
 ### Component Relationships
 
@@ -77,19 +100,27 @@ Realnet provides solutions through:
 
 ### Core Technologies
 - Python 3.x
-- PostgreSQL Database
+- PostgreSQL Database (with PostGIS for spatial data)
 - AWS Services (S3, SQS)
+- MQTT (Mosquitto broker)
+- Kubernetes API
 - HTTP/REST APIs
 - Docker/Kubernetes
 - WordPress (Multisite)
+- Flask (HTTP server)
 
 ### Key Dependencies
-- PostgreSQL client
-- AWS SDK
+- PostgreSQL client (psycopg2)
+- AWS SDK (boto3)
 - Cryptography module
-- HTTP server
-- Template engine
-- Kubernetes client
+- Flask (HTTP server)
+- Template engine (Jinja2)
+- Kubernetes client (official Python client)
+- MQTT client (paho-mqtt)
+- SQLAlchemy (ORM)
+- Authlib (OAuth2)
+- GeoAlchemy2 (PostGIS spatial data)
+- PyYAML (K8s manifest parsing)
 
 ## Project Structure
 
@@ -108,27 +139,43 @@ realnet/
 │   ├── provider.py  # Base provider classes
 │   └── type.py    # Base type system
 ├── provider/      # Storage providers
-│   ├── aws/
-│   ├── generic/
+│   ├── aws/       # S3 data provider
+│   ├── generic/   # Local data provider (default)
 │   ├── json/
-│   ├── sql/
+│   ├── sql/       # PostgreSQL providers
+│   ├── wordpress/ # WordPress API client
 │   ├── xml/
 │   └── yaml/
 ├── resource/      # Resource types
+│   ├── agents/    # AI agent resources
+│   ├── cluster/   # K8s resource management
 │   ├── files/
 │   ├── forms/
 │   ├── views/
-│   ├── cluster/   # K8s integration
 │   └── ...
 ├── runner/        # Protocol runners
-│   ├── http/
-│   └── sqs/
+│   ├── http/      # Flask REST API server
+│   ├── mqtt/      # MQTT message processor
+│   └── sqs/       # AWS SQS handler
 ├── shell/         # Shell interface
 ├── static/        # Static resources
 │   └── initialization/  # Resource definitions
 │       ├── core.json
+│       ├── controls.json
+│       ├── views.json
+│       ├── forms.json
+│       ├── geometry.json
+│       ├── kubernetes.json  # 19 K8s resource types
+│       ├── websites.json    # Website/page/post types
+│       ├── wordpress.json   # WordPress resource types
+│       ├── runner.json      # Runner task types
+│       ├── runner_apps.json
+│       ├── websites_apps.json
+│       ├── wordpress_apps.json
+│       ├── crm.json
+│       ├── crm_apps.json
 │       ├── apps.json
-│       ├── kubernetes.json
+│       ├── access.json
 │       └── ...
 └── templates/     # HTML templates
 ```
@@ -199,35 +246,43 @@ realnet/
 - Command-line interface
 - Provider interface
 - Resource type system
-- Runner architecture
+- Runner architecture (HTTP, MQTT, SQS)
 - Configuration management
-- SQL Provider (PostgreSQL)
-- AWS Provider
+- SQL Provider (PostgreSQL with PostGIS)
+- AWS Provider (S3 data storage)
+- Local Data Provider (default filesystem storage)
 - Generic Provider
 - File Provider
 - JSON/XML/YAML Providers
+- WordPress Provider (API client with JWT auth)
 - File handling
 - Form management
 - View system
 - Application resources
 - User/Group management
-- Access control
+- Access control (OAuth2 + sessions)
 - GLTF 3D model support
-- Kubernetes cluster integration
-- HTTP Server
+- Kubernetes cluster integration (20+ resource types)
+- AI Agents system (MQTT-based distributed agents)
+- WordPress CMS integration (bidirectional sync)
+- HTTP Server (Flask with Authlib OAuth2)
+- MQTT Runner (message-driven processing)
 - SQS Handler
 - Shell Interface
 - Static file serving
 - Template processing
 - Local development setup
 - Docker support
-- Kubernetes configuration
+- Kubernetes configuration (full stack deployment)
 - Pip package distribution
-- WordPress base deployment
+- WordPress plugin (PHP with REST API)
+- RBAC for Kubernetes resources
 
 ### Current Focus
-1. Kubernetes cluster integration through realnet's resource and app system
-2. WordPress multisite deployment and configuration in Kubernetes
+1. Documentation updates and maintenance
+2. Cluster deployment optimization
+3. Expanding agent capabilities
+4. Enhanced WordPress integration features
 
 ### Recent Achievements
 1. Kubernetes Integration:
@@ -245,35 +300,54 @@ realnet/
    - App visibility
 
 2. WordPress Integration:
-   - WordPress deployment
+   - WordPress deployment in Kubernetes
    - MySQL database deployment
-   - Plugin integration mechanism
+   - PHP plugin with REST API endpoints
+   - Python client with JWT authentication
+   - Bidirectional content sync (Website, Page, Post)
+   - MQTT-driven sync runner
+   - Multisite support
+   - Custom template system
    - Ingress configuration
-   - Database secrets
-   - Plugin ConfigMap
-   - WordPress settings
-   - Service configuration
-   - Ingress rules
+   - Database secrets and ConfigMaps
+
+3. AI Agents System:
+   - MQTT-based agent communication
+   - Agent resource type and management
+   - Command/status topic architecture
+   - Active/inactive lifecycle
+   - Script-based message handling
+   - Rate limiting for message processing
+
+4. MQTT Runner Infrastructure:
+   - Message-driven async processing
+   - Rate-limited script execution
+   - Dynamic script reload capability
+   - WordPress sync integration
+   - Kubernetes pod deployment
+   - ConfigMap-based script management
+
+5. Local Data Provider:
+   - Default filesystem storage
+   - Replaces S3 as default
+   - Directory traversal protection
+   - Automatic MIME type detection
+   - Configurable storage path
+   - Seamless S3 fallback
 
 ### Known Issues
-1. Documentation needs expansion
-2. Testing coverage could be improved
-3. Performance benchmarks needed
-4. Integration examples required
-5. Deployment guides need detail
-6. WordPress multisite configuration not working
-7. WordPress plugin activation failing
-8. WordPress URL resolution issues
+1. Automated testing coverage could be improved
+2. Performance benchmarks needed
+3. More integration examples required
 
 ### Next Steps
-1. Documentation enhancement
-2. Testing coverage
-3. Performance optimization
-4. Integration examples
-5. Usage guidelines
-6. Fix WordPress multisite setup
-7. Improve WordPress networking
-8. Document WordPress integration
+1. Expand automated testing coverage
+2. Performance optimization and benchmarking
+3. Additional integration examples
+4. Enhanced agent capabilities
+5. Advanced K8s operations (scaling, rollouts)
+6. Additional storage providers
+7. Monitoring and observability improvements
 
 ## Development Guidelines
 
@@ -370,20 +444,49 @@ realnet/
 - Multisite configuration (in progress)
 
 ### Environment Configuration
-```
+```bash
+# Server
 REALNET_SERVER_HOST='0.0.0.0'
 REALNET_SERVER_PORT='8080'
+
+# Database
 REALNET_DB_TYPE=postgresql
 REALNET_DB_USER=<username>
 REALNET_DB_PASS=<password>
 REALNET_DB_HOST=<host>
 REALNET_DB_PORT=<port>
 REALNET_DB_NAME=<dbname>
-REALNET_STORAGE_TYPE='s3'
-REALNET_STORAGE_S3_BUCKET=<bucket>
-REALNET_STORAGE_S3_KEY=<key>
-REALNET_STORAGE_S3_SECRET=<secret>
-REALNET_STORAGE_S3_REGION=<region>
+
+# Storage (defaults to local)
+REALNET_STORAGE_TYPE=local
+REALNET_STORAGE_PATH=data
+
+# Or use S3
+# REALNET_STORAGE_TYPE=s3
+# REALNET_STORAGE_S3_BUCKET=<bucket>
+# REALNET_STORAGE_S3_KEY=<key>
+# REALNET_STORAGE_S3_SECRET=<secret>
+# REALNET_STORAGE_S3_REGION=<region>
+
+# MQTT (for agents and runners)
+REALNET_MQTT_HOST=mosquitto
+REALNET_MQTT_PORT=1883
+REALNET_MQTT_RATE_LIMIT=10
+REALNET_MQTT_RATE_PERIOD=1.0
+
+# WordPress Integration
+REALNET_WORDPRESS_URL=http://wordpress:8081
+REALNET_WORDPRESS_ADMIN_USER=admin
+REALNET_WORDPRESS_ADMIN_PASS=<password>
+REALNET_WORDPRESS_TOKEN=<jwt-token>
+
+# Runner
+REALNET_RUNNER_SCRIPT=/app/script.py
+
+# OAuth
+REALNET_APP_SECRET=<secret-key>
+REALNET_URI=http://localhost:8080
+REALNET_REDIRECT_URI=http://localhost:8080/oauth/callback
 ```
 
 ## Common Workflows
@@ -409,10 +512,26 @@ REALNET_STORAGE_S3_REGION=<region>
 5. Error recovery
 
 ### Authentication
-1. Token generation
-2. Validation
-3. Access control
+1. Token generation (OAuth2)
+2. Validation (Bearer tokens + sessions)
+3. Access control (role-based)
 4. Session management
+
+### Agent Management
+1. Create agent with command/status topics
+2. Subscribe to MQTT topics
+3. Send commands via MQTT publish
+4. Monitor agent status
+5. Update agent configuration
+6. Cleanup on agent deletion
+
+### Kubernetes Resource Management
+1. Initialize K8s client (in-cluster or kubeconfig)
+2. Query resources via RealNet API
+3. Create/update resources with manifests
+4. Monitor resource status
+5. Delete resources
+6. Namespace management
 
 ## Key Paths
 - Main entry: realnet.py

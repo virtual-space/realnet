@@ -8,8 +8,11 @@ RealNet is a server application that provides flexible backend infrastructure fo
 
 ### 1.2 Core Capabilities
 
-- **Data Management**: PostgreSQL database support, AWS S3 storage integration, SQS message queue support, file handling
-- **Authentication & Security**: User authentication, token-based authorization, secure configuration
+- **Data Management**: PostgreSQL database support (with PostGIS), local filesystem storage (default), AWS S3 storage (optional), MQTT message queue, file handling
+- **Kubernetes Management**: 20+ K8s resource types, full CRUD operations, in-cluster and kubeconfig support, manifest generation
+- **AI Agents**: MQTT-based distributed agents, command/status topics, lifecycle management, script-based processing
+- **WordPress Integration**: Bidirectional content sync, PHP plugin, Python client, multisite support, JWT authentication
+- **Authentication & Security**: OAuth2 with JWT tokens, session-based auth, token-based authorization, secure configuration
 - **API & Integration**: REST API endpoints, CLI interface, multiple deployment options
 - **Deployment Flexibility**: Local development, Docker containerization, Kubernetes deployment, Pip package
 
@@ -40,27 +43,43 @@ realnet/
 │   ├── provider.py  # Base provider classes
 │   └── type.py    # Base type system
 ├── provider/      # Storage providers
-│   ├── aws/
-│   ├── generic/
+│   ├── aws/       # S3 data provider
+│   ├── generic/   # Local data provider (default)
 │   ├── json/
-│   ├── sql/
+│   ├── sql/       # PostgreSQL providers
+│   ├── wordpress/ # WordPress API client
 │   ├── xml/
 │   └── yaml/
 ├── resource/      # Resource types
+│   ├── agents/    # AI agent resources
+│   ├── cluster/   # K8s resource management (20+ types)
 │   ├── files/
 │   ├── forms/
 │   ├── views/
-│   ├── cluster/   # K8s integration
 │   └── ...
 ├── runner/        # Protocol runners
-│   ├── http/
-│   └── sqs/
+│   ├── http/      # Flask REST API server
+│   ├── mqtt/      # MQTT message processor
+│   └── sqs/       # AWS SQS handler
 ├── shell/         # Shell interface
 ├── static/        # Static resources
 │   └── initialization/  # Resource definitions
 │       ├── core.json
+│       ├── controls.json
+│       ├── views.json
+│       ├── forms.json
+│       ├── geometry.json
+│       ├── kubernetes.json    # 19 K8s resource types
+│       ├── websites.json      # Website/page/post types
+│       ├── wordpress.json     # WordPress resource types
+│       ├── runner.json        # Runner task types
+│       ├── runner_apps.json
+│       ├── websites_apps.json
+│       ├── wordpress_apps.json
+│       ├── crm.json
+│       ├── crm_apps.json
 │       ├── apps.json
-│       ├── kubernetes.json
+│       ├── access.json
 │       └── ...
 └── templates/     # HTML templates
 ```
@@ -122,21 +141,29 @@ Request → Token Check → Auth Validation → Access Grant → Resource Access
 ### 3.1 Prerequisites
 
 - Python 3.x
-- PostgreSQL
+- PostgreSQL (with PostGIS extension for spatial data)
 - gcc/g++ (for some dependencies)
 - Development tools
 - (Optional) Docker and Kubernetes for container deployment
 - (Optional) AWS credentials for S3/SQS integration
+- (Optional) MQTT broker (Mosquitto) for agents and runners
+- (Optional) WordPress instance for CMS integration
 
 ### 3.2 Python Dependencies
 
 ```
 setuptools-rust
 cryptography
-database drivers
-AWS SDK
-HTTP server
-kubernetes client
+psycopg2 (PostgreSQL client)
+boto3 (AWS SDK)
+Flask (HTTP server)
+Jinja2 (template engine)
+kubernetes (K8s Python client)
+paho-mqtt (MQTT client)
+SQLAlchemy (ORM)
+Authlib (OAuth2)
+GeoAlchemy2 (PostGIS spatial data)
+PyYAML (K8s manifest parsing)
 ```
 
 ### 3.3 Deployment Options
@@ -181,20 +208,49 @@ kubernetes client
 
 RealNet uses environment variables for configuration:
 
-```
+```bash
+# Server
 REALNET_SERVER_HOST='0.0.0.0'
 REALNET_SERVER_PORT='8080'
+
+# Database
 REALNET_DB_TYPE=postgresql
 REALNET_DB_USER=<username>
 REALNET_DB_PASS=<password>
 REALNET_DB_HOST=<host>
 REALNET_DB_PORT=<port>
 REALNET_DB_NAME=<dbname>
-REALNET_STORAGE_TYPE='s3'
-REALNET_STORAGE_S3_BUCKET=<bucket>
-REALNET_STORAGE_S3_KEY=<key>
-REALNET_STORAGE_S3_SECRET=<secret>
-REALNET_STORAGE_S3_REGION=<region>
+
+# Storage (defaults to local)
+REALNET_STORAGE_TYPE=local
+REALNET_STORAGE_PATH=data
+
+# Or use S3
+# REALNET_STORAGE_TYPE=s3
+# REALNET_STORAGE_S3_BUCKET=<bucket>
+# REALNET_STORAGE_S3_KEY=<key>
+# REALNET_STORAGE_S3_SECRET=<secret>
+# REALNET_STORAGE_S3_REGION=<region>
+
+# MQTT (for agents and runners)
+REALNET_MQTT_HOST=mosquitto
+REALNET_MQTT_PORT=1883
+REALNET_MQTT_RATE_LIMIT=10
+REALNET_MQTT_RATE_PERIOD=1.0
+
+# WordPress Integration
+REALNET_WORDPRESS_URL=http://wordpress:8081
+REALNET_WORDPRESS_ADMIN_USER=admin
+REALNET_WORDPRESS_ADMIN_PASS=<password>
+REALNET_WORDPRESS_TOKEN=<jwt-token>
+
+# Runner
+REALNET_RUNNER_SCRIPT=/app/script.py
+
+# OAuth
+REALNET_APP_SECRET=<secret-key>
+REALNET_URI=http://localhost:8080
+REALNET_REDIRECT_URI=http://localhost:8080/oauth/callback
 ```
 
 ## 4. API Interaction
@@ -259,11 +315,82 @@ Content-Type: multipart/form-data
 [file data]
 ```
 
-#### 4.2.3 Get Kubernetes Clusters
+#### 4.2.3 Get Kubernetes Pods
 
 ```
-GET /api/cluster
+GET /cluster/pods
 Authorization: Bearer <token>
+```
+
+#### 4.2.4 Create Kubernetes Deployment
+
+```
+POST /cluster/deployments
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "my-app"
+  },
+  "spec": {
+    "replicas": 3,
+    "selector": {
+      "matchLabels": {
+        "app": "my-app"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "my-app"
+        }
+      },
+      "spec": {
+        "containers": [{
+          "name": "my-app",
+          "image": "my-app:latest",
+          "ports": [{"containerPort": 8080}]
+        }]
+      }
+    }
+  }
+}
+```
+
+#### 4.2.5 Create AI Agent
+
+```
+POST /agents
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "My Agent",
+  "attributes": {
+    "description": "Example agent",
+    "config": {
+      "rate_limit": 10
+    }
+  }
+}
+```
+
+#### 4.2.6 Send Agent Command via MQTT
+
+```python
+import paho.mqtt.client as mqtt
+
+client = mqtt.Client()
+client.connect("mosquitto", 1883)
+
+# Send command to agent
+client.publish(
+    "realnet/agents/{agent_id}/command",
+    json.dumps({"action": "process", "data": {...}})
+)
 ```
 
 ### 4.3 CLI Interaction
@@ -399,25 +526,78 @@ initialization_files = [
 
 ### 5.3 WordPress Integration
 
-RealNet includes WordPress integration capabilities:
+RealNet includes comprehensive WordPress CMS integration with bidirectional content synchronization:
 
-#### 5.3.1 WordPress Deployment
+#### 5.3.1 WordPress Architecture
 
-1. Configure WordPress deployment in Kubernetes:
-   - WordPress container
-   - MySQL database
-   - Plugin integration
-   - Networking setup
+The integration consists of three main components:
 
-2. Deploy using Kubernetes manifests in `k8s/base/wordpress.yaml`
+1. **PHP WordPress Plugin** (`realnet-wordpress/realnet.php`)
+   - REST API endpoints for content synchronization
+   - JWT authentication via `X-Realnet-Token` header
+   - Sync endpoints: `/wp-json/realnet/v1/sync`
+   - Template override system for RealNet-managed content
+   - Hooks into WordPress action/filter system
 
-#### 5.3.2 WordPress Plugin
+2. **Python WordPress Client** (`realnet/provider/wordpress/client.py`)
+   - JWT authentication with WordPress API
+   - Multisite support for WordPress networks
+   - CRUD operations for sites, pages, posts, users
+   - Methods: `get_sites()`, `get_pages()`, `create_page()`, `update_post()`, etc.
 
-RealNet includes a WordPress plugin for integration:
+3. **MQTT Sync Runner** (Kubernetes pod with `realnet runner` command)
+   - Listens on `realnet/system` topic for content changes
+   - Executes sync script to push changes to WordPress
+   - Rate-limited message processing
+   - Dynamic script reload capability
 
-- Located in `realnet-wordpress/`
-- Provides API connectivity between WordPress and RealNet
-- Supports custom post types and fields
+#### 5.3.2 Content Sync Flow
+
+```
+RealNet API → Create/Update Page
+    ↓
+Publish MQTT Message → realnet/system topic
+    ↓
+Runner Pod Receives → Execute sync script
+    ↓
+WordPress API Call → Create/Update WP content
+    ↓
+Result Published → realnet/system/result topic
+```
+
+#### 5.3.3 WordPress Deployment
+
+Deploy WordPress with RealNet in Kubernetes:
+
+```bash
+# Full stack deployment includes WordPress + MySQL
+kubectl apply -k k8s/base
+
+# Or deploy individually
+kubectl apply -f k8s/base/wordpress.yaml
+kubectl apply -f k8s/base/mysql.yaml
+```
+
+Configuration via ConfigMap and Secrets:
+- WordPress admin credentials in Secret
+- Plugin code in ConfigMap
+- Runner script in ConfigMap
+- Environment variables for WordPress URL and token
+
+#### 5.3.4 WordPress Plugin Installation
+
+1. Plugin is automatically mounted via Kubernetes ConfigMap
+2. Located at `/var/www/html/wp-content/plugins/realnet/realnet.php`
+3. Activate through WordPress admin or via wp-cli in pod
+4. Configure authentication token to match `REALNET_WORDPRESS_TOKEN`
+
+#### 5.3.5 Supported Content Types
+
+- **Website** → WordPress Multisite instance
+- **WebPage** → WordPress Page with metadata
+- **WebPost** → WordPress Post with categories, tags, authors
+
+Each type maps to WordPress entities with attribute synchronization.
 
 ## 6. Troubleshooting
 
@@ -439,13 +619,23 @@ RealNet includes a WordPress plugin for integration:
 - Ensure proper token format in Authorization header
 - Check user permissions for the requested resource
 
-#### 6.1.3 WordPress Integration
+#### 6.1.3 MQTT Connection
 
-**Issue**: WordPress multisite configuration not working.
+**Issue**: Unable to connect to MQTT broker.
 **Solution**:
-- Review WordPress multisite configuration approach
-- Check site URL resolution between localhost and wordpress.local
-- Consider separating multisite setup into post-installation step
+- Verify MQTT broker (Mosquitto) is running
+- Check `REALNET_MQTT_HOST` and `REALNET_MQTT_PORT` configuration
+- Ensure network connectivity between RealNet and MQTT broker
+- Check firewall rules for MQTT port (default 1883)
+
+#### 6.1.4 Kubernetes API Access
+
+**Issue**: Cannot access Kubernetes resources.
+**Solution**:
+- Verify ServiceAccount has proper RBAC permissions
+- Check kubeconfig file for local development
+- Ensure ClusterRole/RoleBinding are configured correctly
+- Verify namespace access permissions
 
 ### 6.2 Debugging Tips
 
@@ -468,17 +658,32 @@ RealNet includes a WordPress plugin for integration:
 |----------|-------------|---------|
 | REALNET_SERVER_HOST | Server host | 127.0.0.1 |
 | REALNET_SERVER_PORT | Server port | 8080 |
-| REALNET_DB_TYPE | Database type | postgresql |
+| REALNET_DB_TYPE | Database type (postgresql or sqlite) | postgresql |
 | REALNET_DB_USER | Database username | |
 | REALNET_DB_PASS | Database password | |
 | REALNET_DB_HOST | Database host | localhost |
 | REALNET_DB_PORT | Database port | 5432 |
 | REALNET_DB_NAME | Database name | realnet |
-| REALNET_STORAGE_TYPE | Storage type | local |
+| REALNET_STORAGE_TYPE | Storage type (local or s3) | local |
+| REALNET_STORAGE_PATH | Local storage directory | data |
 | REALNET_STORAGE_S3_BUCKET | S3 bucket name | |
 | REALNET_STORAGE_S3_KEY | S3 access key | |
 | REALNET_STORAGE_S3_SECRET | S3 secret key | |
 | REALNET_STORAGE_S3_REGION | S3 region | us-east-1 |
+| REALNET_MQTT_HOST | MQTT broker host | mosquitto |
+| REALNET_MQTT_PORT | MQTT broker port | 1883 |
+| REALNET_MQTT_RATE_LIMIT | Rate limit (requests) | 10 |
+| REALNET_MQTT_RATE_PERIOD | Rate period (seconds) | 1.0 |
+| REALNET_WORDPRESS_URL | WordPress instance URL | |
+| REALNET_WORDPRESS_ADMIN_USER | WordPress admin username | |
+| REALNET_WORDPRESS_ADMIN_PASS | WordPress admin password | |
+| REALNET_WORDPRESS_TOKEN | WordPress JWT token | |
+| REALNET_RUNNER_SCRIPT | Path to runner script | /app/script.py |
+| REALNET_APP_SECRET | Flask secret key | |
+| REALNET_URI | Base URI | http://localhost:8080 |
+| REALNET_REDIRECT_URI | OAuth redirect URI | |
+| REALNET_MOBILE_REDIRECT_URI | Mobile OAuth redirect | |
+| REALNET_ALLOW_HTTP | Allow insecure HTTP (dev only) | false |
 | REALNET_DEBUG | Enable debug mode | false |
 
 ### 7.2 Key Files and Paths
@@ -501,7 +706,13 @@ RealNet includes a WordPress plugin for integration:
 | Form | Form handling | resource/forms/forms.py |
 | View | View rendering | resource/views/views.py |
 | App | Application | resource/apps/apps.py |
-| Cluster | Kubernetes integration | resource/cluster/cluster.py |
+| Cluster | Kubernetes cluster management | resource/cluster/cluster.py |
+| Clusters | Kubernetes resources (20+ types) | resource/cluster/clusters.py |
+| Agent | AI agent management | resource/agents/agent.py |
+| Website | Website/CMS content | provider/websites/resource.py |
+| WordPress* | WordPress integration types | provider/wordpress/ |
+
+*WordPress types include: WordPressSite, WordPressPage, WordPressPost, WordPressUser
 
 ### 7.4 Initialization Order
 
@@ -515,39 +726,57 @@ The correct initialization order in `server.py` is crucial:
    - geometry.json: Layout definitions
 
 2. Resource Type Files
-   - kubernetes.json: K8s resources
+   - kubernetes.json: 19 K8s resource types
+   - websites.json: Website/page/post types
+   - wordpress.json: WordPress resource types
+   - runner.json: Runner task types
    - crm.json: CRM resources
    - Other domain resources
 
 3. App Type Files
-   - domain_apps.json: Domain-specific apps
+   - runner_apps.json: Runner management apps
+   - websites_apps.json: Website management apps
+   - wordpress_apps.json: WordPress management apps
+   - crm_apps.json: CRM applications
+   - Other domain-specific apps
 
 4. General Apps and Access Files
-   - apps.json: App definitions
-   - access.json: Access control
+   - apps.json: Core app definitions
+   - access.json: Access control and permissions
 
 This order ensures dependencies exist before they're referenced.
 
 ## 8. Current Development Status
 
-RealNet has a solid foundation with core features implemented. Kubernetes integration adds cluster management capabilities. WordPress integration is in progress with basic deployment working but multisite configuration needs improvement. Focus is on improving documentation, testing, and providing better examples and guides.
+RealNet has evolved into a comprehensive infrastructure management platform with a solid foundation and advanced features implemented.
 
 ### 8.1 Completed Components
 - Core system (CLI, providers, resources, runners)
-- Multiple deployment options
-- Kubernetes integration
-- Basic WordPress deployment
+- Entity-based type system with hierarchical items
+- Multi-tenancy (organizations and accounts)
+- OAuth2 authentication with session support
+- Multiple deployment options (local, Docker, Kubernetes)
+- Kubernetes integration (20+ resource types with full CRUD)
+- AI Agents system (MQTT-based distributed agents)
+- WordPress integration (bidirectional sync with PHP plugin)
+- MQTT Runner infrastructure (message-driven processing)
+- Local data provider (default filesystem storage)
+- AWS integrations (S3 storage, SQS messaging)
+- PostgreSQL with PostGIS spatial data support
+- RBAC for Kubernetes resources
+- Full documentation suite
 
-### 8.2 In Progress
-- WordPress multisite configuration
-- Documentation enhancement
-- Testing coverage
+### 8.2 Current Focus
+- Documentation maintenance and updates
+- Cluster deployment optimization
+- Expanding agent capabilities
+- Enhanced WordPress integration features
 - Performance optimization
 
 ### 8.3 Known Issues
-- WordPress multisite configuration not fully working
-- Site URL resolution issues between localhost and wordpress.local
-- Plugin activation failing due to site URL issues
+- Automated testing coverage needs improvement
+- Performance benchmarks needed
+- More integration examples would be beneficial
 
 ## 9. Best Practices
 
